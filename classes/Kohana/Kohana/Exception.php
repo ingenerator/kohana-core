@@ -78,10 +78,10 @@ class Kohana_Kohana_Exception extends Exception {
 	 * exception, and the stack trace of the error.
 	 *
 	 * @uses    Kohana_Exception::response
-	 * @param   Exception  $e
+	 * @param   Throwable|Exception  $e
 	 * @return  void
 	 */
-	public static function handler(Exception $e)
+	public static function handler($e)
 	{
 		$response = Kohana_Exception::_handler($e);
 
@@ -96,10 +96,10 @@ class Kohana_Kohana_Exception extends Exception {
 	 * for display.
 	 *
 	 * @uses    Kohana_Exception::response
-	 * @param   Exception  $e
+	 * @param   Throwable|Exception  $e
 	 * @return  Response
 	 */
-	public static function _handler(Exception $e)
+	public static function _handler($e)
 	{
 		try
 		{
@@ -133,11 +133,11 @@ class Kohana_Kohana_Exception extends Exception {
 	 * Logs an exception.
 	 *
 	 * @uses    Kohana_Exception::text
-	 * @param   Exception  $e
+	 * @param   Throwable|Exception  $e
 	 * @param   int        $level
 	 * @return  void
 	 */
-	public static function log(Exception $e, $level = Log::EMERGENCY)
+	public static function log($e, $level = Log::EMERGENCY)
 	{
 		if (is_object(Kohana::$log))
 		{
@@ -157,11 +157,16 @@ class Kohana_Kohana_Exception extends Exception {
 	 *
 	 * Error [ Code ]: Message ~ File [ Line ]
 	 *
-	 * @param   Exception  $e
+	 * @param   Throwable|Exception $e
 	 * @return  string
 	 */
-	public static function text(Exception $e)
+	public static function text($e)
 	{
+		if ( ! $e instanceof Exception AND ! $e instanceof Throwable)
+		{
+			throw InvalidArgumentException('Argument 1 passed to Kohana_Kohana_Exception::response() must be an instance of Exception or Throwable');
+		}
+
 		return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
 			get_class($e), $e->getCode(), strip_tags($e->getMessage()), Debug::path($e->getFile()), $e->getLine());
 	}
@@ -170,11 +175,16 @@ class Kohana_Kohana_Exception extends Exception {
 	 * Get a Response object representing the exception
 	 *
 	 * @uses    Kohana_Exception::text
-	 * @param   Exception  $e
+	 * @param   Throwable|Exception $e
 	 * @return  Response
 	 */
-	public static function response(Exception $e)
+	public static function response($e)
 	{
+		if ( ! $e instanceof Exception AND ! $e instanceof Throwable)
+		{
+			throw InvalidArgumentException('Argument 1 passed to Kohana_Kohana_Exception::response() must be an instance of Exception or Throwable');
+		}
+
 		try
 		{
 			// Get the exception information
