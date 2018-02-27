@@ -34,6 +34,6 @@
 	"extra": {
 		"installer-paths": {
 			"vendor/{$vendor}/{$name}": ["type:kohana-module"]
-		},
+		}
 	}
 }
