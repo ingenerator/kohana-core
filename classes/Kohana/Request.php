@@ -685,23 +685,7 @@ class Kohana_Request implements HTTP_Request {
 		}
 		else
 		{
-			// Create a route
-			$this->_route = new Route($uri);
-
-			// Store the URI
-			$this->_uri = $uri;
-
-			// Set the security setting if required
-			if (strpos($uri, 'https://') === 0)
-			{
-				$this->secure(TRUE);
-			}
-
-			// Set external state
-			$this->_external = TRUE;
-
-			// Setup the client
-			$this->_client = Request_Client_External::factory($client_params);
+		    throw new \RuntimeException('Cannot make external request with \Request');
 		}
 	}
 
