@@ -71,11 +71,6 @@ abstract class Kohana_Session {
 	protected $_lifetime = 0;
 
 	/**
-	 * @var  bool  encrypt session data?
-	 */
-	protected $_encrypted = FALSE;
-
-	/**
 	 * @var  array  session data
 	 */
 	protected $_data = array();
@@ -109,16 +104,10 @@ abstract class Kohana_Session {
 			$this->_lifetime = (int) $config['lifetime'];
 		}
 
-		if (isset($config['encrypted']))
+		if (\Arr::get($config, 'encrypted'))
 		{
-			if ($config['encrypted'] === TRUE)
-			{
-				// Use the default Encrypt instance
-				$config['encrypted'] = 'default';
-			}
+		    throw new \InvalidArgumentException('Encrypted sessions no longer supported : roll your own (securely)');
 
-			// Enable or disable encryption of data
-			$this->_encrypted = $config['encrypted'];
 		}
 
 		// Load the session
@@ -140,16 +129,8 @@ abstract class Kohana_Session {
 		// Serialize the data array
 		$data = $this->_serialize($this->_data);
 
-		if ($this->_encrypted)
-		{
-			// Encrypt the data using the default key
-			$data = Encrypt::instance($this->_encrypted)->encode($data);
-		}
-		else
-		{
-			// Encode the data
-			$data = $this->_encode($data);
-		}
+        // Encode the data
+        $data = $this->_encode($data);
 
 		return $data;
 	}
@@ -299,16 +280,8 @@ abstract class Kohana_Session {
 		{
 			if (is_string($data = $this->_read($id)))
 			{
-				if ($this->_encrypted)
-				{
-					// Decrypt the data using the default key
-					$data = Encrypt::instance($this->_encrypted)->decode($data);
-				}
-				else
-				{
-					// Decode the data
-					$data = $this->_decode($data);
-				}
+                // Decode the data
+                $data = $this->_decode($data);
 
 				// Unserialize the data
 				$data = $this->_unserialize($data);
