@@ -12,11 +12,6 @@
 class Kohana_Request_Client_Internal extends Request_Client {
 
 	/**
-	 * @var    array
-	 */
-	protected $_previous_environment;
-
-	/**
 	 * Processes the request, executing the controller action that handles this
 	 * request, determined by the [Route].
 	 *
