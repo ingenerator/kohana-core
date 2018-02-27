@@ -20,7 +20,7 @@
 		"source":   "http://github.com/kohana/core"
 	},
 	"require": {
-		"php":        ">=5.3.3"
+		"php":        "^5.5||^7.0"
 	},
 	"require-dev": {
 		"kohana/unittest":     "3.3.*@dev",
@@ -35,9 +35,5 @@
 		"installer-paths": {
 			"vendor/{$vendor}/{$name}": ["type:kohana-module"]
 		},
-		"branch-alias": {
-			"dev-3.3/develop":  "3.3.x-dev",
-			"dev-3.4/develop":  "3.4.x-dev"
-		}
 	}
 }
