@@ -46,15 +46,12 @@ class Kohana_Request implements HTTP_Request {
 	 * be retrieved from the cache.
 	 *
 	 * @param   string  $uri              URI of the request
-	 * @param   array   $client_params    An array of params to pass to the request client
-	 * @param   bool    $allow_external   Allow external requests? (deprecated in 3.3)
-	 * @param   array   $injected_routes  An array of routes to use, for testing
 	 * @return  void|Request
 	 * @throws  Request_Exception
 	 * @uses    Route::all
 	 * @uses    Route::matches
 	 */
-	public static function factory($uri = TRUE, $client_params = array(), $allow_external = TRUE, $injected_routes = array())
+	public static function factory($uri = TRUE)
 	{
 		// If this is the initial request
 		if ( ! Request::$initial)
@@ -153,7 +150,7 @@ class Kohana_Request implements HTTP_Request {
 			}
 
 			// Create the instance singleton
-			Request::$initial = $request = new Request($uri, $client_params, $allow_external, $injected_routes);
+			Request::$initial = $request = new Request($uri);
 
 			// Store global GET and POST data in the initial request only
 			$request->_protocol = strtoupper($protocol);
@@ -194,7 +191,7 @@ class Kohana_Request implements HTTP_Request {
 		}
 		else
 		{
-			$request = new Request($uri, $client_params, $allow_external, $injected_routes);
+			$request = new Request($uri);
 		}
 
 		return $request;
@@ -642,39 +639,29 @@ class Kohana_Request implements HTTP_Request {
 	 * be retrieved from the cache.
 	 *
 	 * @param   string  $uri              URI of the request
-	 * @param   array   $client_params    Array of params to pass to the request client
-	 * @param   bool    $allow_external   Allow external requests? (deprecated in 3.3)
-	 * @param   array   $injected_routes  An array of routes to use, for testing
 	 * @return  void
 	 * @throws  Request_Exception
 	 * @uses    Route::all
 	 * @uses    Route::matches
 	 */
-	public function __construct($uri, $client_params = array(), $allow_external = TRUE, $injected_routes = array())
+	public function __construct($uri)
 	{
-		$client_params = is_array($client_params) ? $client_params : array();
-
 		// Initialise the header
 		$this->_header = new HTTP_Header(array());
 
-		// Assign injected routes
-		$this->_routes = $injected_routes;
-
 		if (strpos($uri, '?') !== FALSE) {
-		    // This shouldn't be happening, the arguments should be pre-parsed to the base url and the $_GET array
-		    throw new \UnexpectedValueException('Cannot accept querystring arguments in \Request::$uri');
-        }
+			// This shouldn't be happening, the arguments should be pre-parsed to the base url and the $_GET array
+			throw new \UnexpectedValueException('Cannot accept querystring arguments in \Request::$uri');
+		}
 
-		// Detect protocol (if present)
-		// $allow_external = FALSE prevents the default index.php from
-		// being able to proxy external pages.
-		if ( ! $allow_external OR strpos($uri, '://') === FALSE)
+		// Fail if they're trying to do old-school external request execution
+		if (strpos($uri, '://') === FALSE)
 		{
 			// Remove leading and trailing slashes from the URI
 			$this->_uri = trim($uri, '/');
 
 			// Apply the client
-			$this->_client = new Request_Client_Internal($client_params);
+			$this->_client = new Request_Client_Internal();
 		}
 		else
 		{

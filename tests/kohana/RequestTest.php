@@ -75,24 +75,6 @@ class Kohana_RequestTest extends Unittest_TestCase
 	}
 
 	/**
-	 * Tests that the allow_external flag prevents an external request.
-	 *
-	 * @return null
-	 */
-	public function test_disable_external_tests()
-	{
-		$this->setEnvironment(
-			array(
-				'Request::$initial' => NULL,
-			)
-		);
-
-		$request = new Request('http://www.google.com/', array(), FALSE);
-
-		$this->assertEquals(FALSE, $request->is_external());
-	}
-
-	/**
 	 * Provides the data for test_create()
 	 * @return  array
 	 */
@@ -126,7 +108,10 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$route = new Route('(<controller>(/<action>(/<id>)))');
 
 		$uri = 'kohana_requesttest_dummy/foobar/some_id';
-		$request = Request::factory($uri, NULL, TRUE, array($route));
+		$request = Request::factory($uri);
+		// @todo: workaround for needing to inject routes into the request object
+		$fn = Closure::bind(function (\Request $rq, $routes) {$rq->_routes = $routes;}, $request, $request);
+		$fn($request, [$route]);
 
 		// We need to execute the request before it has matched a route
 		$response = $request->execute();
@@ -150,7 +135,8 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 		$route = new Route('(<uri>)', array('uri' => '.+'));
 		$route->defaults(array('controller' => 'kohana_requesttest_dummy', 'action' => 'foobar'));
-		$request = Request::factory('kohana_requesttest_dummy', NULL, TRUE, array($route));
+		$request = Request::factory('kohana_requesttest_dummy');
+		$fn($request, [$route]);
 
 		// We need to execute the request before it has matched a route
 		$response = $request->execute();

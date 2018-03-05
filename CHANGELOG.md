@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Remove option to pass allow_external, client_params and injected_routes to \Request classes
+  - temporarily refactored test to assign the _routes protected property directly in the one
+  place that this is necessary.
 * Made all \Request properties idempotent : will now throw if you attempt to use the getters
   as setters.
 * Removed HTTP_Message interface to entirely split the Request and
