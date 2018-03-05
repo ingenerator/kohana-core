@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Add new Request::initInitial which should now be called from index.php when creating the
+  main request. Request::fromGlobals no longer modifies any global state.
 * Disable Request::factory, replace with Request::fromGlobals (to init all data from $_SERVER etc)
   and Request::with (to init from a predefined set of values). Request::fromGlobals no longer
   modifies the Request::$initial singleton : instead, you should set this separately.

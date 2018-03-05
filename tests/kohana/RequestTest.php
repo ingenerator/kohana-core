@@ -24,15 +24,12 @@ class Kohana_RequestTest extends Unittest_TestCase
 	{
 		parent::setUp();
 		Kohana::$config->load('url')->set('trusted_hosts', array('localhost'));
-		$this->_initial_request = Request::$initial;
-		Request::$initial = Request::with(['uri' => '/']);
 	}
 
 	// @codingStandardsIgnoreStart
 	public function tearDown()
 	// @codingStandardsIgnoreEnd
 	{
-		Request::$initial = $this->_initial_request;
 		parent::tearDown();
 	}
 
@@ -42,6 +39,22 @@ class Kohana_RequestTest extends Unittest_TestCase
 	public function test_its_factory_just_throws()
 	{
 		\Request::factory();
+	}
+
+	public function test_init_initial_sets_the_global_initial_and_related_state()
+	{
+		$this->setEnvironment(
+			[
+				'Request::$initial'    => NULL,
+				'Request::$client_ip'  => NULL,
+				'Request::$user_agent' => NULL,
+			]
+		);
+		$rq = Request::with(['client_ip' => '182.132.123.145', 'client_user_agent' => 'tesla smartcar']);
+		$this->assertSame($rq, \Request::initInitial($rq), 'initInitial should return request');
+		$this->assertSame($rq, \Request::initial(), 'initInitial should init request');
+		$this->assertSame('182.132.123.145', \Request::$client_ip, 'should set ::$client_ip');
+		$this->assertSame('tesla smartcar', \Request::$user_agent, 'should set ::$user_agent');
 	}
 
 	public function test_from_globals_loads_from_global_state()
@@ -66,8 +79,10 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$request = Request::fromGlobals();
 
 		$this->assertSame(NULL, Request::$initial, 'Should not modify Request::$initial');
-		$this->assertEquals('127.0.0.1',Request::$client_ip);
-		$this->assertEquals('whatever (Mozilla 5.0/compatible)', Request::$user_agent);
+		$this->assertSame(NULL, Request::$client_ip, 'Should not modify Request::$client_ip');
+		$this->assertSame(NULL, Request::$user_agent, 'Should not modify Request::$user_agent');
+		$this->assertEquals('127.0.0.1',$request->client_ip());
+		$this->assertEquals('whatever (Mozilla 5.0/compatible)', $request->client_user_agent());
 		$this->assertEquals('HTTP/1.1', $request->protocol());
 		$this->assertEquals('http://example.com/', $request->referrer());
 		$this->assertEquals('ajax-or-something', $request->requested_with());
@@ -75,10 +90,9 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$this->assertEquals([], $request->post());
 	}
 
-	public function test_creates_client($client_class)
+	public function test_creates_client()
 	{
-		$request = Request::fromGlobals();
-		$this->assertInstanceOf(Request_Client_Internal::class, $request->client());
+		$this->assertInstanceOf(Request_Client_Internal::class, Request::fromGlobals()->client());
 	}
 
 	/**

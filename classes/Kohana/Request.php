@@ -13,11 +13,15 @@ class Kohana_Request implements HTTP_Request {
 
 	/**
 	 * @var  string  client user agent
+	 * @deprecated
+	 * @see \Request::client_user_agent()
 	 */
 	public static $user_agent = '';
 
 	/**
 	 * @var  string  client IP address
+	 * @deprecated
+	 * @see \Request::client_ip()
 	 */
 	public static $client_ip = '0.0.0.0';
 
@@ -56,20 +60,38 @@ class Kohana_Request implements HTTP_Request {
 		throw new \BadMethodCallException('Unexpected call to removed '.__METHOD__.' see ::fromGlobals() or ::with()');
 	}
 
+	/**
+	 * Make this the initial request
+	 *
+	 * @param \Request $request
+	 *
+	 * @return \Request
+	 */
+	public static function initInitial(\Request $request)
+	{
+		\Request::$initial    = $request;
+		\Request::$client_ip  = $request->client_ip();
+		\Request::$user_agent = $request->client_user_agent();
+
+		return $request;
+	}
+
 	public static function fromGlobals()
 	{
 		$props = [
-			'protocol'       => strtoupper(HTTP::$protocol),
-			'method'         => strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
-			'uri'            => static::detect_uri(),
-			'secure'         => static::detect_is_secure(),
-			'referrer'       => \Arr::get($_SERVER, 'HTTP_REFERER', NULL),
-			'requested_with' => \Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL),
-			'body'           => NULL,
-			'cookies'        => [],
-			'get'            => $_GET,
-			'post'           => $_POST,
-			'header'         => HTTP::request_headers(),
+			'protocol'          => strtoupper(HTTP::$protocol),
+			'method'            => strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
+			'uri'               => static::detect_uri(),
+			'secure'            => static::detect_is_secure(),
+			'referrer'          => \Arr::get($_SERVER, 'HTTP_REFERER', NULL),
+			'requested_with'    => \Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL),
+			'body'              => NULL,
+			'cookies'           => [],
+			'get'               => $_GET,
+			'post'              => $_POST,
+			'header'            => HTTP::request_headers(),
+			'client_ip'         => static::detect_client_ip() ?: '0.0.0.0',
+			'client_user_agent' => \Arr::get($_SERVER, 'HTTP_USER_AGENT', NULL),
 		];
 
 		if ($props['requested_with']) {
@@ -84,13 +106,6 @@ class Kohana_Request implements HTTP_Request {
 		foreach (array_keys($_COOKIE) as $cookie_key) {
 			$props['cookies'][$cookie_key] = Cookie::get($cookie_key);
 		}
-
-		if (isset($_SERVER['HTTP_USER_AGENT'])) {
-			// Browser type
-			Request::$user_agent = $_SERVER['HTTP_USER_AGENT'];
-		}
-
-		Request::$client_ip = static::detect_client_ip() ?: static::$client_ip;
 
 		return static::with($props);
 	}
@@ -584,6 +599,16 @@ class Kohana_Request implements HTTP_Request {
 	 * @var Kohana_Request_Client
 	 */
 	protected $_client;
+
+	/**
+	 * @var string
+	 */
+	protected $_client_ip;
+
+	/**
+	 * @var string
+	 */
+	protected $_client_user_agent;
 
 	/**
 	 * Creates a new request : use either Request::fromGlobals or Request::with to build instances
@@ -1117,6 +1142,16 @@ class Kohana_Request implements HTTP_Request {
 
 		// Act as a getter, single field
 		return Arr::path($this->_post, $key);
+	}
+
+	public function client_ip()
+	{
+		return $this->_client_ip;
+	}
+
+	public function client_user_agent()
+	{
+		return $this->_client_user_agent;
 	}
 
 }
