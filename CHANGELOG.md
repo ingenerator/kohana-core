@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Removed HTTP_Message interface to entirely split the Request and
+  Response interfaces - this will allow refactoring Request to be
+  idempotent instead of exposing setters.
 * Removed all the Request_Client caching, header callbacks (auth / redirects etc) - these were 
   mostly relevant for external requests and perhaps a little bit for HMVC which is also on the
   way to the door.
