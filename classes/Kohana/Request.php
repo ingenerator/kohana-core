@@ -156,43 +156,40 @@ class Kohana_Request implements HTTP_Request {
 			Request::$initial = $request = new Request($uri, $client_params, $allow_external, $injected_routes);
 
 			// Store global GET and POST data in the initial request only
-			$request->protocol($protocol)
-				->query($_GET)
-				->post($_POST);
+			$request->_protocol = strtoupper($protocol);
+			$request->_get = $_GET;
+			$request->_post = $_POST;
 
 			if (isset($secure))
 			{
-				// Set the request security
-				$request->secure($secure);
+				$request->_secure = (bool) $secure;
 			}
 
 			if (isset($method))
 			{
-				// Set the request method
-				$request->method($method);
+				$request->_method = strtoupper($method);
 			}
 
 			if (isset($referrer))
 			{
-				// Set the referrer
-				$request->referrer($referrer);
+				$request->_referrer = (string) $referrer;
 			}
 
 			if (isset($requested_with))
 			{
 				// Apply the requested with variable
-				$request->requested_with($requested_with);
+				$request->_requested_with = strtolower($requested_with);
 			}
 
 			if (isset($body))
 			{
 				// Set the request body (probably a PUT type)
-				$request->body($body);
+				$request->_body = $body;
 			}
 
 			if (isset($cookies))
 			{
-				$request->cookie($cookies);
+				$request->_cookies = $cookies;
 			}
 		}
 		else
@@ -663,14 +660,10 @@ class Kohana_Request implements HTTP_Request {
 		// Assign injected routes
 		$this->_routes = $injected_routes;
 
-		// Cleanse query parameters from URI (faster that parse_url())
-		$split_uri = explode('?', $uri);
-		$uri = array_shift($split_uri);
-
-		if ($split_uri)
-		{
-			parse_str($split_uri[0], $this->_get);
-		}
+		if (strpos($uri, '?') !== FALSE) {
+		    // This shouldn't be happening, the arguments should be pre-parsed to the base url and the $_GET array
+		    throw new \UnexpectedValueException('Cannot accept querystring arguments in \Request::$uri');
+        }
 
 		// Detect protocol (if present)
 		// $allow_external = FALSE prevents the default index.php from
@@ -685,7 +678,7 @@ class Kohana_Request implements HTTP_Request {
 		}
 		else
 		{
-		    throw new \RuntimeException('Cannot make external request with \Request');
+			throw new \RuntimeException('Cannot make external request with \Request');
 		}
 	}
 
@@ -702,23 +695,17 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Sets and gets the uri from the request.
+	 * Gets the uri from the request.
 	 *
-	 * @param   string $uri
-	 * @return  mixed
+	 * @return  string
 	 */
-	public function uri($uri = NULL)
+	public function uri()
 	{
-		if ($uri === NULL)
-		{
-			// Act as a getter
-			return ($this->_uri === '') ? '/' : $this->_uri;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_uri = $uri;
-
-		return $this;
+		return ($this->_uri === '') ? '/' : $this->_uri;
 	}
 
 	/**
@@ -764,141 +751,102 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Sets and gets the referrer from the request.
+	 * Gets the referrer from the request.
 	 *
-	 * @param   string $referrer
-	 * @return  mixed
+	 * @return  string
 	 */
-	public function referrer($referrer = NULL)
+	public function referrer()
 	{
-		if ($referrer === NULL)
-		{
-			// Act as a getter
-			return $this->_referrer;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_referrer = (string) $referrer;
-
-		return $this;
+		return $this->_referrer;
 	}
 
 	/**
-	 * Sets and gets the route from the request.
+	 * Gets the route from the request.
 	 *
-	 * @param   string $route
-	 * @return  mixed
+	 * @return  \Route
 	 */
-	public function route(Route $route = NULL)
+	public function route()
 	{
-		if ($route === NULL)
-		{
-			// Act as a getter
-			return $this->_route;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_route = $route;
-
-		return $this;
+		return $this->_route;
 	}
 
 	/**
-	 * Sets and gets the directory for the controller.
+	 * Gets the directory for the controller.
 	 *
-	 * @param   string   $directory  Directory to execute the controller from
-	 * @return  mixed
+	 * @return  string
 	 */
-	public function directory($directory = NULL)
+	public function directory()
 	{
-		if ($directory === NULL)
-		{
-			// Act as a getter
-			return $this->_directory;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_directory = (string) $directory;
-
-		return $this;
+		return $this->_directory;
 	}
 
 	/**
-	 * Sets and gets the controller for the matched route.
+	 * Gets the controller for the matched route.
 	 *
 	 * @param   string   $controller  Controller to execute the action
-	 * @return  mixed
 	 */
-	public function controller($controller = NULL)
+	public function controller()
 	{
-		if ($controller === NULL)
-		{
-			// Act as a getter
-			return $this->_controller;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_controller = (string) $controller;
-
-		return $this;
+		return $this->_controller;
 	}
 
 	/**
-	 * Sets and gets the action for the controller.
+	 * Gets the action for the controller.
 	 *
-	 * @param   string   $action  Action to execute the controller from
-	 * @return  mixed
+	 * @return string
 	 */
-	public function action($action = NULL)
+	public function action()
 	{
-		if ($action === NULL)
-		{
-			// Act as a getter
-			return $this->_action;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_action = (string) $action;
-
-		return $this;
+		return $this->_action;
 	}
 
 	/**
 	 * Provides access to the [Request_Client].
 	 *
 	 * @return  Request_Client
-	 * @return  self
 	 */
-	public function client(Request_Client $client = NULL)
+	public function client()
 	{
-		if ($client === NULL)
-			return $this->_client;
-		else
-		{
-			$this->_client = $client;
-			return $this;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
+
+		return $this->_client;
 	}
 
 	/**
-	 * Gets and sets the requested with property, which should
-	 * be relative to the x-requested-with pseudo header.
+	 * Gets the requested with property, which should be relative to the x-requested-with pseudo
+	 * header.
 	 *
-	 * @param   string    $requested_with Requested with value
 	 * @return  mixed
 	 */
-	public function requested_with($requested_with = NULL)
+	public function requested_with()
 	{
-		if ($requested_with === NULL)
-		{
-			// Act as a getter
-			return $this->_requested_with;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_requested_with = strtolower($requested_with);
-
-		return $this;
+		return $this->_requested_with;
 	}
 
 	/**
@@ -1015,63 +963,51 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Gets or sets the HTTP method. Usually GET, POST, PUT or DELETE in
+	 * Gets the HTTP method. Usually GET, POST, PUT or DELETE in
 	 * traditional CRUD applications.
 	 *
-	 * @param   string   $method  Method to use for this request
 	 * @return  mixed
 	 */
-	public function method($method = NULL)
+	public function method()
 	{
-		if ($method === NULL)
-		{
-			// Act as a getter
-			return $this->_method;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_method = strtoupper($method);
-
-		return $this;
+		return $this->_method;
 	}
 
 	/**
-	 * Gets or sets the HTTP protocol. If there is no current protocol set,
+	 * Gets the HTTP protocol. If there is no current protocol set,
 	 * it will use the default set in HTTP::$protocol
 	 *
-	 * @param   string   $protocol  Protocol to set to the request
 	 * @return  mixed
 	 */
-	public function protocol($protocol = NULL)
+	public function protocol()
 	{
-		if ($protocol === NULL)
-		{
-			if ($this->_protocol)
-				return $this->_protocol;
-			else
-				return $this->_protocol = HTTP::$protocol;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_protocol = strtoupper($protocol);
-		return $this;
+		if ($this->_protocol) {
+			return $this->_protocol;
+		} else {
+			return $this->_protocol = HTTP::$protocol;
+		}
 	}
 
 	/**
-	 * Getter/Setter to the security settings for this request. This
-	 * method should be treated as immutable.
+	 * Getter to the security settings for this request.
 	 *
-	 * @param   boolean $secure is this request secure?
 	 * @return  mixed
 	 */
-	public function secure($secure = NULL)
+	public function secure()
 	{
-		if ($secure === NULL)
-			return $this->_secure;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
+		}
 
-		// Act as a setter
-		$this->_secure = (bool) $secure;
-		return $this;
+		return $this->_secure;
 	}
 
 	/**
@@ -1080,26 +1016,13 @@ class Kohana_Request implements HTTP_Request {
 	 * transmission. This method provides a simple array or key/value
 	 * interface to the headers.
 	 *
-	 * @param   mixed   $key   Key or array of key/value pairs to set
-	 * @param   string  $value Value to set to the supplied key
+	 * @param   mixed   $key   Key to get
 	 * @return  mixed
 	 */
-	public function headers($key = NULL, $value = NULL)
+	public function headers($key = NULL)
 	{
-		if ($key instanceof HTTP_Header)
-		{
-			// Act a setter, replace all headers
-			$this->_header = $key;
-
-			return $this;
-		}
-
-		if (is_array($key))
-		{
-			// Act as a setter, replace all headers
-			$this->_header->exchangeArray($key);
-
-			return $this;
+		if (($key instanceof HTTP_Header) OR is_array($key) OR (func_num_args() > 1)) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
 		if ($this->_header->count() === 0 AND $this->is_initial())
@@ -1113,70 +1036,45 @@ class Kohana_Request implements HTTP_Request {
 			// Act as a getter, return all headers
 			return $this->_header;
 		}
-		elseif ($value === NULL)
-		{
-			// Act as a getter, single header
-			return ($this->_header->offsetExists($key)) ? $this->_header->offsetGet($key) : NULL;
-		}
 
-		// Act as a setter for a single header
-		$this->_header[$key] = $value;
-
-		return $this;
+		// Act as a getter, single header
+		return ($this->_header->offsetExists($key)) ? $this->_header->offsetGet($key) : NULL;
 	}
 
 	/**
 	 * Set and get cookies values for this request.
 	 *
-	 * @param   mixed    $key    Cookie name, or array of cookie values
-	 * @param   string   $value  Value to set to cookie
-	 * @return  string
-	 * @return  mixed
+	 * @param   string $key    Cookie name
+	 * @return  string|array
 	 */
-	public function cookie($key = NULL, $value = NULL)
+	public function cookie($key = NULL)
 	{
-		if (is_array($key))
-		{
-			// Act as a setter, replace all cookies
-			$this->_cookies = $key;
-			return $this;
+		if (is_array($key) OR (func_num_args() > 1)) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
-		elseif ($key === NULL)
+
+		if ($key === NULL)
 		{
 			// Act as a getter, all cookies
 			return $this->_cookies;
 		}
-		elseif ($value === NULL)
-		{
-			// Act as a getting, single cookie
-			return isset($this->_cookies[$key]) ? $this->_cookies[$key] : NULL;
-		}
-
-		// Act as a setter for a single cookie
-		$this->_cookies[$key] = (string) $value;
-
-		return $this;
+		// Act as a getting, single cookie
+		return isset($this->_cookies[$key]) ? $this->_cookies[$key] : NULL;
 	}
 
 	/**
-	 * Gets or sets the HTTP body of the request. The body is
+	 * Gets the HTTP body of the request. The body is
 	 * included after the header, separated by a single empty new line.
 	 *
-	 * @param   string  $content Content to set to the object
 	 * @return  mixed
 	 */
-	public function body($content = NULL)
+	public function body()
 	{
-		if ($content === NULL)
-		{
-			// Act as a getter
-			return $this->_body;
+		if (func_num_args() > 0) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		// Act as a setter
-		$this->_body = $content;
-
-		return $this;
+		return $this->_body;
 	}
 
 	/**
@@ -1247,56 +1145,38 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Gets or sets HTTP query string.
-	 *
-	 * @param   mixed   $key    Key or key value pairs to set
-	 * @param   string  $value  Value to set to a key
+	 * Gets HTTP query string.
+	 * @param   string $key	Key to get
 	 * @return  mixed
+	 *
 	 * @uses    Arr::path
 	 */
-	public function query($key = NULL, $value = NULL)
+	public function query($key = NULL)
 	{
-		if (is_array($key))
-		{
-			// Act as a setter, replace all query strings
-			$this->_get = $key;
-
-			return $this;
+		if (is_array($key) OR (func_num_args() > 1)) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
-		if ($key === NULL)
-		{
+		if ($key === NULL) {
 			// Act as a getter, all query strings
 			return $this->_get;
 		}
-		elseif ($value === NULL)
-		{
-			// Act as a getter, single query string
-			return Arr::path($this->_get, $key);
-		}
 
-		// Act as a setter, single query string
-		$this->_get[$key] = $value;
-
-		return $this;
+		// Act as a getter, single query string
+		return Arr::path($this->_get, $key);
 	}
 
 	/**
-	 * Gets or sets HTTP POST parameters to the request.
+	 * Gets HTTP POST parameters to the request.
 	 *
-	 * @param   mixed  $key    Key or key value pairs to set
-	 * @param   string $value  Value to set to a key
+	 * @param   string $key    Key to get
 	 * @return  mixed
 	 * @uses    Arr::path
 	 */
-	public function post($key = NULL, $value = NULL)
+	public function post($key = NULL)
 	{
-		if (is_array($key))
-		{
-			// Act as a setter, replace all fields
-			$this->_post = $key;
-
-			return $this;
+		if (is_array($key) OR (func_num_args() > 1)) {
+			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
 		if ($key === NULL)
@@ -1304,16 +1184,9 @@ class Kohana_Request implements HTTP_Request {
 			// Act as a getter, all fields
 			return $this->_post;
 		}
-		elseif ($value === NULL)
-		{
-			// Act as a getter, single field
-			return Arr::path($this->_post, $key);
-		}
 
-		// Act as a setter, single field
-		$this->_post[$key] = $value;
-
-		return $this;
+		// Act as a getter, single field
+		return Arr::path($this->_post, $key);
 	}
 
 }

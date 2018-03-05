@@ -24,35 +24,26 @@ interface Kohana_HTTP_Request {
 	const CONNECT   = 'CONNECT';
 
     /**
-     * Gets or sets the HTTP protocol. The standard protocol to use
-     * is `HTTP/1.1`.
+     * Gets the HTTP protocol. The standard protocol to use is `HTTP/1.1`.
      *
-     * @param   string   $protocol  Protocol to set to the request/response
      * @return  mixed
      */
-    public function protocol($protocol = NULL);
+    public function protocol();
 
     /**
-     * Gets or sets HTTP headers to the request or response. All headers
-     * are included immediately after the HTTP protocol definition during
-     * transmission. This method provides a simple array or key/value
-     * interface to the headers.
+     * Gets HTTP headers from the request.
      *
-     * @param   mixed   $key    Key or array of key/value pairs to set
-     * @param   string  $value  Value to set to the supplied key
-     * @return  mixed
+     * @param   mixed   $key    Key to get or null for an array
+     * @return  string|array
      */
-    public function headers($key = NULL, $value = NULL);
+    public function headers($key = NULL);
 
     /**
-     * Gets or sets the HTTP body to the request or response. The body is
-     * included after the header, separated by a single empty new line.
+     * Gets the HTTP body from the request.
      *
-     * @param   string    $content  Content to set to the object
      * @return  string
-     * @return  void
      */
-    public function body($content = NULL);
+    public function body();
 
     /**
      * Renders the HTTP_Interaction to a string, producing
@@ -66,41 +57,34 @@ interface Kohana_HTTP_Request {
     public function render();
 
 	/**
-	 * Gets or sets the HTTP method. Usually GET, POST, PUT or DELETE in
+	 * Gets the HTTP method. Usually GET, POST, PUT or DELETE in
 	 * traditional CRUD applications.
 	 *
-	 * @param   string   $method  Method to use for this request
-	 * @return  mixed
+	 * @return  string
 	 */
-	public function method($method = NULL);
+	public function method();
 
 	/**
-	 * Gets the URI of this request, optionally allows setting
-	 * of [Route] specific parameters during the URI generation.
-	 * If no parameters are passed, the request will use the
-	 * default values defined in the Route.
+	 * Gets the URI of this request.
 	 *
-	 * @param   array    $params  Optional parameters to include in uri generation
 	 * @return  string
 	 */
 	public function uri();
 
 	/**
-	 * Gets or sets HTTP query string.
+	 * Gets HTTP query string values
 	 *
-	 * @param   mixed   $key    Key or key value pairs to set
-	 * @param   string  $value  Value to set to a key
+	 * @param   mixed   $key    Key to get, or null for the full array
 	 * @return  mixed
 	 */
-	public function query($key = NULL, $value = NULL);
+	public function query($key = NULL);
 
 	/**
-	 * Gets or sets HTTP POST parameters to the request.
+	 * Gets HTTP POST parameters from the request.
 	 *
-	 * @param   mixed   $key   Key or key value pairs to set
-	 * @param   string  $value Value to set to a key
+	 * @param   mixed   $key   Key to get, or null for full array
 	 * @return  mixed
 	 */
-	public function post($key = NULL, $value = NULL);
+	public function post($key = NULL);
 
 }

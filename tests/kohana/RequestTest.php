@@ -165,14 +165,21 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 * Tests Request::method()
 	 *
 	 * @test
+	 * @testWith [null, "GET"]
+	 *           ["GET", "GET"]
+	 *           ["POST", "POST"]
 	 */
-	public function test_method()
+	public function test_method($server_method, $expect)
 	{
-		$request = Request::factory('foo/bar');
+		if ($server_method) {
+			$_SERVER['REQUEST_METHOD'] = $server_method;
+		} else {
+			unset($_SERVER['REQUEST_METHOD']);
+		}
+		Request::$initial = NULL;
 
-		$this->assertEquals($request->method(), 'GET');
-		$this->assertEquals(($request->method('post') === $request), TRUE);
-		$this->assertEquals(($request->method() === 'POST'), TRUE);
+		$request = Request::factory('foo/bar');
+		$this->assertEquals($expect, $request->method());
 	}
 
 	/**
@@ -341,16 +348,13 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_set_protocol($protocol, $expected)
 	{
+		// @todo: shouldn't protocol just come from the global $_SERVER not from HTTP::$protocol
+		// which is then overridden in the standard bootstrap for unexplained reasons
+		HTTP::$protocol = $protocol;
+		Request::$initial = NULL;
 		$request = Request::factory();
 
-		// Set the supplied protocol
-		$result = $request->protocol($protocol);
-
-		// Test the set value
-		$this->assertSame($expected, $request->protocol());
-
-		// Test the return value
-		$this->assertTrue($request instanceof $result);
+		$this->assertSame($request->protocol(), $expected);
 	}
 
 	/**
@@ -390,14 +394,13 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_post_max_size_exceeded($content_length, $expected)
 	{
-		// Ensure the request method is set to POST
-		Request::$initial->method(HTTP_Request::POST);
-
-		// Set the content length
+		$_SERVER['REQUEST_METHOD'] = 'POST';
 		$_SERVER['CONTENT_LENGTH'] = $content_length;
 
-		// Test the post_max_size_exceeded() method
-		$this->assertSame(Request::post_max_size_exceeded(), $expected);
+		Request::$initial = NULL;
+		Request::factory();
+
+		$this->assertSame($expected, Request::post_max_size_exceeded());
 	}
 
 	/**
@@ -470,21 +473,20 @@ class Kohana_RequestTest extends Unittest_TestCase
 	{
 		$x_powered_by = 'Kohana Unit Test';
 		$content_type = 'application/x-www-form-urlencoded';
-		$request = new Request('foo/bar', array(), TRUE, array());
 
-		return array(
-			array(
-				$request->headers(array(
-						'x-powered-by' => $x_powered_by,
-						'content-type' => $content_type
-					)
-				),
-				array(
+		return [
+			[
+				[
+					'HTTP_X_POWERED_BY' => $x_powered_by,
+					'CONTENT_TYPE'      => $content_type
+				],
+				[
 					'x-powered-by' => $x_powered_by,
-					'content-type' => $content_type
-				)
-			)
-		);
+					'content-type' => $content_type,
+					'foobar'       => NULL
+				]
+			]
+		];
 	}
 
 	/**
@@ -492,140 +494,82 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 * 
 	 * @dataProvider provider_headers_get
 	 *
-	 * @param   Request  request to test
-	 * @param   array    headers to test against
 	 * @return  void
 	 */
-	public function test_headers_get($request, $headers)
+	public function test_headers_get($set_headers, $expect)
 	{
-		foreach ($headers as $key => $expected_value)
-		{
-			$this->assertSame( (string) $request->headers($key), $expected_value);
+		foreach ($set_headers as $key => $value) {
+			$_SERVER[$key] = $value;
+		}
+		\Request::$initial = NULL;
+		$request           = \Request::factory();
+		foreach ($expect as $key => $expected_value) {
+			$this->assertSame($expected_value, $request->headers($key), 'expect '.$key);
 		}
 	}
 
 	/**
-	 * Provides data for test_headers_set
+	 * Provides test data for test_query_parameter_access()
 	 *
 	 * @return  array
 	 */
-	public function provider_headers_set()
+	public function provider_query_parameter_access()
 	{
-		return array(
-			array(
-				array(
-					'content-type'  => 'application/x-www-form-urlencoded',
-					'x-test-header' => 'foo'
-				),
-				"Content-Type: application/x-www-form-urlencoded\r\nX-Test-Header: foo\r\n\r\n"
-			),
-			array(
-				array(
-					'content-type'  => 'application/json',
-					'x-powered-by'  => 'kohana'
-				),
-				"Content-Type: application/json\r\nX-Powered-By: kohana\r\n\r\n"
-			)
-		);
-	}
-
-	/**
-	 * Tests the setting of headers to the request object
-	 * 
-	 * @dataProvider provider_headers_set
-	 *
-	 * @param   array      header(s) to set to the request object
-	 * @param   string     expected http header
-	 * @return  void
-	 */
-	public function test_headers_set($headers, $expected)
-	{
-		$request = new Request(TRUE, array(), TRUE, array());
-		$request->headers($headers);
-		$this->assertSame($expected, (string) $request->headers());
-	}
-
-	/**
-	 * Provides test data for test_query_parameter_parsing()
-	 *
-	 * @return  array
-	 */
-	public function provider_query_parameter_parsing()
-	{
-		return array(
-			array(
-				'foo/bar',
-				array(
-					'foo'   => 'bar',
-					'sna'   => 'fu'
-				),
-				array(
-					'foo'   => 'bar',
-					'sna'   => 'fu'
-				),
-			),
-			array(
-				'foo/bar?john=wayne&peggy=sue',
-				array(
-					'foo'   => 'bar',
-					'sna'   => 'fu'
-				),
-				array(
-					'john'  => 'wayne',
-					'peggy' => 'sue',
-					'foo'   => 'bar',
-					'sna'   => 'fu'
-				),
-			),
-		);
+		return [
+			[
+				[
+					'foo' => 'bar',
+					'sna' => 'fu'
+				],
+				'foo',
+				'bar'
+			],
+			[
+				[
+					'foo' => 'bar',
+					'sna' => 'fu'
+				],
+				'bin',
+				NULL
+			],
+			[
+				[
+					'foo' => 'bar',
+					'sna' => 'fu'
+				],
+				NULL,
+				[
+					'foo' => 'bar',
+					'sna' => 'fu'
+				],
+			]
+		];
 	}
 
 	/**
 	 * Tests that query parameters are parsed correctly
 	 * 
-	 * @dataProvider provider_query_parameter_parsing
+	 * @dataProvider provider_query_parameter_access
 	 *
 	 * @param   string    url
 	 * @param   array     query 
 	 * @param   array    expected 
 	 * @return  void
 	 */
-	public function test_query_parameter_parsing($url, $query, $expected)
+	public function test_query_parameter_access($get, $key, $expect)
 	{
 		Request::$initial = NULL;
-
-		$request = new Request($url);
-
-		foreach ($query as $key => $value)
-		{
-			$request->query($key, $value);
-		}
-
-		$this->assertSame($expected, $request->query());
+		$_GET             = $get;
+		$request          = \Request::factory();
+		$this->assertSame($expect, $request->query($key));
 	}
 
 	/**
-	 * Tests that query parameters are parsed correctly
-	 *
-	 * @dataProvider provider_query_parameter_parsing
-	 *
-	 * @param   string    url
-	 * @param   array     query
-	 * @param   array    expected
-	 * @return  void
+	 * @expectedException \UnexpectedValueException
 	 */
-	public function test_query_parameter_parsing_in_subrequest($url, $query, $expected)
+	public function test_throws_if_creating_with_query_string_in_url()
 	{
-		Request::$initial = new Request(TRUE);
-
-		$request = new Request($url);
-
-		foreach ($query as $key => $value)
-		{
-			$request->query($key, $value);
-		}
-
-		$this->assertSame($expected, $request->query());
+		new \Request('some/url?with=a&query=string');
 	}
 
 } // End Kohana_RequestTest

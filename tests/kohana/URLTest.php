@@ -48,6 +48,11 @@ class Kohana_URLTest extends Unittest_TestCase
 	 */
 	public function provider_base()
 	{
+		$old_protocol   = HTTP::$protocol;
+		HTTP::$protocol = 'cli';
+		$rq_with_cli    = \Request::factory('/');
+		HTTP::$protocol = $old_protocol;
+
 		return array(
 			// $protocol, $index, $expected, $enviroment
 
@@ -61,7 +66,7 @@ class Kohana_URLTest extends Unittest_TestCase
 			array('ftp',   TRUE,  'ftp://example.com/kohana/index.php/'),
 
 			// Test for automatic protocol detection, protocol = TRUE
-			array(TRUE,    TRUE,  'cli://example.com/kohana/index.php/', array('HTTPS' => FALSE, 'Request::$initial' => Request::factory('/')->protocol('cli'))),
+			array(TRUE,    TRUE,  'cli://example.com/kohana/index.php/', array('HTTPS' => FALSE, 'Request::$initial' => $rq_with_cli)),
 
 			// Change base url'
 			array('https', FALSE, 'https://example.com/kohana/', array('Kohana::$base_url' => 'omglol://example.com/kohana/')),

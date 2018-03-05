@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Made all \Request properties idempotent : will now throw if you attempt to use the getters
+  as setters.
 * Removed HTTP_Message interface to entirely split the Request and
   Response interfaces - this will allow refactoring Request to be
   idempotent instead of exposing setters.
