@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Disable Request::factory, replace with Request::fromGlobals (to init all data from $_SERVER etc)
+  and Request::with (to init from a predefined set of values). Request::fromGlobals no longer
+  modifies the Request::$initial singleton : instead, you should set this separately.
 * Remove option to pass allow_external, client_params and injected_routes to \Request classes
   - temporarily refactored test to assign the _routes protected property directly in the one
   place that this is necessary.

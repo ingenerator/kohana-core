@@ -60,33 +60,15 @@ class Kohana_Request_Client_InternalTest extends Unittest_TestCase
 	 */
 	public function test_response_failure_status($directory, $controller, $action, $uri, $expected)
 	{
-		// Mock for request object
-		$request = $this->getMock('Request', array('directory', 'controller', 'action', 'uri', 'response', 'method'), array($uri));
-
-		$request->expects($this->any())
-			->method('directory')
-			->will($this->returnValue($directory));
-
-		$request->expects($this->any())
-			->method('controller')
-			->will($this->returnValue($controller));
-
-		$request->expects($this->any())
-			->method('action')
-			->will($this->returnValue($action));
-
-		$request->expects($this->any())
-			->method('uri')
-			->will($this->returnValue($uri));
-
-		$request->expects($this->any())
-			->method('response')
-			->will($this->returnValue($this->getMock('Response')));
-
-		// mock `method` method to avoid fatals in newer versions of PHPUnit
-		$request->expects($this->any())
-			->method('method')
-			->withAnyParameters();
+		$request = \Request::with(
+			[
+				'directory'  => $directory,
+				'controller' => $controller,
+				'action'     => $action,
+				'uri'        => $uri,
+				'method'     => \Request::GET,
+			]
+		);
 
 		$internal_client = new Request_Client_Internal;
 

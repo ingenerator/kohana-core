@@ -48,10 +48,7 @@ class Kohana_URLTest extends Unittest_TestCase
 	 */
 	public function provider_base()
 	{
-		$old_protocol   = HTTP::$protocol;
-		HTTP::$protocol = 'cli';
-		$rq_with_cli    = \Request::factory('/');
-		HTTP::$protocol = $old_protocol;
+		$rq_with_cli = \Request::with(['uri' => '/', 'protocol' => 'cli']);
 
 		return array(
 			// $protocol, $index, $expected, $enviroment

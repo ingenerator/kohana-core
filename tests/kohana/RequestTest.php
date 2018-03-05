@@ -25,7 +25,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 		parent::setUp();
 		Kohana::$config->load('url')->set('trusted_hosts', array('localhost'));
 		$this->_initial_request = Request::$initial;
-		Request::$initial = new Request('/');
+		Request::$initial = Request::with(['uri' => '/']);
 	}
 
 	// @codingStandardsIgnoreStart
@@ -36,7 +36,15 @@ class Kohana_RequestTest extends Unittest_TestCase
 		parent::tearDown();
 	}
 
-	public function test_initial()
+	/**
+	 * @expectedException \BadMethodCallException
+	 */
+	public function test_its_factory_just_throws()
+	{
+		\Request::factory();
+	}
+
+	public function test_from_globals_loads_from_global_state()
 	{
 		$this->setEnvironment(array(
 			'Request::$initial' => NULL,
@@ -55,47 +63,22 @@ class Kohana_RequestTest extends Unittest_TestCase
 			'_POST' => array(),
 		));
 
-		$request = Request::factory();
+		$request = Request::fromGlobals();
 
-		$this->assertEquals(Request::$initial, $request);
-
-		$this->assertEquals(Request::$client_ip, '127.0.0.1');
-
-		$this->assertEquals(Request::$user_agent, 'whatever (Mozilla 5.0/compatible)');
-
-		$this->assertEquals($request->protocol(), 'HTTP/1.1');
-
-		$this->assertEquals($request->referrer(), 'http://example.com/');
-
-		$this->assertEquals($request->requested_with(), 'ajax-or-something');
-
-		$this->assertEquals($request->query(), array());
-
-		$this->assertEquals($request->post(), array());
+		$this->assertSame(NULL, Request::$initial, 'Should not modify Request::$initial');
+		$this->assertEquals('127.0.0.1',Request::$client_ip);
+		$this->assertEquals('whatever (Mozilla 5.0/compatible)', Request::$user_agent);
+		$this->assertEquals('HTTP/1.1', $request->protocol());
+		$this->assertEquals('http://example.com/', $request->referrer());
+		$this->assertEquals('ajax-or-something', $request->requested_with());
+		$this->assertEquals([], $request->query());
+		$this->assertEquals([], $request->post());
 	}
 
-	/**
-	 * Provides the data for test_create()
-	 * @return  array
-	 */
-	public function provider_create()
+	public function test_creates_client($client_class)
 	{
-		return array(
-			array('foo/bar', 'Request_Client_Internal'),
-		);
-	}
-
-	/**
-	 * Ensures the create class is created with the correct client
-	 *
-	 * @test
-	 * @dataProvider provider_create
-	 */
-	public function test_create($uri, $client_class)
-	{
-		$request = Request::factory($uri);
-
-		$this->assertInstanceOf($client_class, $request->client());
+		$request = Request::fromGlobals();
+		$this->assertInstanceOf(Request_Client_Internal::class, $request->client());
 	}
 
 	/**
@@ -105,13 +88,14 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_param()
 	{
-		$route = new Route('(<controller>(/<action>(/<id>)))');
-
-		$uri = 'kohana_requesttest_dummy/foobar/some_id';
-		$request = Request::factory($uri);
-		// @todo: workaround for needing to inject routes into the request object
-		$fn = Closure::bind(function (\Request $rq, $routes) {$rq->_routes = $routes;}, $request, $request);
-		$fn($request, [$route]);
+		$route   = new Route('(<controller>(/<action>(/<id>)))');
+		$uri     = 'kohana_requesttest_dummy/foobar/some_id';
+		$request = Request::with(
+			[
+				'routes' => [$route],
+				'uri'    => $uri
+			]
+		);
 
 		// We need to execute the request before it has matched a route
 		$response = $request->execute();
@@ -135,8 +119,13 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 		$route = new Route('(<uri>)', array('uri' => '.+'));
 		$route->defaults(array('controller' => 'kohana_requesttest_dummy', 'action' => 'foobar'));
-		$request = Request::factory('kohana_requesttest_dummy');
-		$fn($request, [$route]);
+
+		$request = Request::with(
+			[
+				'routes' => [$route],
+				'uri'    => 'kohana_requesttest_dummy'
+			]
+		);
 
 		// We need to execute the request before it has matched a route
 		$response = $request->execute();
@@ -162,9 +151,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 		} else {
 			unset($_SERVER['REQUEST_METHOD']);
 		}
-		Request::$initial = NULL;
-
-		$request = Request::factory('foo/bar');
+		$request = Request::fromGlobals('foo/bar');
 		$this->assertEquals($expect, $request->method());
 	}
 
@@ -175,7 +162,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_route()
 	{
-		$request = Request::factory(''); // This should always match something, no matter what changes people make
+		$request = Request::with(['uri' => '']); // This should always match something, no matter what changes people make
 
 		// We need to execute the request before it has matched a route
 		try
@@ -194,7 +181,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_route_is_not_set_before_execute()
 	{
-		$request = Request::factory(''); // This should always match something, no matter what changes people make
+		$request = Request::with(['uri' => '']); // This should always match something, no matter what changes people make
 
 		// The route should be NULL since the request has not been executed yet
 		$this->assertEquals($request->route(), NULL);
@@ -299,7 +286,9 @@ class Kohana_RequestTest extends Unittest_TestCase
 			'action'     => 'index',
 		));
 
-		$this->assertEquals(Request::factory($uri, array(), TRUE, array($route))->url($protocol), $expected);
+		$request = \Request::with(['uri' => $uri, 'routes' => [$route]]);
+
+		$this->assertEquals($expected, $request->url($protocol));
 	}
 
 	/**
@@ -337,8 +326,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 		// @todo: shouldn't protocol just come from the global $_SERVER not from HTTP::$protocol
 		// which is then overridden in the standard bootstrap for unexplained reasons
 		HTTP::$protocol = $protocol;
-		Request::$initial = NULL;
-		$request = Request::factory();
+		$request = Request::fromGlobals();
 
 		$this->assertSame($request->protocol(), $expected);
 	}
@@ -383,8 +371,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$_SERVER['REQUEST_METHOD'] = 'POST';
 		$_SERVER['CONTENT_LENGTH'] = $content_length;
 
-		Request::$initial = NULL;
-		Request::factory();
+		Request::$initial = Request::fromGlobals();
 
 		$this->assertSame($expected, Request::post_max_size_exceeded());
 	}
@@ -403,37 +390,33 @@ class Kohana_RequestTest extends Unittest_TestCase
 			'action'     => 'index',
 		));
 
-		$old_request = Request::$initial;
-		Request::$initial = new Request(TRUE, array(), TRUE, array($route));
-
 		$result = array(
 			array(
-				new Request('foo/bar/'),
+			    \Request::with(['uri' => 'foo/bar/']),
 				'foo/bar'
 			),
 			array(
-				new Request('foo/bar'),
+				\Request::with(['uri' => 'foo/bar']),
 				'foo/bar'
 			),
 			array(
-				new Request('/0'),
+				\Request::with(['uri' => '/0']),
 				'0'
 			),
 			array(
-				new Request('0'),
+				\Request::with(['uri' => '0']),
 				'0'
 			),
 			array(
-				new Request('/'),
+				\Request::with(['uri' => '/']),
 				'/'
 			),
 			array(
-				new Request(''),
+				\Request::with(['uri' => '']),
 				'/'
 			)
 		);
 
-		Request::$initial = $old_request;
 		return $result;
 	}
 
@@ -487,8 +470,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 		foreach ($set_headers as $key => $value) {
 			$_SERVER[$key] = $value;
 		}
-		\Request::$initial = NULL;
-		$request           = \Request::factory();
+		$request           = \Request::fromGlobals();
 		foreach ($expect as $key => $expected_value) {
 			$this->assertSame($expected_value, $request->headers($key), 'expect '.$key);
 		}
@@ -544,10 +526,8 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_query_parameter_access($get, $key, $expect)
 	{
-		Request::$initial = NULL;
 		$_GET             = $get;
-		$request          = \Request::factory();
-		$this->assertSame($expect, $request->query($key));
+		$this->assertSame($expect, \Request::fromGlobals()->query($key));
 	}
 
 	/**
@@ -555,7 +535,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 	 */
 	public function test_throws_if_creating_with_query_string_in_url()
 	{
-		new \Request('some/url?with=a&query=string');
+		\Request::with(['uri' => 'some/url?with=a&query=string']);
 	}
 
 } // End Kohana_RequestTest

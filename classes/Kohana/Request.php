@@ -53,147 +53,58 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public static function factory($uri = TRUE)
 	{
-		// If this is the initial request
-		if ( ! Request::$initial)
-		{
-			$protocol = HTTP::$protocol;
+		throw new \BadMethodCallException('Unexpected call to removed '.__METHOD__.' see ::fromGlobals() or ::with()');
+	}
 
-			if (isset($_SERVER['REQUEST_METHOD']))
-			{
-				// Use the server request method
-				$method = $_SERVER['REQUEST_METHOD'];
-			}
-			else
-			{
-				// Default to GET requests
-				$method = HTTP_Request::GET;
-			}
+	public static function fromGlobals()
+	{
+		$props = [
+			'protocol'       => strtoupper(HTTP::$protocol),
+			'method'         => strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
+			'uri'            => static::detect_uri(),
+			'secure'         => static::detect_is_secure(),
+			'referrer'       => \Arr::get($_SERVER, 'HTTP_REFERER', NULL),
+			'requested_with' => \Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL),
+			'body'           => NULL,
+			'cookies'        => [],
+			'get'            => $_GET,
+			'post'           => $_POST,
+			'header'         => HTTP::request_headers(),
+		];
 
-			if (( ! empty($_SERVER['HTTPS']) AND filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
-			   OR (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
-			   	   AND $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-			       AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
-			{
-				// This request is secure
-				$secure = TRUE;
-			}
-
-			if (isset($_SERVER['HTTP_REFERER']))
-			{
-				// There is a referrer for this request
-				$referrer = $_SERVER['HTTP_REFERER'];
-			}
-
-			if (isset($_SERVER['HTTP_USER_AGENT']))
-			{
-				// Browser type
-				Request::$user_agent = $_SERVER['HTTP_USER_AGENT'];
-			}
-
-			if (isset($_SERVER['HTTP_X_REQUESTED_WITH']))
-			{
-				// Typically used to denote AJAX requests
-				$requested_with = $_SERVER['HTTP_X_REQUESTED_WITH'];
-			}
-
-			if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
-			    AND isset($_SERVER['REMOTE_ADDR'])
-			    AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
-			{
-				// Use the forwarded IP address, typically set when the
-				// client is using a proxy server.
-				// Format: "X-Forwarded-For: client1, proxy1, proxy2"
-				$client_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
-
-				Request::$client_ip = array_shift($client_ips);
-
-				unset($client_ips);
-			}
-			elseif (isset($_SERVER['HTTP_CLIENT_IP'])
-			        AND isset($_SERVER['REMOTE_ADDR'])
-			        AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
-			{
-				// Use the forwarded IP address, typically set when the
-				// client is using a proxy server.
-				$client_ips = explode(',', $_SERVER['HTTP_CLIENT_IP']);
-
-				Request::$client_ip = array_shift($client_ips);
-
-				unset($client_ips);
-			}
-			elseif (isset($_SERVER['REMOTE_ADDR']))
-			{
-				// The remote IP address
-				Request::$client_ip = $_SERVER['REMOTE_ADDR'];
-			}
-
-			if ($method !== HTTP_Request::GET)
-			{
-				// Ensure the raw body is saved for future use
-				$body = file_get_contents('php://input');
-			}
-
-			if ($uri === TRUE)
-			{
-				// Attempt to guess the proper URI
-				$uri = Request::detect_uri();
-			}
-
-			$cookies = array();
-
-			if (($cookie_keys = array_keys($_COOKIE)))
-			{
-				foreach ($cookie_keys as $key)
-				{
-					$cookies[$key] = Cookie::get($key);
-				}
-			}
-
-			// Create the instance singleton
-			Request::$initial = $request = new Request($uri);
-
-			// Store global GET and POST data in the initial request only
-			$request->_protocol = strtoupper($protocol);
-			$request->_get = $_GET;
-			$request->_post = $_POST;
-
-			if (isset($secure))
-			{
-				$request->_secure = (bool) $secure;
-			}
-
-			if (isset($method))
-			{
-				$request->_method = strtoupper($method);
-			}
-
-			if (isset($referrer))
-			{
-				$request->_referrer = (string) $referrer;
-			}
-
-			if (isset($requested_with))
-			{
-				// Apply the requested with variable
-				$request->_requested_with = strtolower($requested_with);
-			}
-
-			if (isset($body))
-			{
-				// Set the request body (probably a PUT type)
-				$request->_body = $body;
-			}
-
-			if (isset($cookies))
-			{
-				$request->_cookies = $cookies;
-			}
-		}
-		else
-		{
-			$request = new Request($uri);
+		if ($props['requested_with']) {
+			$props['requested_with'] = strtolower($props['requested_with']);
 		}
 
+		if ($props['method'] !== HTTP_Request::GET) {
+			// Ensure the raw body is saved for future use
+			$props['body'] = file_get_contents('php://input');
+		}
+
+		foreach (array_keys($_COOKIE) as $cookie_key) {
+			$props['cookies'][$cookie_key] = Cookie::get($cookie_key);
+		}
+
+		if (isset($_SERVER['HTTP_USER_AGENT'])) {
+			// Browser type
+			Request::$user_agent = $_SERVER['HTTP_USER_AGENT'];
+		}
+
+		Request::$client_ip = static::detect_client_ip() ?: static::$client_ip;
+
+		return static::with($props);
+	}
+
+	public static function with(array $properties)
+	{
+		$request = new \Request(\Arr::get($properties, 'uri', NULL));
+		// NB: `uri` still has special status because it gets trimmed, need to leave it to the constructor
+		unset($properties['uri']);
+		// @todo: safety check properties match expected
+		foreach ($properties as $key => $value) {
+			$prop = '_'.$key;
+			$request->$prop = $value;
+		}
 		return $request;
 	}
 
@@ -207,7 +118,7 @@ class Kohana_Request implements HTTP_Request {
 	 * @throws  Kohana_Exception
 	 * @since   3.0.8
 	 */
-	public static function detect_uri()
+	protected static function detect_uri()
 	{
 		if ( ! empty($_SERVER['PATH_INFO']))
 		{
@@ -272,6 +183,51 @@ class Kohana_Request implements HTTP_Request {
 		}
 
 		return $uri;
+	}
+
+	/**
+	 * @return string
+	 */
+	protected static function detect_client_ip()
+	{
+		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
+			AND isset($_SERVER['REMOTE_ADDR'])
+			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
+			// Use the forwarded IP address, typically set when the
+			// client is using a proxy server.
+			// Format: "X-Forwarded-For: client1, proxy1, proxy2"
+			$client_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+
+			return array_shift($client_ips);
+
+		} elseif (isset($_SERVER['HTTP_CLIENT_IP'])
+			AND isset($_SERVER['REMOTE_ADDR'])
+			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
+			// Use the forwarded IP address, typically set when the
+			// client is using a proxy server.
+			$client_ips = explode(',', $_SERVER['HTTP_CLIENT_IP']);
+
+			return array_shift($client_ips);
+		} elseif (isset($_SERVER['REMOTE_ADDR'])) {
+			// The remote IP address
+			return $_SERVER['REMOTE_ADDR'];
+		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected static function detect_is_secure()
+	{
+		if (( ! empty($_SERVER['HTTPS']) AND filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
+			OR (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
+				AND $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
+			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
+		{
+			return TRUE;
+		}
+
+		return FALSE;
 	}
 
 	/**
@@ -630,21 +586,14 @@ class Kohana_Request implements HTTP_Request {
 	protected $_client;
 
 	/**
-	 * Creates a new request object for the given URI. New requests should be
-	 * Created using the [Request::factory] method.
-	 *
-	 *     $request = new Request($uri);
-	 *
-	 * If $cache parameter is set, the response for the request will attempt to
-	 * be retrieved from the cache.
+	 * Creates a new request : use either Request::fromGlobals or Request::with to build instances
 	 *
 	 * @param   string  $uri              URI of the request
+	 *
 	 * @return  void
 	 * @throws  Request_Exception
-	 * @uses    Route::all
-	 * @uses    Route::matches
 	 */
-	public function __construct($uri)
+	protected function __construct($uri)
 	{
 		// Initialise the header
 		$this->_header = new HTTP_Header(array());
@@ -1010,12 +959,6 @@ class Kohana_Request implements HTTP_Request {
 	{
 		if (($key instanceof HTTP_Header) OR is_array($key) OR (func_num_args() > 1)) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
-		}
-
-		if ($this->_header->count() === 0 AND $this->is_initial())
-		{
-			// Lazy load the request headers
-			$this->_header = HTTP::request_headers();
 		}
 
 		if ($key === NULL)
