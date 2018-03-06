@@ -1,15 +1,17 @@
 <?php defined('SYSPATH') OR die('No direct script access.');
+
 /**
  * Request Client for internal execution
  *
- * @package    Kohana
- * @category   Base
- * @author     Kohana Team
+ * @package        Kohana
+ * @category       Base
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
- * @since      3.1.0
+ * @license        http://kohanaframework.org/license
+ * @since          3.1.0
  */
-class Kohana_Request_Client_Internal extends Request_Client {
+class Kohana_Request_Client_Internal extends Request_Client
+{
 
 	/**
 	 * Processes the request, executing the controller action that handles this
@@ -18,6 +20,7 @@ class Kohana_Request_Client_Internal extends Request_Client {
 	 *     $request->execute();
 	 *
 	 * @param   Request $request
+	 *
 	 * @return  Response
 	 * @throws  Kohana_Exception
 	 * @uses    [Kohana::$profiling]
@@ -25,34 +28,12 @@ class Kohana_Request_Client_Internal extends Request_Client {
 	 */
 	public function execute_request(Request $request, Response $response)
 	{
-		// Create the class prefix
-		$prefix = 'Controller_';
 
-		// Directory
-		$directory = $request->directory();
-
-		// Controller
-		$controller = $request->controller();
-
-		if ($directory)
-		{
-			// Add the directory name to the class prefix
-			$prefix .= str_replace(array('\\', '/'), '_', trim($directory, '/')).'_';
-		}
-
-		// Use the FQCN to load the Controller
-		if (substr($controller, 0, 1) === '\\')
-		{
-			$prefix = '';
-		}
-
-		if (Kohana::$profiling)
-		{
+		if (Kohana::$profiling) {
 			// Set the benchmark name
 			$benchmark = '"'.$request->uri().'"';
 
-			if ($request !== Request::$initial AND Request::$current)
-			{
+			if ($request !== Request::$initial AND Request::$current) {
 				// Add the parent request uri
 				$benchmark .= ' « "'.Request::$current->uri().'"';
 			}
@@ -70,52 +51,23 @@ class Kohana_Request_Client_Internal extends Request_Client {
 		// Is this the initial request
 		$initial_request = ($request === Request::$initial);
 
-		try
-		{
-			if ( ! class_exists($prefix.$controller))
-			{
-				throw HTTP_Exception::factory(404,
-					'The requested URL :uri was not found on this server.',
-					array(':uri' => $request->uri())
-				)->request($request);
-			}
+		try {
+			$controller = $this->create_controller($request, $response);
+			$response   = $controller->execute();
 
-			// Load the controller using reflection
-			$class = new ReflectionClass($prefix.$controller);
-
-			if ($class->isAbstract())
-			{
-				throw new Kohana_Exception(
-					'Cannot create instances of abstract :controller',
-					array(':controller' => $prefix.$controller)
-				);
-			}
-
-			// Create a new instance of the controller
-			$controller = $class->newInstance($request, $response);
-
-			// Run the controller's execute() method
-			$response = $class->getMethod('execute')->invoke($controller);
-
-			if ( ! $response instanceof Response)
-			{
+			if ( ! $response instanceof Response) {
 				// Controller failed to return a Response.
 				throw new Kohana_Exception('Controller failed to return a Response');
 			}
-		}
-		catch (HTTP_Exception $e)
-		{
+		} catch (HTTP_Exception $e) {
 			// Store the request context in the Exception
-			if ($e->request() === NULL)
-			{
+			if ($e->request() === NULL) {
 				$e->request($request);
 			}
 
 			// Get the response via the Exception
 			$response = $e->get_response();
-		}
-		catch (Exception $e)
-		{
+		} catch (Exception $e) {
 			// Generate an appropriate Response object
 			$response = Kohana_Exception::_handler($e);
 		}
@@ -123,14 +75,68 @@ class Kohana_Request_Client_Internal extends Request_Client {
 		// Restore the previous request
 		Request::$current = $previous;
 
-		if (isset($benchmark))
-		{
+		if (isset($benchmark)) {
 			// Stop the benchmark
 			Profiler::stop($benchmark);
 		}
 
 		// Return the response
 		return $response;
+	}
+
+	/**
+	 * @param \Request  $request
+	 * @param \Response $response
+	 *
+	 * @return \Controller
+	 * @throws \HTTP_Exception
+	 * @throws \Kohana_Exception
+	 */
+	protected function create_controller(Request $request, Response $response)
+	{
+		$class = $this->get_controller_class_name($request);
+
+		if ( ! class_exists($class)) {
+			throw HTTP_Exception::factory(
+				404,
+				'The requested URL :uri was not found on this server.',
+				[':uri' => $request->uri()]
+			)->request($request);
+		}
+
+		$controller_refl = new ReflectionClass($class);
+
+		if ($controller_refl->isAbstract()) {
+			throw new Kohana_Exception(
+				'Cannot create instances of abstract :controller',
+				[':controller' => $class]
+			);
+		}
+
+		return $controller_refl->newInstance($request, $response);
+	}
+
+	/**
+	 * @param \Request $request
+	 *
+	 * @return string
+	 */
+	protected function get_controller_class_name(Request $request)
+	{
+		$controller = $request->controller();
+		if (substr($controller, 0, 1) === '\\') {
+			// Use the FQCN with no prefix / directory / etc
+			return $controller;
+		}
+
+		$prefix    = 'Controller_';
+		$directory = $request->directory();
+		if ($directory) {
+			// Add the directory name to the class prefix
+			$prefix .= str_replace(['\\', '/'], '_', trim($directory, '/')).'_';
+		}
+
+		return $prefix.$controller;
 	}
 
 }

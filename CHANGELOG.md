@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Refactor Request_Client_Internal to support extension of code that loads and executes controllers.
+  Note: now calls `->execute()` directly : no longer uses ReflectionMethod->invoke() - may cause a fatal
+  if you somehow route a request to a class that is not a controller. 
 * Add support for loading controllers with namespaced classes per https://github.com/kohana/core/pull/578/files
   thanks to @rjd22 for the original implementation.
 * Removed default support for passing client params to Request_Client
