@@ -11,7 +11,7 @@
  * @copyright  (c) 2008-2014 Kohana Team
  * @license    http://kohanaframework.org/license
  */
-interface Kohana_HTTP_Request extends HTTP_Message {
+interface Kohana_HTTP_Request {
 
 	// HTTP Methods
 	const GET       = 'GET';
@@ -23,42 +23,68 @@ interface Kohana_HTTP_Request extends HTTP_Message {
 	const TRACE     = 'TRACE';
 	const CONNECT   = 'CONNECT';
 
-	/**
-	 * Gets or sets the HTTP method. Usually GET, POST, PUT or DELETE in
-	 * traditional CRUD applications.
-	 *
-	 * @param   string   $method  Method to use for this request
-	 * @return  mixed
-	 */
-	public function method($method = NULL);
+    /**
+     * Gets the HTTP protocol. The standard protocol to use is `HTTP/1.1`.
+     *
+     * @return  mixed
+     */
+    public function protocol();
+
+    /**
+     * Gets HTTP headers from the request.
+     *
+     * @param   mixed   $key    Key to get or null for an array
+     * @return  string|array
+     */
+    public function headers($key = NULL);
+
+    /**
+     * Gets the HTTP body from the request.
+     *
+     * @return  string
+     */
+    public function body();
+
+    /**
+     * Renders the HTTP_Interaction to a string, producing
+     *
+     *  - Protocol
+     *  - Headers
+     *  - Body
+     *
+     * @return  string
+     */
+    public function render();
 
 	/**
-	 * Gets the URI of this request, optionally allows setting
-	 * of [Route] specific parameters during the URI generation.
-	 * If no parameters are passed, the request will use the
-	 * default values defined in the Route.
+	 * Gets the HTTP method. Usually GET, POST, PUT or DELETE in
+	 * traditional CRUD applications.
 	 *
-	 * @param   array    $params  Optional parameters to include in uri generation
+	 * @return  string
+	 */
+	public function method();
+
+	/**
+	 * Gets the URI of this request.
+	 *
 	 * @return  string
 	 */
 	public function uri();
 
 	/**
-	 * Gets or sets HTTP query string.
+	 * Gets HTTP query string values
 	 *
-	 * @param   mixed   $key    Key or key value pairs to set
-	 * @param   string  $value  Value to set to a key
+	 * @param   mixed   $key    Key to get, or null for the full array
 	 * @return  mixed
 	 */
-	public function query($key = NULL, $value = NULL);
+	public function query($key = NULL);
 
 	/**
-	 * Gets or sets HTTP POST parameters to the request.
+	 * Gets HTTP POST parameters from the request.
 	 *
-	 * @param   mixed   $key   Key or key value pairs to set
-	 * @param   string  $value Value to set to a key
+	 * @param   mixed   $key   Key to get, or null for full array
 	 * @return  mixed
 	 */
-	public function post($key = NULL, $value = NULL);
+	public function post($key = NULL);
 
 }

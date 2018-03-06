@@ -512,6 +512,25 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$this->assertSame('welcome2', $route->uri(array('controller' => 'welcome2')));
 	}
 
+
+	/**
+	 * When using a FQCN test if the directory is not set else throw an exception
+	 *
+	 * @test
+	 * @covers Route::defaults
+	 */
+	public function test_defaults_throws_exception_when_setting_fqcn_and_directory()
+	{
+		$this->setExpectedException('Kohana_Exception', 'Route directory should not be set when the controller is a FQCN.');
+
+		$route = new Route('(<controller>(/<action>(/<id>)))');
+		$route->defaults(array(
+			'directory'  => 'directory/path',
+			'controller' => '\FQCN\Class\Name',
+			'action'     => 'index'
+		));
+	}
+
 	/**
 	 * Provider for test_required_parameters_are_needed
 	 *
@@ -938,21 +957,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function get_request_mock($uri)
 	{
-		// Mock a request class with the $uri uri
-		$request = $this->getMock('Request', array('uri', 'method'), array($uri));
-
-		// mock `uri` method
-		$request->expects($this->any())
-			->method('uri')
-		  	// Request::uri() called by Route::matches() in the tests will return $uri
-			->will($this->returnValue($uri));
-
-		// also mock `method` method
-		$request->expects($this->any())
-			->method('method')
-			->withAnyParameters();
-
-		return $request;
+	    return \Request::with(['uri' => $uri, 'method' => \Request::GET]);
 	}
 
 }
