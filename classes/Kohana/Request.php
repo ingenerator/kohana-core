@@ -1154,4 +1154,15 @@ class Kohana_Request implements HTTP_Request {
 		return $this->_client_user_agent;
 	}
 
+	/**
+	 * Gets trimmed HTTP POST parameters, useful in the common case where you don't want to accept
+	 * leading / trailing whitespace in user input
+	 *
+	 * @return  mixed
+	 */
+	public function trimmedPost()
+	{
+		return Arr::map('trim', $this->post());
+	}
+
 }
