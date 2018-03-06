@@ -45,23 +45,19 @@ class Kohana_SessionTest extends Unittest_TestCase
 				array(
 					'name'      => 'awesomeness',
 					'lifetime'  =>  1231456421,
-					'encrypted' =>  FALSE
 				),
 				array(
 					'name'      => 'awesomeness',
 					'lifetime'  => '1231456421',
-					'encrypted' =>  FALSE,
 				),
 			),
 			// data set 1
 			array(
 				array(
 					'name'       => '123',
-					'encrypted'  => 'default',
 				),
 				array(
 					'name'       =>  123,
-					'encrypted'  =>  TRUE,
 				),
 			),
 		);
@@ -161,19 +157,6 @@ class Kohana_SessionTest extends Unittest_TestCase
 		$session = $this->getMockSession();
 
 		$this->assertAttributeSame('session', '_name', $session);
-	}
-
-	/**
-	 * By default sessions are unencrypted
-	 *
-	 * @test
-	 * @covers Session::__construct
-	 */
-	public function test_default_session_is_unencrypted()
-	{
-		$session = $this->getMockSession();
-
-		$this->assertAttributeSame(FALSE, '_encrypted', $session);
 	}
 
 	/**
