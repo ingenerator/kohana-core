@@ -76,4 +76,65 @@ class Kohana_Request_Client_InternalTest extends Unittest_TestCase
 
 		$this->assertSame($expected, $response->status());
 	}
+
+	public function provider_controller_class()
+	{
+		return [
+			[
+				['directory' => NULL, 'controller' => 'Test', 'action' => 'anything'],
+				'Controller_Test',
+				'Controller_Test::anything'
+			],
+			[
+				['directory' => 'Subdir', 'controller' => 'Test', 'action' => 'anything'],
+				'Controller_Subdir_Test',
+				'Controller_Subdir_Test::anything'
+			],
+			[
+				['directory' => NULL, 'controller' => '\My\Test\Test', 'action' => 'things'],
+				'\My\Test\Test',
+				'My\Test\Test::things'
+			],
+			[
+				['directory' => NULL, 'controller' => '\My\Test\TestController', 'action' => 'things'],
+				'\My\Test\TestController',
+				'My\Test\TestController::things'
+			],
+
+		];
+	}
+
+	/**
+	 * @dataProvider provider_controller_class
+	 */
+	public function test_it_executes_expected_controller_class($params, $controller_class, $expect)
+	{
+		if ( ! class_exists($controller_class)) {
+			$this->defineExtensionClass($controller_class, ClassReturningController::class);
+		}
+		$client   = new Request_Client_Internal;
+		$request  = \Request::with($params);
+		$response = $client->execute($request);
+		$this->assertEquals($expect, $response->body());
+	}
+
+	protected function defineExtensionClass($fqcn, $base_class)
+	{
+		$parts = array_filter(explode('\\', $fqcn));
+		$class = array_pop($parts);
+		$ns    = implode('\\', $parts);
+		if ($ns) {
+			$ns = 'namespace '.$ns.';';
+		}
+		eval("$ns class $class extends \\$base_class {}");
+	}
+}
+
+class ClassReturningController extends Controller {
+
+	public function execute()
+	{
+		$this->response->body(get_class($this).'::'.$this->request->action());
+		return $this->response;
+	}
 }

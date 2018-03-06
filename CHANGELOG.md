@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Add support for loading controllers with namespaced classes per https://github.com/kohana/core/pull/578/files
+  thanks to @rjd22 for the original implementation.
 * Removed default support for passing client params to Request_Client
 * Add new Request::initInitial which should now be called from index.php when creating the
   main request. Request::fromGlobals no longer modifies any global state.
