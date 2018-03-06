@@ -2,6 +2,7 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Allow use of HTTP 422 Unprocessable Entity response code
 * Add \Request::trimmedPost for easy access to POST data with all whitespace trimmed
 * Inform composer that this package replaces and conflicts with kohana/core upstream
 * Relax typehint for error handlers to support PHP7 exceptions / throwables
