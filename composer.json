@@ -23,6 +23,12 @@
 		"kohana/unittest":     "3.3.*@dev",
 		"kohana/koharness":    "*@dev"
 	},
+	"replace": {
+		"kohana/core": "3.3.*"
+	},
+	"conflict": {
+		"kohana/core": "*"
+	},
 	"suggest": {
 		"ext-http":   "*",
 		"ext-curl":   "*"

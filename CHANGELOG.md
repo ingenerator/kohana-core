@@ -2,6 +2,7 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Inform composer that this package replaces and conflicts with kohana/core upstream
 * Relax typehint for error handlers to support PHP7 exceptions / throwables
 * Refactor Request_Client_Internal to support extension of code that loads and executes controllers.
   Note: now calls `->execute()` directly : no longer uses ReflectionMethod->invoke() - may cause a fatal
