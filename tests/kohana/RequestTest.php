@@ -552,6 +552,58 @@ class Kohana_RequestTest extends Unittest_TestCase
 		\Request::with(['uri' => 'some/url?with=a&query=string']);
 	}
 
+	public function test_it_trims_basic_string_value()
+	{
+		$rq     = \Request::with(['post' => ['foo' => ' hello   ']]);
+		$result = $rq->trimmedPost();
+		$this->assertSame('hello', $result['foo']);
+	}
+
+	public function test_empty_strings_survive_trimming()
+	{
+		$rq     = \Request::with(['post' => ['empty' => '', 'whitespace' => '  ']]);
+		$result = $rq->trimmedPost();
+		$this->assertSame(['empty' => '', 'whitespace' => ''], $result);
+	}
+
+	public function test_it_trims_recursively()
+	{
+		$rq     = \Request::with(
+			[
+				'post' => [
+					'addresses' => [
+						'home' => [
+							'street' => ' 123  Sesame Street ',
+							'city'   => ' Avenue  Q   '
+						],
+						'away' => [
+							'street' => 'The  Beach ',
+							'city'   => ' Melbourne  ,  Oz  '
+						],
+						'name' => ' Elmo  '
+					]
+				]
+			]
+		);
+		$result = $rq->trimmedPost();
+		$this->assertSame(
+			[
+				'addresses' => [
+					'home' => [
+						'street' => '123  Sesame Street',
+						'city'   => 'Avenue  Q'
+					],
+					'away' => [
+						'street' => 'The  Beach',
+						'city'   => 'Melbourne  ,  Oz'
+					],
+					'name' => 'Elmo'
+				]
+			],
+			$result
+		);
+	}
+
 } // End Kohana_RequestTest
 
 
