@@ -14,23 +14,6 @@
 abstract class Kohana_Request_Client {
 
 	/**
-	 * Creates a new `Request_Client` object,
-	 * allows for dependency injection.
-	 *
-	 * @param   array    $params Params
-	 */
-	public function __construct(array $params = array())
-	{
-		foreach ($params as $key => $value)
-		{
-			if (method_exists($this, $key))
-			{
-				$this->$key($value);
-			}
-		}
-	}
-
-	/**
 	 * Processes the request, executing the controller action that handles this
 	 * request, determined by the [Route].
 	 *

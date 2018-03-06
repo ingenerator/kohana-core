@@ -2,6 +2,7 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Removed default support for passing client params to Request_Client
 * Add new Request::initInitial which should now be called from index.php when creating the
   main request. Request::fromGlobals no longer modifies any global state.
 * Disable Request::factory, replace with Request::fromGlobals (to init all data from $_SERVER etc)
