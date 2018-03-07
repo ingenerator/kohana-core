@@ -82,14 +82,15 @@ class Request_Executor
 	}
 
 	/**
-	 * @param \Request $request
-	 * @param          $response
+	 * @param \Request  $request
+	 * @param \Response $response
 	 *
 	 * @return \Response
 	 */
-	protected function execute_request(\Request $request, $response)
+	protected function execute_request(Request $request, Response $response)
 	{
 		$controller = $this->create_controller($request, $response);
+		$controller->setRequestContext($request, $response);
 
 		return $controller->execute();
 	}

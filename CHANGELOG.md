@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Use setter injection rather than constructor injection for passing request / response to
+  controllers.
+* Make Controller->request and Controller->response protected, not public
 * Remove \Request::$current and \Request::current() - HMVC no longer in use
 * Remove all support for external routes - these are no longer relevant now we don't support
   external requests.
