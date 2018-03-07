@@ -76,11 +76,6 @@ class Request_Executor
 	protected function find_matching_route_params(\Request $request)
 	{
 		foreach ($this->routes as $name => $route) {
-			// Use external routes for reverse routing only
-			if ($route->is_external()) {
-				continue;
-			}
-
 			if ($params = $route->matches($request)) {
 				return array_merge(['action' => Route::$default_action], $params);
 			}

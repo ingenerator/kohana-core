@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Remove all support for external routes - these are no longer relevant now we don't support
+  external requests.
 * Extract all request execution from the \Request class - instead, use Request_Executor to execute
   the request from outside.
 * Remove Request_Client and all internal references in Request

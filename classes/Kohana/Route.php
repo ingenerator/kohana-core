@@ -55,11 +55,6 @@ class Kohana_Route {
 	public static $default_protocol = 'http://';
 
 	/**
-	 * @var  array   list of valid localhost entries
-	 */
-	public static $localhosts = array(FALSE, '', 'local', 'localhost');
-
-	/**
 	 * @var  string  default action for all routes
 	 */
 	public static $default_action = 'index';
@@ -214,11 +209,7 @@ class Kohana_Route {
 	{
 		$route = Route::get($name);
 
-		// Create a URI with the route and convert it to a URL
-		if ($route->is_external())
-			return $route->uri($params);
-		else
-			return URL::site($route->uri($params), $protocol);
+		return URL::site($route->uri($params), $protocol);
 	}
 
 	/**
@@ -286,7 +277,7 @@ class Kohana_Route {
 	/**
 	 * @var  array
 	 */
-	protected $_defaults = array('action' => 'index', 'host' => FALSE);
+	protected $_defaults = array('action' => 'index');
 
 	/**
 	 * @var  string
@@ -489,17 +480,6 @@ class Kohana_Route {
 	}
 
 	/**
-	 * Returns whether this route is an external route
-	 * to a remote controller.
-	 *
-	 * @return  boolean
-	 */
-	public function is_external()
-	{
-		return ! in_array(Arr::get($this->_defaults, 'host', FALSE), Route::$localhosts);
-	}
-
-	/**
 	 * Generates a URI for the current route based on the parameters given.
 	 *
 	 *     // Using the "default" route: "users/profile/10"
@@ -598,21 +578,6 @@ class Kohana_Route {
 
 		// Trim all extra slashes from the URI
 		$uri = preg_replace('#//+#', '/', rtrim($uri, '/'));
-
-		if ($this->is_external())
-		{
-			// Need to add the host to the URI
-			$host = $this->_defaults['host'];
-
-			if (strpos($host, '://') === FALSE)
-			{
-				// Use the default defined protocol
-				$host = Route::$default_protocol.$host;
-			}
-
-			// Clean up the host and prepend it to the URI
-			$uri = rtrim($host, '/').'/'.$uri;
-		}
 
 		return $uri;
 	}
