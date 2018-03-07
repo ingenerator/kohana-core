@@ -17,7 +17,7 @@ will get bumped out of their sessions when you ship this.
 Check your code for Request::factory() or Feed:: class references. Switch all this code
 over to guzzle or similar.
 
-### Update your index.php to use the new request initialisaion code
+### Update your index.php to use the new request initialisaion and execution code
 
 Instead of the default:
 
@@ -30,8 +30,25 @@ echo Request::factory(TRUE, [], FALSE, [])
 
 You'll want:
 ```php
-echo Request::initInitial(Request::fromGlobals())
-  ->execute()
+$executor = new Request_Executor(Route::all());
+echo $executor->execute(Request::initInitial(Request::fromGlobals()))
   ->send_headers()
   ->body();
 ```
+
+### Rewrite any HMVC code
+
+I don't have any good suggestions for this, but we no longer support executing a request
+inside another request. It might work if you create a new Request_Executor, but not if you
+need to be able to access \Request::current() or \Request::$current as these are both gone.
+If you only need access to the currently executing request from a controller that should 
+probably work and you can always access \Request::initial(). But you're on your own with this.
+Use a real microservice, or make the nested interactor / view / whatever calls in your app 
+directly.
+
+### [Optional] Remove $request, $response from controller constructors
+
+Controllers no longer take request and response objects directly in their constructors, 
+instead they receive them in setRequestContext. This allows for creating controllers in e.g.
+a service container or a unit test. They're still passed by default though, so you can
+leave in constructors that use them for now. 

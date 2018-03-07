@@ -2,6 +2,18 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Use setter injection rather than constructor injection for passing request / response to
+  controllers.
+* Make Controller->request and Controller->response protected, not public
+* Remove \Request::$current and \Request::current() - HMVC no longer in use
+* Remove all support for external routes - these are no longer relevant now we don't support
+  external requests.
+* Extract all request execution from the \Request class - instead, use Request_Executor to execute
+  the request from outside.
+* Remove Request_Client and all internal references in Request
+* Only show a single backtrace line in the HTML error view within PHPUnit
+  - otherwise stack traces are still able to be gigabytes in size and to
+  run out of memory.
 * Allow use of HTTP 422 Unprocessable Entity response code
 * Add \Request::trimmedPost for easy access to POST data with all whitespace trimmed
 * Inform composer that this package replaces and conflicts with kohana/core upstream

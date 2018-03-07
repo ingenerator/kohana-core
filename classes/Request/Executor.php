@@ -1,59 +1,35 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
-
+<?php
 /**
- * Request Client for internal execution
- *
- * @package        Kohana
- * @category       Base
- * @author         Kohana Team
- * @copyright  (c) 2008-2012 Kohana Team
- * @license        http://kohanaframework.org/license
- * @since          3.1.0
+ * @author    Andrew Coulton <andrew@ingenerator.com
  */
-class Kohana_Request_Client_Internal extends Request_Client
+
+class Request_Executor
 {
 
 	/**
-	 * Processes the request, executing the controller action that handles this
-	 * request, determined by the [Route].
-	 *
-	 *     $request->execute();
-	 *
-	 * @param   Request $request
-	 *
-	 * @return  Response
-	 * @throws  Kohana_Exception
-	 * @uses    [Kohana::$profiling]
-	 * @uses    [Profiler]
+	 * @var \Route[]
 	 */
-	public function execute_request(Request $request, Response $response)
+	protected $routes;
+
+	/**
+	 * @param \Route[] $routes
+	 */
+	public function __construct(array $routes)
 	{
-
-		if (Kohana::$profiling) {
-			// Set the benchmark name
-			$benchmark = '"'.$request->uri().'"';
-
-			if ($request !== Request::$initial AND Request::$current) {
-				// Add the parent request uri
-				$benchmark .= ' « "'.Request::$current->uri().'"';
-			}
-
-			// Start benchmarking
-			$benchmark = Profiler::start('Requests', $benchmark);
-		}
-
-		// Store the currently active request
-		$previous = Request::$current;
-
-		// Change the current request to this request
-		Request::$current = $request;
-
-		// Is this the initial request
-		$initial_request = ($request === Request::$initial);
-
+		$this->routes = $routes;
+	}
+	
+	/**
+	 * @param \Request $request
+	 *
+	 * @return \Response
+	 */
+	public function execute(\Request $request)
+	{
 		try {
-			$controller = $this->create_controller($request, $response);
-			$response   = $controller->execute();
+			$this->route_request_and_assign_params($request);
+			$response = Response::factory(['_protocol' => $request->protocol()]);
+			$response = $this->execute_request($request, $response);
 
 			if ( ! $response instanceof Response) {
 				// Controller failed to return a Response.
@@ -72,16 +48,51 @@ class Kohana_Request_Client_Internal extends Request_Client
 			$response = Kohana_Exception::_handler($e);
 		}
 
-		// Restore the previous request
-		Request::$current = $previous;
+		return $response;
+	}
 
-		if (isset($benchmark)) {
-			// Stop the benchmark
-			Profiler::stop($benchmark);
+	/**
+	 * @param \Request $request
+	 */
+	protected function route_request_and_assign_params(\Request $request)
+	{
+		$params = $this->find_matching_route_params($request);
+		$request->set_matched_route_params($params);
+	}
+
+	/**
+	 * @param \Request $request
+	 *
+	 * @return array
+	 */
+	protected function find_matching_route_params(\Request $request)
+	{
+		foreach ($this->routes as $name => $route) {
+			if ($params = $route->matches($request)) {
+				return array_merge(['action' => Route::$default_action], $params);
+			}
 		}
 
-		// Return the response
-		return $response;
+		throw HTTP_Exception::factory(
+			'404',
+			'Unable to find a route to match the URI: :uri',
+			[':uri' => $request->uri()]
+		)
+			->request($request);
+	}
+
+	/**
+	 * @param \Request  $request
+	 * @param \Response $response
+	 *
+	 * @return \Response
+	 */
+	protected function execute_request(Request $request, Response $response)
+	{
+		$controller = $this->create_controller($request, $response);
+		$controller->setRequestContext($request, $response);
+
+		return $controller->execute();
 	}
 
 	/**

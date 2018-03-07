@@ -266,7 +266,7 @@ class Kohana_Kohana_Exception extends Exception {
 				defined('__PHPUNIT_PHAR__')
 			)
 			{
-				$trace = array_slice($trace, 0, 2);
+				$trace = array_slice($trace, 0, 1);
 			}
 
 			// Instantiate the error view.

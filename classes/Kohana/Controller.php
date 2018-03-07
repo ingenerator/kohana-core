@@ -25,27 +25,31 @@ abstract class Kohana_Controller {
 	/**
 	 * @var  Request  Request that created the controller
 	 */
-	public $request;
+	protected $request;
 
 	/**
 	 * @var  Response The response that will be returned from controller
 	 */
-	public $response;
+	protected $response;
 
 	/**
-	 * Creates a new controller instance. Each controller must be constructed
-	 * with the request object that created it.
+	 * Creates a new controller instance. You must also call ::setRequestContext to inject the
+	 * request and response objects
 	 *
-	 * @param   Request   $request  Request that created the controller
-	 * @param   Response  $response The request's response
 	 * @return  void
 	 */
-	public function __construct(Request $request, Response $response)
+	public function __construct()
 	{
-		// Assign the request to the controller
-		$this->request = $request;
+		// No-op but retained for BC with descendants
+	}
 
-		// Assign a response to the controller
+	/**
+	 * @param \Request  $request
+	 * @param \Response $response
+	 */
+	public function setRequestContext(\Request $request, \Response $response)
+	{
+		$this->request  = $request;
 		$this->response = $response;
 	}
 
@@ -65,6 +69,10 @@ abstract class Kohana_Controller {
 	 */
 	public function execute()
 	{
+		if ( ! $this->request) {
+			throw new \LogicException('No request for '.static::class.' - did you call setRequestContext?');
+		}
+
 		// Execute the "before action" method
 		$this->before();
 

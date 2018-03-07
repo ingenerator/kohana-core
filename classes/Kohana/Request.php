@@ -36,11 +36,6 @@ class Kohana_Request implements HTTP_Request {
 	public static $initial;
 
 	/**
-	 * @var  Request  currently executing request instance
-	 */
-	public static $current;
-
-	/**
 	 * Creates a new request object for the given URI. New requests should be
 	 * Created using the [Request::factory] method.
 	 *
@@ -246,21 +241,6 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Return the currently executing request. This is changed to the current
-	 * request when [Request::execute] is called and restored when the request
-	 * is completed.
-	 *
-	 *     $request = Request::current();
-	 *
-	 * @return  Request
-	 * @since   3.0.5
-	 */
-	public static function current()
-	{
-		return Request::$current;
-	}
-
-	/**
 	 * Returns the first request encountered by this framework. This will should
 	 * only be set once during the first [Request::factory] invocation.
 	 *
@@ -413,40 +393,6 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Process a request to find a matching route
-	 *
-	 * @param   object  $request Request
-	 * @param   array   $routes  Route
-	 * @return  array
-	 */
-	public static function process(Request $request, $routes = NULL)
-	{
-		// Load routes
-		$routes = (empty($routes)) ? Route::all() : $routes;
-		$params = NULL;
-
-		foreach ($routes as $name => $route)
-		{
-			// Use external routes for reverse routing only
-			if ($route->is_external())
-			{
-				continue;
-			}
-
-			// We found something suitable
-			if ($params = $route->matches($request))
-			{
-				return array(
-					'params' => $params,
-					'route' => $route,
-				);
-			}
-		}
-
-		return NULL;
-	}
-
-	/**
 	 * Parses an accept header and returns an array (type => quality) of the
 	 * accepted types, ordered by quality.
 	 *
@@ -531,16 +477,6 @@ class Kohana_Request implements HTTP_Request {
 	protected $_referrer;
 
 	/**
-	 * @var  Route       route matched for this request
-	 */
-	protected $_route;
-
-	/**
-	 * @var  Route       array of routes to manually look at instead of the global namespace
-	 */
-	protected $_routes;
-
-	/**
 	 * @var  Kohana_HTTP_Header  headers to sent as part of the request
 	 */
 	protected $_header;
@@ -571,11 +507,6 @@ class Kohana_Request implements HTTP_Request {
 	protected $_uri;
 
 	/**
-	 * @var  boolean  external request
-	 */
-	protected $_external = FALSE;
-
-	/**
 	 * @var  array   parameters from the route
 	 */
 	protected $_params = array();
@@ -594,11 +525,6 @@ class Kohana_Request implements HTTP_Request {
 	 * @var array    cookies to send with the request
 	 */
 	protected $_cookies = array();
-
-	/**
-	 * @var Kohana_Request_Client
-	 */
-	protected $_client;
 
 	/**
 	 * @var string
@@ -633,9 +559,6 @@ class Kohana_Request implements HTTP_Request {
 		{
 			// Remove leading and trailing slashes from the URI
 			$this->_uri = trim($uri, '/');
-
-			// Apply the client
-			$this->_client = new Request_Client_Internal();
 		}
 		else
 		{
@@ -681,12 +604,6 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function url($protocol = NULL)
 	{
-		if ($this->is_external())
-		{
-			// If it's an external request return the URI
-			return $this->uri();
-		}
-
 		// Create a URI with the current route, convert to a URL and returns
 		return URL::site($this->uri(), $protocol);
 	}
@@ -723,20 +640,6 @@ class Kohana_Request implements HTTP_Request {
 		}
 
 		return $this->_referrer;
-	}
-
-	/**
-	 * Gets the route from the request.
-	 *
-	 * @return  \Route
-	 */
-	public function route()
-	{
-		if (func_num_args() > 0) {
-			throw new BadMethodCallException(__METHOD__.' is immutable');
-		}
-
-		return $this->_route;
 	}
 
 	/**
@@ -782,20 +685,6 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Provides access to the [Request_Client].
-	 *
-	 * @return  Request_Client
-	 */
-	public function client()
-	{
-		if (func_num_args() > 0) {
-			throw new BadMethodCallException(__METHOD__.' is immutable');
-		}
-
-		return $this->_client;
-	}
-
-	/**
 	 * Gets the requested with property, which should be relative to the x-requested-with pseudo
 	 * header.
 	 *
@@ -811,82 +700,6 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
-	 * Processes the request, executing the controller action that handles this
-	 * request, determined by the [Route].
-	 *
-	 * 1. Before the controller action is called, the [Controller::before] method
-	 * will be called.
-	 * 2. Next the controller action will be called.
-	 * 3. After the controller action is called, the [Controller::after] method
-	 * will be called.
-	 *
-	 * By default, the output from the controller is captured and returned, and
-	 * no headers are sent.
-	 *
-	 *     $request->execute();
-	 *
-	 * @return  Response
-	 * @throws  Request_Exception
-	 * @throws  HTTP_Exception_404
-	 * @uses    [Kohana::$profiling]
-	 * @uses    [Profiler]
-	 */
-	public function execute()
-	{
-		if ( ! $this->_external)
-		{
-			$processed = Request::process($this, $this->_routes);
-
-			if ($processed)
-			{
-				// Store the matching route
-				$this->_route = $processed['route'];
-				$params = $processed['params'];
-
-				// Is this route external?
-				$this->_external = $this->_route->is_external();
-
-				if (isset($params['directory']))
-				{
-					// Controllers are in a sub-directory
-					$this->_directory = $params['directory'];
-				}
-
-				// Store the controller
-				$this->_controller = $params['controller'];
-
-				// Store the action
-				$this->_action = (isset($params['action']))
-					? $params['action']
-					: Route::$default_action;
-
-				// These are accessible as public vars and can be overloaded
-				unset($params['controller'], $params['action'], $params['directory']);
-
-				// Params cannot be changed once matched
-				$this->_params = $params;
-			}
-		}
-
-		if ( ! $this->_route instanceof Route)
-		{
-			return HTTP_Exception::factory(404, 'Unable to find a route to match the URI: :uri', array(
-				':uri' => $this->_uri,
-			))->request($this)
-				->get_response();
-		}
-
-		if ( ! $this->_client instanceof Request_Client)
-		{
-			throw new Request_Exception('Unable to execute :uri without a Kohana_Request_Client', array(
-				':uri' => $this->_uri,
-			));
-		}
-
-		return $this->_client->execute($this);
-	}
-
-	/**
 	 * Returns whether this request is the initial request Kohana received.
 	 * Can be used to test for sub requests.
 	 *
@@ -898,19 +711,6 @@ class Kohana_Request implements HTTP_Request {
 	public function is_initial()
 	{
 		return ($this === Request::$initial);
-	}
-
-	/**
-	 * Readonly access to the [Request::$_external] property.
-	 *
-	 *     if ( ! $request->is_external())
-	 *          // This is an internal request
-	 *
-	 * @return  boolean
-	 */
-	public function is_external()
-	{
-		return $this->_external;
 	}
 
 	/**
@@ -1163,6 +963,22 @@ class Kohana_Request implements HTTP_Request {
 	public function trimmedPost()
 	{
 		return Arr::map('trim', $this->post());
+	}
+
+	/**
+	 * Assign the parameters matched by the routing layer for this request execution
+	 *
+	 * @param array $params
+	 * @internal
+	 */
+	public function set_matched_route_params(array $params)
+	{
+		$this->_directory  = \Arr::get($params, 'directory');
+		$this->_controller = $params['controller'];
+		$this->_action     = $params['action'];
+
+		unset($params['controller'], $params['action'], $params['directory']);
+		$this->_params = $params;
 	}
 
 }

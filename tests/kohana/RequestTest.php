@@ -90,64 +90,34 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$this->assertEquals([], $request->post());
 	}
 
-	public function test_creates_client()
-	{
-		$this->assertInstanceOf(Request_Client_Internal::class, Request::fromGlobals()->client());
-	}
-
 	/**
 	 * Ensure that parameters can be read
 	 *
 	 * @test
 	 */
-	public function test_param()
+	public function test_assigns_route_params_and_splits_out_directory_controller_action()
 	{
-		$route   = new Route('(<controller>(/<action>(/<id>)))');
-		$uri     = 'kohana_requesttest_dummy/foobar/some_id';
-		$request = Request::with(
+		$request = \Request::with([]);
+		$request->set_matched_route_params(
 			[
-				'routes' => [$route],
-				'uri'    => $uri
+				'directory' => 'any',
+				'controller' => 'thing',
+				'action' => 'delete',
+				'event_id' => 21,
+				'format' => 'png'
 			]
 		);
-
-		// We need to execute the request before it has matched a route
-		$response = $request->execute();
-		$controller = new Controller_Kohana_RequestTest_Dummy($request, $response);
-
-		$this->assertSame(200, $response->status());
-		$this->assertSame($controller->get_expected_response(), $response->body());
-		$this->assertArrayHasKey('id', $request->param());
-		$this->assertArrayNotHasKey('foo', $request->param());
-		$this->assertEquals($request->uri(), $uri);
-
-		// Ensure the params do not contain contamination from controller, action, route, uri etc etc
-		$params = $request->param();
-
-		// Test for illegal components
-		$this->assertArrayNotHasKey('controller', $params);
-		$this->assertArrayNotHasKey('action', $params);
-		$this->assertArrayNotHasKey('directory', $params);
-		$this->assertArrayNotHasKey('uri', $params);
-		$this->assertArrayNotHasKey('route', $params);
-
-		$route = new Route('(<uri>)', array('uri' => '.+'));
-		$route->defaults(array('controller' => 'kohana_requesttest_dummy', 'action' => 'foobar'));
-
-		$request = Request::with(
-			[
-				'routes' => [$route],
-				'uri'    => 'kohana_requesttest_dummy'
-			]
+		$this->assertSame('any', $request->directory(), 'Should assign directory');
+		$this->assertSame('thing', $request->controller(), 'Should assign controller');
+		$this->assertSame('delete', $request->action(), 'Should assign action');
+		$this->assertSame(['event_id' => 21, 'format' => 'png'], $request->param());
+		$this->assertSame(21, $request->param('event_id'), 'should have single param');
+		$this->assertSame(NULL, $request->param('missing'), 'should default missing param null');
+		$this->assertSame(
+			15,
+			$request->param('missing', 15),
+			'should default missing param to provided'
 		);
-
-		// We need to execute the request before it has matched a route
-		$response = $request->execute();
-		$controller = new Controller_Kohana_RequestTest_Dummy($request, $response);
-
-		$this->assertSame(200, $response->status());
-		$this->assertSame($controller->get_expected_response(), $response->body());
-		$this->assertSame('kohana_requesttest_dummy', $request->param('uri'));
 	}
 
 	/**
@@ -167,38 +137,6 @@ class Kohana_RequestTest extends Unittest_TestCase
 		}
 		$request = Request::fromGlobals('foo/bar');
 		$this->assertEquals($expect, $request->method());
-	}
-
-	/**
-	 * Tests Request::route()
-	 *
-	 * @test
-	 */
-	public function test_route()
-	{
-		$request = Request::with(['uri' => '']); // This should always match something, no matter what changes people make
-
-		// We need to execute the request before it has matched a route
-		try
-		{
-			$request->execute();
-		}
-		catch (Exception $e) {}
-
-		$this->assertInstanceOf('Route', $request->route());
-	}
-
-	/**
-	 * Tests Request::route()
-	 *
-	 * @test
-	 */
-	public function test_route_is_not_set_before_execute()
-	{
-		$request = Request::with(['uri' => '']); // This should always match something, no matter what changes people make
-
-		// The route should be NULL since the request has not been executed yet
-		$this->assertEquals($request->route(), NULL);
 	}
 
 	/**
@@ -347,7 +285,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 	/**
 	 * Provides data for test_post_max_size_exceeded()
-	 * 
+	 *
 	 * @return  array
 	 */
 	public function provider_post_max_size_exceeded()
@@ -373,11 +311,11 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 	/**
 	 * Tests the post_max_size_exceeded() method
-	 * 
+	 *
 	 * @dataProvider provider_post_max_size_exceeded
 	 *
-	 * @param   int      content_length 
-	 * @param   bool     expected 
+	 * @param   int      content_length
+	 * @param   bool     expected
 	 * @return  void
 	 */
 	public function test_post_max_size_exceeded($content_length, $expected)
@@ -437,7 +375,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 	/**
 	 * Tests that the uri supplied to Request is only trimed
 	 * for internal requests.
-	 * 
+	 *
 	 * @dataProvider provider_uri_only_trimed_on_internal
 	 *
 	 * @return void
@@ -474,7 +412,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 	/**
 	 * Tests getting headers from the Request object
-	 * 
+	 *
 	 * @dataProvider provider_headers_get
 	 *
 	 * @return  void
@@ -530,12 +468,12 @@ class Kohana_RequestTest extends Unittest_TestCase
 
 	/**
 	 * Tests that query parameters are parsed correctly
-	 * 
+	 *
 	 * @dataProvider provider_query_parameter_access
 	 *
 	 * @param   string    url
-	 * @param   array     query 
-	 * @param   array    expected 
+	 * @param   array     query
+	 * @param   array    expected
 	 * @return  void
 	 */
 	public function test_query_parameter_access($get, $key, $expect)
@@ -602,24 +540,6 @@ class Kohana_RequestTest extends Unittest_TestCase
 			],
 			$result
 		);
-	}
-
-} // End Kohana_RequestTest
-
-
-class Controller_Kohana_RequestTest_Dummy extends Controller
-{
-	// hard coded dummy response
-	protected $dummy_response = "this is a dummy response";
-
-	public function action_foobar()
-	{
-		$this->response->body($this->dummy_response);
-	}
-
-	public function get_expected_response()
-	{
-		return $this->dummy_response;
 	}
 
 } // End Kohana_RequestTest
