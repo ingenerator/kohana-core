@@ -4,7 +4,7 @@
 
 ### (unless you 100% know what you're doing)
 
-[![Build Status - 3.3](https://travis-ci.org/ingenerator/kohana-core.svg?branch=3.3.x)](https://travis-ci.org/ingenerator/kohana-core)
+[![Build Status - 4.0](https://travis-ci.org/ingenerator/kohana-core.svg?branch=4.0.x)](https://travis-ci.org/ingenerator/kohana-core)
 
 This is a runaway fork of the now-abandoned [Kohana](http://kohanaframework.org/) PHP framework.
 
@@ -16,3 +16,7 @@ stable, but we are actively removing and rewriting elements to suit our exit str
 anything here will work for you.
 
 Worse, most releases will be breaking unless you're using Kohana exactly how we are.
+
+See [UPGRADING.md](UPGRADING.md) if you really want to try and use it.
+
+And also [CHANGELOG.md](CHANGELOG.md). You really want to read that.
