@@ -17,7 +17,7 @@ will get bumped out of their sessions when you ship this.
 Check your code for Request::factory() or Feed:: class references. Switch all this code
 over to guzzle or similar.
 
-### Update your index.php to use the new request initialisaion code
+### Update your index.php to use the new request initialisaion and execution code
 
 Instead of the default:
 
@@ -30,8 +30,8 @@ echo Request::factory(TRUE, [], FALSE, [])
 
 You'll want:
 ```php
-echo Request::initInitial(Request::fromGlobals())
-  ->execute()
+$executor = new Request_Executor(Route::all());
+echo $executor->execute(Request::initInitial(Request::fromGlobals()))
   ->send_headers()
   ->body();
 ```

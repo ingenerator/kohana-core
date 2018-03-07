@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Extract all request execution from the \Request class - instead, use Request_Executor to execute
+  the request from outside.
+* Remove Request_Client and all internal references in Request
 * Only show a single backtrace line in the HTML error view within PHPUnit
   - otherwise stack traces are still able to be gigabytes in size and to
   run out of memory.
