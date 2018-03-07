@@ -36,11 +36,6 @@ class Kohana_Request implements HTTP_Request {
 	public static $initial;
 
 	/**
-	 * @var  Request  currently executing request instance
-	 */
-	public static $current;
-
-	/**
 	 * Creates a new request object for the given URI. New requests should be
 	 * Created using the [Request::factory] method.
 	 *
@@ -243,21 +238,6 @@ class Kohana_Request implements HTTP_Request {
 		}
 
 		return FALSE;
-	}
-
-	/**
-	 * Return the currently executing request. This is changed to the current
-	 * request when [Request::execute] is called and restored when the request
-	 * is completed.
-	 *
-	 *     $request = Request::current();
-	 *
-	 * @return  Request
-	 * @since   3.0.5
-	 */
-	public static function current()
-	{
-		return Request::$current;
 	}
 
 	/**

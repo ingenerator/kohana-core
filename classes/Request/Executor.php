@@ -26,11 +26,6 @@ class Request_Executor
 	 */
 	public function execute(\Request $request)
 	{
-		// Store the currently active request
-		$previous = Request::$current;
-		// Change the current request to this request
-		Request::$current = $request;
-
 		try {
 			$this->route_request_and_assign_params($request);
 			$response = Response::factory(['_protocol' => $request->protocol()]);
@@ -52,9 +47,6 @@ class Request_Executor
 			// Generate an appropriate Response object
 			$response = Kohana_Exception::_handler($e);
 		}
-
-		// Restore the previous request
-		Request::$current = $previous;
 
 		return $response;
 	}

@@ -35,3 +35,13 @@ echo $executor->execute(Request::initInitial(Request::fromGlobals()))
   ->send_headers()
   ->body();
 ```
+
+### Rewrite any HMVC code
+
+I don't have any good suggestions for this, but we no longer support executing a request
+inside another request. It might work if you create a new Request_Executor, but not if you
+need to be able to access \Request::current() or \Request::$current as these are both gone.
+If you only need access to the currently executing request from a controller that should 
+probably work and you can always access \Request::initial(). But you're on your own with this.
+Use a real microservice, or make the nested interactor / view / whatever calls in your app 
+directly.
