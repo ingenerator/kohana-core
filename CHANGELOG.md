@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Only show a single backtrace line in the HTML error view within PHPUnit
+  - otherwise stack traces are still able to be gigabytes in size and to
+  run out of memory.
 * Allow use of HTTP 422 Unprocessable Entity response code
 * Add \Request::trimmedPost for easy access to POST data with all whitespace trimmed
 * Inform composer that this package replaces and conflicts with kohana/core upstream
