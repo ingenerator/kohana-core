@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.0.0 (2018-03-07)
+
 * Use setter injection rather than constructor injection for passing request / response to
   controllers.
 * Make Controller->request and Controller->response protected, not public
