@@ -35,20 +35,17 @@ class Request_Executor
 				// Controller failed to return a Response.
 				throw new Kohana_Exception('Controller failed to return a Response');
 			}
+
+			return $response;
+
 		} catch (HTTP_Exception $e) {
 			// Store the request context in the Exception
 			if ($e->request() === NULL) {
 				$e->request($request);
 			}
-
-			// Get the response via the Exception
-			$response = $e->get_response();
-		} catch (Exception $e) {
-			// Generate an appropriate Response object
-			$response = Kohana_Exception::_handler($e);
+			throw $e;
 		}
 
-		return $response;
 	}
 
 	/**

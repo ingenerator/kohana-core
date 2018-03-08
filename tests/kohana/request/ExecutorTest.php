@@ -5,91 +5,73 @@
 
 class Kohana_Request_ExecutorTest extends PHPUnit_Framework_TestCase
 {
-
-
-	protected $_log_object;
-
-	// @codingStandardsIgnoreStart
 	protected $routes = [];
 
-	// @codingStandardsIgnoreStart
-
-	public function setUp()
-		// @codingStandardsIgnoreEnd
-	{
-		parent::setUp();
-
-		// temporarily save $log object
-		$this->_log_object = Kohana::$log;
-		Kohana::$log       = NULL;
-	}
-
-	public function tearDown()
-		// @codingStandardsIgnoreEnd
-	{
-		// re-assign log object
-		Kohana::$log = $this->_log_object;
-
-		parent::tearDown();
-	}
-
-	public function test_it_returns_404_response_if_no_matching_route()
+	/**
+	 * @expectedException \HTTP_Exception_404
+	 */
+	public function test_it_throws_404_exception_if_no_matching_route()
 	{
 		$this->routes = [new Route('foo')];
-		$response     = $this->newSubject()->execute(\Request::with(['uri' => 'bar']));
-		$this->assertSame(404, $response->status());
+		$this->newSubject()->execute(\Request::with(['uri' => 'bar']));
 	}
 
-	public function test_it_returns_404_response_if_controller_class_does_not_exist()
+	/**
+	 * @expectedException \HTTP_Exception_404
+	 */
+	public function test_it_throws_404_exception_if_controller_class_does_not_exist()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
-		$response     = $this->newSubject()->execute(\Request::with(['uri' => 'no/controller']));
-		$this->assertSame(404, $response->status());
+		$this->newSubject()->execute(\Request::with(['uri' => 'no/controller']));
 	}
 
-	public function test_it_returns_http_500_error_response_if_controller_is_abstract()
+	/**
+	 * @expectedException \Kohana_Exception
+	 * @expectedExceptionMessage abstract
+	 */
+	public function test_it_throws_generic_exception_if_controller_is_abstract()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
-		$response     = $this->newSubject()->execute(
-			\Request::with(['uri' => 'template/anything'])
-		);
-		$this->assertSame(500, $response->status());
+		$this->newSubject()->execute(\Request::with(['uri' => 'template/anything']));
 	}
 
-	public function test_it_returns_http_error_response_if_controller_throws_http_exception()
+	public function test_it_coalesces_request_into_and_bubbles_http_exception_thrown_by_controller()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 
 		Controller_ThrowsException::$exception = HTTP_Exception::factory(302);
 		Controller_ThrowsException::$exception->location('http://anywhere');
 
-		$response = $this->newSubject()->execute(
-			\Request::with(['uri' => 'throwsexception/anything'])
-		);
-		$this->assertSame(302, $response->status());
-		$this->assertSame('http://anywhere', $response->headers('Location'));
+		$rq = \Request::with(['uri' => 'throwsexception/anything']);
+		try {
+		    $this->newSubject()->execute($rq);
+		    $this->fail('Expected exception, none got');
+		} catch (\HTTP_Exception_302 $e) {
+			$this->assertSame(Controller_ThrowsException::$exception, $e);
+			$this->assertSame($e->request(), $rq);
+		}
 	}
 
-	public function test_it_returns_http_500_error_response_if_controller_throws_generic_exception()
+	/**
+	 * @expectedException \InvalidArgumentException
+	 */
+	public function test_it_bubbles_generic_controller_exception()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 
 		Controller_ThrowsException::$exception = new \InvalidArgumentException('I broke');
 
-		$response = $this->newSubject()->execute(
-			\Request::with(['uri' => 'throwsexception/anything'])
-		);
-		$this->assertSame(500, $response->status());
+		$this->newSubject()->execute(\Request::with(['uri' => 'throwsexception/anything']));
 	}
 
-	public function test_it_returns_http_500_error_response_if_controller_does_not_return_response()
+	/**
+	 * @expectedException \Kohana_Exception
+	 * @expectedExceptionMessage return a Response
+	 */
+	public function test_it_throws_if_controller_does_not_return_response()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
-
-		$response = $this->newSubject()->execute(
-			\Request::with(['uri' => 'emptyreturn/anything'])
-		);
-		$this->assertSame(500, $response->status());
+		$this->newSubject()->execute(\Request::with(['uri' => 'emptyreturn/anything']));
 	}
 
 	public function test_it_sets_response_protocol_to_request_protocol()
