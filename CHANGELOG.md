@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.1.0 (2018-03-13)
+
 * [BREAKING] Remove all exception handling from Request_Executor : you will need to re-implement this
   in index.php 
 
