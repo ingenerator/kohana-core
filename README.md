@@ -4,7 +4,7 @@
 
 ### (unless you 100% know what you're doing)
 
-[![Build Status - 4.1](https://travis-ci.org/ingenerator/kohana-core.svg?branch=4.1.x)](https://travis-ci.org/ingenerator/kohana-core)
+[![Build Status](https://travis-ci.org/ingenerator/kohana-core.svg?branch=4.2.x)](https://travis-ci.org/ingenerator/kohana-core)
 
 This is a runaway fork of the now-abandoned [Kohana](http://kohanaframework.org/) PHP framework.
 
