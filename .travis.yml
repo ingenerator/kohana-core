@@ -6,6 +6,10 @@ php:
  - '7.0'
  - '7.1'
 
+env:
+ - KOHARNESS_ALL_MODULES=1
+ - KOHARNESS_ALL_MODULES=0
+
 # Only build the main develop/master branches - feature branches will be covered by PRs
 branches:
   only:
