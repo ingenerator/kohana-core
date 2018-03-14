@@ -24,7 +24,8 @@
 		"kohana/koharness":    "*@dev"
 	},
 	"replace": {
-		"kohana/core": "3.3.*"
+		"kohana/core": "3.3.*",
+		"kohana/minion": "3.3.*"
 	},
 	"conflict": {
 		"kohana/core": "*"

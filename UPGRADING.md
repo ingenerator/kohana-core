@@ -3,6 +3,13 @@
 If you use Kohana how we do, most of this will be a drop-in replacement that just 
 removes features / options that aren't in use. There are a few breaking changes
 
+## 4.2.x series
+
+### Update your minion module path if required
+
+If you're using kohana/minion it's now provided with this package : change your bootstrap
+to point to vendor/ingenerator/kohana-core/modules/minion.
+
 ## 4.0.x series
 
 ### Disable encrypted sessions

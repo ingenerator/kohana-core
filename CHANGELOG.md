@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.2.0 (2018-03-14)
+
+* Fix the Minion_Exception::handler method signature to be compatible with updated Kohana_Exception::handler
+* Bundle kohana/minion as an optional module with this package.
+
 ## v4.1.0 (2018-03-13)
 
 * [BREAKING] Remove all exception handling from Request_Executor : you will need to re-implement this
