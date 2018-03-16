@@ -48,10 +48,10 @@ try {
     ->send_headers()
     ->body();
 } catch (HTTP_Exception $e) {
-  echo $e->response()->send_headers()->body();
+  echo $e->get_response()->send_headers()->body();
 } catch (Exception $e) {
   // Or if you've made it to PHP7, catch Throwable $e
-  echo Kohana_Exception::_handler($e)->response()->send_headers()->body();
+  echo Kohana_Exception::_handler($e)->send_headers()->body();
 }
 ```
 
