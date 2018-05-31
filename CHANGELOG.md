@@ -2,6 +2,14 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Add Session_Array driver for use in contexts where you don't want to persist session data, for example
+  from CLI scripts or unit tests. Generally in your bootstrap you'd do something like:
+  ```php
+  if (PHP_SAPI === 'cli') {
+    Session::$default = 'array';
+  }
+  ```
+
 ## v4.2.0 (2018-03-14)
 
 * Fix the Minion_Exception::handler method signature to be compatible with updated Kohana_Exception::handler
