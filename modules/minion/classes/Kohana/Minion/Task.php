@@ -26,10 +26,17 @@ abstract class Kohana_Minion_Task {
 	{
 		$task = trim($task);
 
-		if (empty($task))
+		if (empty($task)) {
 			return '';
+        }
 
-		return 'Task_'.implode('_', array_map('ucfirst', explode(Minion_Task::$task_separator, $task)));
+        $parts = array_map(
+            function ($part) {
+                return implode('', array_map('ucfirst', explode('-', $part)));
+            },
+            explode(Minion_Task::$task_separator, $task)
+        );
+        return 'Task_'.implode('_', $parts);
 	}
 
 	/**
@@ -40,12 +47,12 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function convert_class_to_task($class)
 	{
-		if (is_object($class))
-		{
-			$class = get_class($class);
-		}
-
-		return strtolower(str_replace('_', Minion_Task::$task_separator, substr($class, 5)));
+        if (is_object($class)) {
+            $class = get_class($class);
+        }
+        $task = preg_replace('/^Task_/', '', $class);
+        $task = preg_replace('/([a-z])([A-Z])/', '\\1-\\2', $task);
+        return strtolower(str_replace('_', Minion_Task::$task_separator, $task));
 	}
 
 	/**
