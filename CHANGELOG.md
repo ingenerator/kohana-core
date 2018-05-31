@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.2.1 (2018-05-31)
+
 * Support hyphenated task names in minion e.g. do:some-complex-thing becomes Task_Db_SomeComplexThing
 * Add Session_Array driver for use in contexts where you don't want to persist session data, for example
   from CLI scripts or unit tests. Generally in your bootstrap you'd do something like:
