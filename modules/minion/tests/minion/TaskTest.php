@@ -24,6 +24,7 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase
 		return array(
 			array('Task_Db_Migrate', 'db:migrate'),
 			array('Task_Db_Status',  'db:status'),
+			array('Task_Db_DoComplexThings', 'db:do-complex-things'),
 			array('', ''),
 		);
 	}
@@ -51,6 +52,7 @@ class Minion_TaskTest extends Kohana_Unittest_TestCase
 	{
 		return array(
 			array('db:migrate', 'Task_Db_Migrate'),
+            array('db:do-complex-things', 'Task_Db_DoComplexThings'),
 		);
 	}
 
