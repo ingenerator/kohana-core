@@ -1,0 +1,41 @@
+{
+    "name":        "ingenerator/kohana-core",
+    "description": "NOT backwards compatible fork of kohana/core for use internally at inGenerator as part of our migration away",
+    "homepage":    "http://github.com/ingenerator/kohana-core",
+    "license":     "BSD-3-Clause",
+    "authors": [
+        {
+            "name":     "Andrew Coulton",
+            "email":    "andrew@ingenerator.com",
+            "role":     "hacker & axe-wielder"
+        },
+        {
+            "name":     "Kohana Team",
+            "email":    "team@kohanaframework.org",
+            "homepage": "http://kohanaframework.org/team",
+            "role":     "developer"
+        }
+    ],
+    "require": {
+        "php":        "^7.0"
+    },
+    "require-dev": {
+        "kohana/unittest":     "3.0.*@dev",
+        "kohana/koharness":    "*@dev"
+    },
+    "replace": {
+        "kohana/core": "3.0.*"
+    },
+    "conflict": {
+        "kohana/core": "*"
+    },
+    "suggest": {
+        "ext-http":   "*",
+        "ext-curl":   "*"
+    },
+    "extra": {
+        "installer-paths": {
+            "vendor/{$vendor}/{$name}": ["type:kohana-module"]
+        }
+    }
+}

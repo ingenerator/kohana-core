@@ -1024,15 +1024,15 @@ class Kohana_Core {
 		return TRUE;
 	}
 
-	/**
-	 * Inline exception handler, displays the error message, source of the
-	 * exception, and the stack trace of the error.
-	 *
-	 * @uses    Kohana::exception_text
-	 * @param   object   exception object
-	 * @return  boolean
-	 */
-	public static function exception_handler(Exception $e)
+    /**
+     * Inline exception handler, displays the error message, source of the
+     * exception, and the stack trace of the error.
+     *
+     * @param Throwable $e
+     * @return void
+     * @uses    Kohana::exception_text
+     */
+	public static function exception_handler(Throwable $e)
 	{
 		try
 		{
@@ -1117,7 +1117,7 @@ class Kohana_Core {
 
 			exit(1);
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
 			// Clean the output buffer if one exists
 			ob_get_level() and ob_clean();
@@ -1179,7 +1179,7 @@ class Kohana_Core {
 	 * @param   object  Exception
 	 * @return  string
 	 */
-	public static function exception_text(Exception $e)
+	public static function exception_text(Throwable $e)
 	{
 		return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
 			get_class($e), $e->getCode(), strip_tags($e->getMessage()), Kohana::debug_path($e->getFile()), $e->getLine());
