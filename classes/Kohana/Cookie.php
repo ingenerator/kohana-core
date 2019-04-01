@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Cookie helper.
  *
@@ -64,12 +64,12 @@ class Kohana_Cookie {
 		$cookie = $_COOKIE[$key];
 
 		// Find the position of the split between salt and contents
-		$split = strlen(Cookie::salt($key, NULL));
+		$split = \strlen(Cookie::salt($key, NULL));
 
 		if (isset($cookie[$split]) AND $cookie[$split] === '~')
 		{
 			// Separate the salt and the value
-			list ($hash, $value) = explode('~', $cookie, 2);
+			list ($hash, $value) = \explode('~', $cookie, 2);
 
 			if (Security::slow_equals(Cookie::salt($key, $value), $hash))
 			{
@@ -159,9 +159,9 @@ class Kohana_Cookie {
 		}
 
 		// Determine the user agent
-		$agent = isset($_SERVER['HTTP_USER_AGENT']) ? strtolower($_SERVER['HTTP_USER_AGENT']) : 'unknown';
+		$agent = isset($_SERVER['HTTP_USER_AGENT']) ? \strtolower($_SERVER['HTTP_USER_AGENT']) : 'unknown';
 
-		return hash_hmac('sha1', $agent.$name.$value.Cookie::$salt, Cookie::$salt);
+		return \hash_hmac('sha1', $agent.$name.$value.Cookie::$salt, Cookie::$salt);
 	}
 
 	/**
@@ -181,7 +181,7 @@ class Kohana_Cookie {
 	 */
 	protected static function _setcookie($name, $value, $expire, $path, $domain, $secure, $httponly)
 	{
-		return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
+		return \setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Kohana_Cookie {
 	 */
 	protected static function _time()
 	{
-		return time();
+		return \time();
 	}
 
 }

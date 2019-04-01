@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Internationalization (i18n) class. Provides language loading and translation
  * methods without dependencies on [gettext](http://php.net/gettext).
@@ -53,7 +53,7 @@ class Kohana_I18n {
 		if ($lang)
 		{
 			// Normalize the language
-			I18n::$lang = strtolower(str_replace(array(' ', '_'), '-', $lang));
+			I18n::$lang = \strtolower(\str_replace(array(' ', '_'), '-', $lang));
 		}
 
 		return I18n::$lang;
@@ -104,12 +104,12 @@ class Kohana_I18n {
 		$table = array();
 
 		// Split the language: language, region, locale, etc
-		$parts = explode('-', $lang);
+		$parts = \explode('-', $lang);
 
 		do
 		{
 			// Create a path for this set of parts
-			$path = implode(DIRECTORY_SEPARATOR, $parts);
+			$path = \implode(DIRECTORY_SEPARATOR, $parts);
 
 			if ($files = Kohana::find_file('i18n', $path, NULL, TRUE))
 			{
@@ -117,7 +117,7 @@ class Kohana_I18n {
 				foreach ($files as $file)
 				{
 					// Merge the language strings into the sub table
-					$t = array_merge($t, Kohana::load($file));
+					$t = \array_merge($t, Kohana::load($file));
 				}
 
 				// Append the sub table, preventing less specific language
@@ -126,7 +126,7 @@ class Kohana_I18n {
 			}
 
 			// Remove the last part
-			array_pop($parts);
+			\array_pop($parts);
 		}
 		while ($parts);
 
@@ -136,7 +136,7 @@ class Kohana_I18n {
 
 }
 
-if ( ! function_exists('__'))
+if ( ! \function_exists('__'))
 {
 	/**
 	 * Kohana translation/internationalization function. The PHP function
@@ -161,6 +161,6 @@ if ( ! function_exists('__'))
 			$string = I18n::get($string);
 		}
 
-		return empty($values) ? $string : strtr($string, $values);
+		return empty($values) ? $string : \strtr($string, $values);
 	}
 }

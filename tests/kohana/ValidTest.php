@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the Valid class
@@ -467,7 +467,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 			$this->markTestSkipped('An internet connection is required for this test');
 		}
 
-		if ( ! Kohana::$is_windows OR version_compare(PHP_VERSION, '5.3.0', '>='))
+		if ( ! Kohana::$is_windows OR \version_compare(PHP_VERSION, '5.3.0', '>='))
 		{
 			$this->assertSame(
 				$correct,
@@ -570,7 +570,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 		return array(
 			array('75.125.175.50',   FALSE, TRUE),
 			// PHP 5.3.6 fixed a bug that allowed 127.0.0.1 as a public ip: http://bugs.php.net/53150
-			array('127.0.0.1',       FALSE, version_compare(PHP_VERSION, '5.3.6', '<')),
+			array('127.0.0.1',       FALSE, \version_compare(PHP_VERSION, '5.3.6', '<')),
 			array('256.257.258.259', FALSE, FALSE),
 			array('255.255.255.255', FALSE, FALSE),
 			array('192.168.0.1',     FALSE, FALSE),
@@ -934,8 +934,8 @@ class Kohana_ValidTest extends Unittest_TestCase
 			array(FALSE, FALSE),
 		);
 
-		$data[] = array('http://'.str_repeat('123456789.', 25).'com/', TRUE); // 253 chars
-		$data[] = array('http://'.str_repeat('123456789.', 25).'info/', FALSE); // 254 chars
+		$data[] = array('http://'.\str_repeat('123456789.', 25).'com/', TRUE); // 253 chars
+		$data[] = array('http://'.\str_repeat('123456789.', 25).'info/', FALSE); // 254 chars
 
 		return $data;
 	}

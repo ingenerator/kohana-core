@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * File-based configuration reader. Multiple configuration directories can be
  * used by attaching multiple instances of this class to [Kohana_Config].
@@ -25,7 +25,7 @@ class Kohana_Config_File_Reader implements Kohana_Config_Reader {
 	public function __construct($directory = 'config')
 	{
 		// Set the configuration directory name
-		$this->_directory = trim($directory, '/');
+		$this->_directory = \trim($directory, '/');
 	}
 
 	/**

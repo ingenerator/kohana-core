@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * STDERR log writer. Writes out messages to STDERR.
  *
@@ -22,7 +22,7 @@ class Kohana_Log_StdErr extends Log_Writer {
 		foreach ($messages as $message)
 		{
 			// Writes out each message
-			fwrite(STDERR, $this->format_message($message).PHP_EOL);
+			\fwrite(STDERR, $this->format_message($message).PHP_EOL);
 		}
 	}
 

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests HTTP
@@ -167,10 +167,10 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 		// save the $_SERVER super-global into temporary local var
 		$tmp_server = $_SERVER;
 
-		$_SERVER = array_replace_recursive($_SERVER, $server_globals);
+		$_SERVER = \array_replace_recursive($_SERVER, $server_globals);
 		$headers = HTTP::request_headers();
 
-		$actual_headers = array_intersect_key($headers->getArrayCopy(), $expected_headers);
+		$actual_headers = \array_intersect_key($headers->getArrayCopy(), $expected_headers);
 
 		$this->assertSame($expected_headers, $actual_headers);
 

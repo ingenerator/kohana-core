@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Upload helper class for working with uploaded files and [Validation].
  *
@@ -51,7 +51,7 @@ class Kohana_Upload {
 	 */
 	public static function save(array $file, $filename = NULL, $directory = NULL, $chmod = 0644)
 	{
-		if ( ! isset($file['tmp_name']) OR ! is_uploaded_file($file['tmp_name']))
+		if ( ! isset($file['tmp_name']) OR ! \is_uploaded_file($file['tmp_name']))
 		{
 			// Ignore corrupted uploads
 			return FALSE;
@@ -60,13 +60,13 @@ class Kohana_Upload {
 		if ($filename === NULL)
 		{
 			// Use the default filename, with a timestamp pre-pended
-			$filename = uniqid().$file['name'];
+			$filename = \uniqid().$file['name'];
 		}
 
 		if (Upload::$remove_spaces === TRUE)
 		{
 			// Remove spaces from the filename
-			$filename = preg_replace('/\s+/u', '_', $filename);
+			$filename = \preg_replace('/\s+/u', '_', $filename);
 		}
 
 		if ($directory === NULL)
@@ -75,21 +75,21 @@ class Kohana_Upload {
 			$directory = Upload::$default_directory;
 		}
 
-		if ( ! is_dir($directory) OR ! is_writable(realpath($directory)))
+		if ( ! \is_dir($directory) OR ! \is_writable(\realpath($directory)))
 		{
 			throw new Kohana_Exception('Directory :dir must be writable',
 				array(':dir' => Debug::path($directory)));
 		}
 
 		// Make the filename into a complete path
-		$filename = realpath($directory).DIRECTORY_SEPARATOR.$filename;
+		$filename = \realpath($directory).DIRECTORY_SEPARATOR.$filename;
 
-		if (move_uploaded_file($file['tmp_name'], $filename))
+		if (\move_uploaded_file($file['tmp_name'], $filename))
 		{
 			if ($chmod !== FALSE)
 			{
 				// Set permissions on filename
-				chmod($filename, $chmod);
+				\chmod($filename, $chmod);
 			}
 
 			// Return new file path
@@ -131,7 +131,7 @@ class Kohana_Upload {
 		return (isset($file['error'])
 			AND isset($file['tmp_name'])
 			AND $file['error'] === UPLOAD_ERR_OK
-			AND is_uploaded_file($file['tmp_name']));
+			AND \is_uploaded_file($file['tmp_name']));
 	}
 
 	/**
@@ -148,9 +148,9 @@ class Kohana_Upload {
 		if ($file['error'] !== UPLOAD_ERR_OK)
 			return TRUE;
 
-		$ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+		$ext = \strtolower(\pathinfo($file['name'], PATHINFO_EXTENSION));
 
-		return in_array($ext, $allowed);
+		return \in_array($ext, $allowed);
 	}
 
 	/**
@@ -213,7 +213,7 @@ class Kohana_Upload {
 			try
 			{
 				// Get the width and height from the uploaded image
-				list($width, $height) = getimagesize($file['tmp_name']);
+				list($width, $height) = \getimagesize($file['tmp_name']);
 			}
 			catch (ErrorException $e)
 			{

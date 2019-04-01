@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana File helper
@@ -70,9 +70,9 @@ class Kohana_FileTest extends Unittest_TestCase
 		$this->assertSame($expected, File::split($input, $peices));
 		$this->assertSame($expected, File::join($input));
 
-		foreach (glob(Kohana::find_file('tests', 'test_data/github', 'png').'.*') as $file)
+		foreach (\glob(Kohana::find_file('tests', 'test_data/github', 'png').'.*') as $file)
 		{
-			unlink($file);
+			\unlink($file);
 		}
 	}
 }

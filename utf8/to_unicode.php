@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * UTF8::to_unicode
  *
@@ -19,11 +19,11 @@ function _to_unicode($str)
 
 	$out = array();
 
-	$len = strlen($str);
+	$len = \strlen($str);
 
 	for ($i = 0; $i < $len; $i++)
 	{
-		$in = ord($str[$i]);
+		$in = \ord($str[$i]);
 
 		if ($m_state == 0)
 		{
@@ -84,7 +84,7 @@ function _to_unicode($str)
 			else
 			{
 				// Current octet is neither in the US-ASCII range nor a legal first octet of a multi-octet sequence.
-				trigger_error('UTF8::to_unicode: Illegal sequence identifier in UTF-8 at byte '.$i, E_USER_WARNING);
+				\trigger_error('UTF8::to_unicode: Illegal sequence identifier in UTF-8 at byte '.$i, E_USER_WARNING);
 				return FALSE;
 			}
 		}
@@ -114,7 +114,7 @@ function _to_unicode($str)
 						// Codepoints outside the Unicode range are illegal
 						($m_ucs4 > 0x10FFFF))
 					{
-						trigger_error('UTF8::to_unicode: Illegal sequence or codepoint in UTF-8 at byte '.$i, E_USER_WARNING);
+						\trigger_error('UTF8::to_unicode: Illegal sequence or codepoint in UTF-8 at byte '.$i, E_USER_WARNING);
 						return FALSE;
 					}
 

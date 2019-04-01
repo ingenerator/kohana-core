@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Kohana exception class. Translates exceptions using the [I18n] class.
  *
@@ -118,10 +118,10 @@ class Kohana_Kohana_Exception extends Exception {
 			 * but to bail. Hard.
 			 */
 			// Clean the output buffer if one exists
-			ob_get_level() AND ob_clean();
+			\ob_get_level() AND \ob_clean();
 
 			// Set the Status code to 500, and Content-Type to text/plain.
-			header('Content-Type: text/plain; charset='.Kohana::$charset, TRUE, 500);
+			\header('Content-Type: text/plain; charset='.Kohana::$charset, TRUE, 500);
 
 			echo Kohana_Exception::text($e);
 
@@ -139,7 +139,7 @@ class Kohana_Kohana_Exception extends Exception {
 	 */
 	public static function log($e, $level = Log::EMERGENCY)
 	{
-		if (is_object(Kohana::$log))
+		if (\is_object(Kohana::$log))
 		{
 			// Create a text version of the exception
 			$error = Kohana_Exception::text($e);
@@ -167,8 +167,8 @@ class Kohana_Kohana_Exception extends Exception {
 			throw InvalidArgumentException('Argument 1 passed to Kohana_Kohana_Exception::response() must be an instance of Exception or Throwable');
 		}
 
-		return sprintf('%s [ %s ]: %s ~ %s [ %d ]',
-			get_class($e), $e->getCode(), strip_tags($e->getMessage()), Debug::path($e->getFile()), $e->getLine());
+		return \sprintf('%s [ %s ]: %s ~ %s [ %d ]',
+			\get_class($e), $e->getCode(), \strip_tags($e->getMessage()), Debug::path($e->getFile()), $e->getLine());
 	}
 
 	/**
@@ -188,7 +188,7 @@ class Kohana_Kohana_Exception extends Exception {
 		try
 		{
 			// Get the exception information
-			$class   = get_class($e);
+			$class   = \get_class($e);
 			$code    = $e->getCode();
 			$message = $e->getMessage();
 			$file    = $e->getFile();
@@ -202,7 +202,7 @@ class Kohana_Kohana_Exception extends Exception {
 			 */
 			if ($e instanceof HTTP_Exception AND $trace[0]['function'] == 'factory')
 			{
-				extract(array_shift($trace));
+				\extract(\array_shift($trace));
 			}
 
 
@@ -212,9 +212,9 @@ class Kohana_Kohana_Exception extends Exception {
 				 * If XDebug is installed, and this is a fatal error,
 				 * use XDebug to generate the stack trace
 				 */
-				if (function_exists('xdebug_get_function_stack') AND $code == E_ERROR)
+				if (\function_exists('xdebug_get_function_stack') AND $code == E_ERROR)
 				{
-					$trace = array_slice(array_reverse(xdebug_get_function_stack()), 4);
+					$trace = \array_slice(\array_reverse(xdebug_get_function_stack()), 4);
 
 					foreach ($trace as & $frame)
 					{
@@ -259,18 +259,18 @@ class Kohana_Kohana_Exception extends Exception {
 			 * serveral minutes to render.
 			 */
 			if (
-				defined('PHPUnit_MAIN_METHOD')
+				\defined('PHPUnit_MAIN_METHOD')
 				OR
-				defined('PHPUNIT_COMPOSER_INSTALL')
+				\defined('PHPUNIT_COMPOSER_INSTALL')
 				OR
-				defined('__PHPUNIT_PHAR__')
+				\defined('__PHPUNIT_PHAR__')
 			)
 			{
-				$trace = array_slice($trace, 0, 1);
+				$trace = \array_slice($trace, 0, 1);
 			}
 
 			// Instantiate the error view.
-			$view = View::factory(Kohana_Exception::$error_view, get_defined_vars());
+			$view = View::factory(Kohana_Exception::$error_view, \get_defined_vars());
 
 			// Prepare the response object.
 			$response = Response::factory();

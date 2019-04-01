@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * URL helper class.
  *
@@ -51,7 +51,7 @@ class Kohana_URL {
 			if ( ! $protocol->secure())
 			{
 				// Use the current protocol
-				list($protocol) = explode('/', strtolower($protocol->protocol()));
+				list($protocol) = \explode('/', \strtolower($protocol->protocol()));
 			}
 			else
 			{
@@ -62,7 +62,7 @@ class Kohana_URL {
 		if ( ! $protocol)
 		{
 			// Use the configured default protocol
-			$protocol = parse_url($base_url, PHP_URL_SCHEME);
+			$protocol = \parse_url($base_url, PHP_URL_SCHEME);
 		}
 
 		if ($index === TRUE AND ! empty(Kohana::$index_file))
@@ -71,18 +71,18 @@ class Kohana_URL {
 			$base_url .= Kohana::$index_file.'/';
 		}
 
-		if (is_string($protocol))
+		if (\is_string($protocol))
 		{
-			if ($port = parse_url($base_url, PHP_URL_PORT))
+			if ($port = \parse_url($base_url, PHP_URL_PORT))
 			{
 				// Found a port, make it usable for the URL
 				$port = ':'.$port;
 			}
 
-			if ($host = parse_url($base_url, PHP_URL_HOST))
+			if ($host = \parse_url($base_url, PHP_URL_HOST))
 			{
 				// Remove everything but the path from the URL
-				$base_url = parse_url($base_url, PHP_URL_PATH);
+				$base_url = \parse_url($base_url, PHP_URL_PATH);
 			}
 			else
 			{
@@ -90,11 +90,11 @@ class Kohana_URL {
 				$host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : $_SERVER['SERVER_NAME'];
 
 				// make $host lowercase
-				$host = strtolower($host);
+				$host = \strtolower($host);
 
 				// check that host does not contain forbidden characters (see RFC 952 and RFC 2181)
 				// use preg_replace() instead of preg_match() to prevent DoS attacks with long host names
-				if ($host && '' !== preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
+				if ($host && '' !== \preg_replace('/(?:^\[)?[a-zA-Z0-9-:\]_]+\.?/', '', $host)) {
 					throw new Kohana_Exception(
 						'Invalid host :host',
 						array(':host' => $host)
@@ -132,12 +132,12 @@ class Kohana_URL {
 	public static function site($uri = '', $protocol = NULL, $index = TRUE)
 	{
 		// Chop off possible scheme, host, port, user and pass parts
-		$path = preg_replace('~^[-a-z0-9+.]++://[^/]++/?~', '', trim($uri, '/'));
+		$path = \preg_replace('~^[-a-z0-9+.]++://[^/]++/?~', '', \trim($uri, '/'));
 
 		if ( ! UTF8::is_ascii($path))
 		{
 			// Encode all non-ASCII characters, as per RFC 1738
-			$path = preg_replace_callback('~([^/]+)~', 'URL::_rawurlencode_callback', $path);
+			$path = \preg_replace_callback('~([^/]+)~', 'URL::_rawurlencode_callback', $path);
 		}
 
 		// Concat the URL
@@ -153,7 +153,7 @@ class Kohana_URL {
 	 */
 	protected static function _rawurlencode_callback($matches)
 	{
-		return rawurlencode($matches[0]);
+		return \rawurlencode($matches[0]);
 	}
 
 	/**
@@ -195,7 +195,7 @@ class Kohana_URL {
 		}
 
 		// Note: http_build_query returns an empty string for a params array with only NULL values
-		$query = http_build_query($params, '', '&');
+		$query = \http_build_query($params, '', '&');
 
 		// Don't prepend '?' to an empty string
 		return ($query === '') ? '' : ('?'.$query);
@@ -220,19 +220,19 @@ class Kohana_URL {
 			$title = UTF8::transliterate_to_ascii($title);
 
 			// Remove all characters that are not the separator, a-z, 0-9, or whitespace
-			$title = preg_replace('![^'.preg_quote($separator).'a-z0-9\s]+!', '', strtolower($title));
+			$title = \preg_replace('![^'.\preg_quote($separator).'a-z0-9\s]+!', '', \strtolower($title));
 		}
 		else
 		{
 			// Remove all characters that are not the separator, letters, numbers, or whitespace
-			$title = preg_replace('![^'.preg_quote($separator).'\pL\pN\s]+!u', '', UTF8::strtolower($title));
+			$title = \preg_replace('![^'.\preg_quote($separator).'\pL\pN\s]+!u', '', UTF8::strtolower($title));
 		}
 
 		// Replace all separator characters and whitespace by a single separator
-		$title = preg_replace('!['.preg_quote($separator).'\s]+!u', $separator, $title);
+		$title = \preg_replace('!['.\preg_quote($separator).'\s]+!u', $separator, $title);
 
 		// Trim separators from the beginning and end
-		return trim($title, $separator);
+		return \trim($title, $separator);
 	}
 
 	/**
@@ -262,7 +262,7 @@ class Kohana_URL {
 			$pattern = '#^'.$trusted_host.'$#uD';
 
 			// return TRUE if there is match
-			if (preg_match($pattern, $host)) {
+			if (\preg_match($pattern, $host)) {
 				return TRUE;
 			}
 

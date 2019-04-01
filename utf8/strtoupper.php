@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * UTF8::strtoupper
  *
@@ -11,7 +11,7 @@
 function _strtoupper($str)
 {
 	if (UTF8::is_ascii($str))
-		return strtoupper($str);
+		return \strtoupper($str);
 
 	static $utf8_lower_to_upper = NULL;
 
@@ -69,7 +69,7 @@ function _strtoupper($str)
 	if ($uni === FALSE)
 		return FALSE;
 
-	for ($i = 0, $c = count($uni); $i < $c; $i++)
+	for ($i = 0, $c = \count($uni); $i < $c; $i++)
 	{
 		if (isset($utf8_lower_to_upper[$uni[$i]]))
 		{

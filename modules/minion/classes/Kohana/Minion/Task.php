@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 /**
  * Interface that all minion tasks must implement
  *
@@ -24,19 +24,19 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function convert_task_to_class_name($task)
 	{
-		$task = trim($task);
+		$task = \trim($task);
 
 		if (empty($task)) {
 			return '';
         }
 
-        $parts = array_map(
+        $parts = \array_map(
             function ($part) {
-                return implode('', array_map('ucfirst', explode('-', $part)));
+                return \implode('', \array_map('ucfirst', \explode('-', $part)));
             },
-            explode(Minion_Task::$task_separator, $task)
+            \explode(Minion_Task::$task_separator, $task)
         );
-        return 'Task_'.implode('_', $parts);
+        return 'Task_'.\implode('_', $parts);
 	}
 
 	/**
@@ -47,12 +47,12 @@ abstract class Kohana_Minion_Task {
 	 */
 	public static function convert_class_to_task($class)
 	{
-        if (is_object($class)) {
-            $class = get_class($class);
+        if (\is_object($class)) {
+            $class = \get_class($class);
         }
-        $task = preg_replace('/^Task_/', '', $class);
-        $task = preg_replace('/([a-z])([A-Z])/', '\\1-\\2', $task);
-        return strtolower(str_replace('_', Minion_Task::$task_separator, $task));
+        $task = \preg_replace('/^Task_/', '', $class);
+        $task = \preg_replace('/([a-z])([A-Z])/', '\\1-\\2', $task);
+        return \strtolower(\str_replace('_', Minion_Task::$task_separator, $task));
 	}
 
 	/**
@@ -81,7 +81,7 @@ abstract class Kohana_Minion_Task {
 
 		$class = Minion_Task::convert_task_to_class_name($task);
 
-		if ( ! class_exists($class))
+		if ( ! \class_exists($class))
 		{
 			throw new Minion_Exception_InvalidTask(
 				"Task ':task' is not a valid minion task",
@@ -102,7 +102,7 @@ abstract class Kohana_Minion_Task {
 		$class->set_options($options);
 
 		// Show the help page for this task if requested
-		if (array_key_exists('help', $options))
+		if (\array_key_exists('help', $options))
 		{
 			$class->_method = '_help';
 		}
@@ -135,7 +135,7 @@ abstract class Kohana_Minion_Task {
 	protected function __construct()
 	{
 		// Populate $_accepted_options based on keys from $_options
-		$this->_accepted_options = array_keys($this->_options);
+		$this->_accepted_options = \array_keys($this->_options);
 	}
 
 	/**
@@ -284,7 +284,7 @@ abstract class Kohana_Minion_Task {
 
 	public function valid_option(Validation $validation, $option)
 	{
-		if ( ! in_array($option, $this->_accepted_options))
+		if ( ! \in_array($option, $this->_accepted_options))
 		{
 			$validation->error($option, 'minion_option');
 		}
@@ -301,10 +301,10 @@ abstract class Kohana_Minion_Task {
 	protected function _parse_doccomment($comment)
 	{
 		// Normalize all new lines to \n
-		$comment = str_replace(array("\r\n", "\n"), "\n", $comment);
+		$comment = \str_replace(array("\r\n", "\n"), "\n", $comment);
 
 		// Remove the phpdoc open/close tags and split
-		$comment = array_slice(explode("\n", $comment), 1, -1);
+		$comment = \array_slice(\explode("\n", $comment), 1, -1);
 
 		// Tag content
 		$tags        = array();
@@ -312,10 +312,10 @@ abstract class Kohana_Minion_Task {
 		foreach ($comment as $i => $line)
 		{
 			// Remove all leading whitespace
-			$line = preg_replace('/^\s*\* ?/m', '', $line);
+			$line = \preg_replace('/^\s*\* ?/m', '', $line);
 
 			// Search this line for a tag
-			if (preg_match('/^@(\S+)(?:\s*(.+))?$/', $line, $matches))
+			if (\preg_match('/^@(\S+)(?:\s*(.+))?$/', $line, $matches))
 			{
 				// This is a tag line
 				unset($comment[$i]);
@@ -331,7 +331,7 @@ abstract class Kohana_Minion_Task {
 			}
 		}
 
-		$comment = trim(implode("\n", $comment));
+		$comment = \trim(\implode("\n", $comment));
 
 		return array($comment, $tags);
 	}
@@ -349,20 +349,20 @@ abstract class Kohana_Minion_Task {
 
 		foreach ($files as $file => $path)
 		{
-			$file = substr($file, strrpos($file, DIRECTORY_SEPARATOR) + 1);
+			$file = \substr($file, \strrpos($file, DIRECTORY_SEPARATOR) + 1);
 
-			if (is_array($path) AND count($path))
+			if (\is_array($path) AND \count($path))
 			{
 				$task = $this->_compile_task_list($path, $prefix.$file.Minion_Task::$task_separator);
 
 				if ($task)
 				{
-					$output = array_merge($output, $task);
+					$output = \array_merge($output, $task);
 				}
 			}
 			else
 			{
-				$output[] = strtolower($prefix.substr($file, 0, -strlen(EXT)));
+				$output[] = \strtolower($prefix.\substr($file, 0, -\strlen(EXT)));
 			}
 		}
 

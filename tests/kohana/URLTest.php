@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests URL
@@ -175,10 +175,10 @@ class Kohana_URLTest extends Unittest_TestCase
 		foreach ($provider as $i => $params)
 		{
 			// Every non-ASCII character except for forward slash should be encoded...
-			$expected = implode('/', array_map('rawurlencode', $params));
+			$expected = \implode('/', \array_map('rawurlencode', $params));
 
 			// ... from a URI that is not encoded
-			$uri = implode('/', $params);
+			$uri = \implode('/', $params);
 
 			$provider[$i] = array("/kohana/index.php/{$expected}", $uri);
 		}

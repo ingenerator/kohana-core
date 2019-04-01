@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Request. Uses the [Route] class to determine what
  * [Controller] to send the request to.
@@ -74,8 +74,8 @@ class Kohana_Request implements HTTP_Request {
 	public static function fromGlobals()
 	{
 		$props = [
-			'protocol'          => strtoupper(HTTP::$protocol),
-			'method'            => strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
+			'protocol'          => \strtoupper(HTTP::$protocol),
+			'method'            => \strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
 			'uri'               => static::detect_uri(),
 			'secure'            => static::detect_is_secure(),
 			'referrer'          => \Arr::get($_SERVER, 'HTTP_REFERER', NULL),
@@ -90,15 +90,15 @@ class Kohana_Request implements HTTP_Request {
 		];
 
 		if ($props['requested_with']) {
-			$props['requested_with'] = strtolower($props['requested_with']);
+			$props['requested_with'] = \strtolower($props['requested_with']);
 		}
 
 		if ($props['method'] !== HTTP_Request::GET) {
 			// Ensure the raw body is saved for future use
-			$props['body'] = file_get_contents('php://input');
+			$props['body'] = \file_get_contents('php://input');
 		}
 
-		foreach (array_keys($_COOKIE) as $cookie_key) {
+		foreach (\array_keys($_COOKIE) as $cookie_key) {
 			$props['cookies'][$cookie_key] = Cookie::get($cookie_key);
 		}
 
@@ -152,14 +152,14 @@ class Kohana_Request implements HTTP_Request {
 				 */
 				$uri = $_SERVER['REQUEST_URI'];
 
-				if ($request_uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
+				if ($request_uri = \parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
 				{
 					// Valid URL path found, set it.
 					$uri = $request_uri;
 				}
 
 				// Decode the request URI
-				$uri = rawurldecode($uri);
+				$uri = \rawurldecode($uri);
 			}
 			elseif (isset($_SERVER['PHP_SELF']))
 			{
@@ -177,18 +177,18 @@ class Kohana_Request implements HTTP_Request {
 			}
 
 			// Get the path from the base URL, including the index file
-			$base_url = parse_url(Kohana::$base_url, PHP_URL_PATH);
+			$base_url = \parse_url(Kohana::$base_url, PHP_URL_PATH);
 
-			if (strpos($uri, $base_url) === 0)
+			if (\strpos($uri, $base_url) === 0)
 			{
 				// Remove the base URL from the URI
-				$uri = (string) substr($uri, strlen($base_url));
+				$uri = (string) \substr($uri, \strlen($base_url));
 			}
 
-			if (Kohana::$index_file AND strpos($uri, Kohana::$index_file) === 0)
+			if (Kohana::$index_file AND \strpos($uri, Kohana::$index_file) === 0)
 			{
 				// Remove the index file from the URI
-				$uri = (string) substr($uri, strlen(Kohana::$index_file));
+				$uri = (string) \substr($uri, \strlen(Kohana::$index_file));
 			}
 		}
 
@@ -202,22 +202,22 @@ class Kohana_Request implements HTTP_Request {
 	{
 		if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])
 			AND isset($_SERVER['REMOTE_ADDR'])
-			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
+			AND \in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
 			// Use the forwarded IP address, typically set when the
 			// client is using a proxy server.
 			// Format: "X-Forwarded-For: client1, proxy1, proxy2"
-			$client_ips = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
+			$client_ips = \explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
 
-			return array_shift($client_ips);
+			return \array_shift($client_ips);
 
 		} elseif (isset($_SERVER['HTTP_CLIENT_IP'])
 			AND isset($_SERVER['REMOTE_ADDR'])
-			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
+			AND \in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies)) {
 			// Use the forwarded IP address, typically set when the
 			// client is using a proxy server.
-			$client_ips = explode(',', $_SERVER['HTTP_CLIENT_IP']);
+			$client_ips = \explode(',', $_SERVER['HTTP_CLIENT_IP']);
 
-			return array_shift($client_ips);
+			return \array_shift($client_ips);
 		} elseif (isset($_SERVER['REMOTE_ADDR'])) {
 			// The remote IP address
 			return $_SERVER['REMOTE_ADDR'];
@@ -229,10 +229,10 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	protected static function detect_is_secure()
 	{
-		if (( ! empty($_SERVER['HTTPS']) AND filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
+		if (( ! empty($_SERVER['HTTPS']) AND \filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
 			OR (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
 				AND $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-			AND in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
+			AND \in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
 		{
 			return TRUE;
 		}
@@ -386,7 +386,7 @@ class Kohana_Request implements HTTP_Request {
 			return FALSE;
 
 		// Get the post_max_size in bytes
-		$max_bytes = Num::bytes(ini_get('post_max_size'));
+		$max_bytes = Num::bytes(\ini_get('post_max_size'));
 
 		// Error occurred if method is POST, and content length is too long
 		return (Arr::get($_SERVER, 'CONTENT_LENGTH') > $max_bytes);
@@ -407,15 +407,15 @@ class Kohana_Request implements HTTP_Request {
 		if ( ! empty($header))
 		{
 			// Get all of the types
-			$types = explode(',', $header);
+			$types = \explode(',', $header);
 
 			foreach ($types as $type)
 			{
 				// Split the type into parts
-				$parts = explode(';', $type);
+				$parts = \explode(';', $type);
 
 				// Make the type only the MIME
-				$type = trim(array_shift($parts));
+				$type = \trim(\array_shift($parts));
 
 				// Default quality is 1.0
 				$quality = 1.0;
@@ -423,16 +423,16 @@ class Kohana_Request implements HTTP_Request {
 				foreach ($parts as $part)
 				{
 					// Prevent undefined $value notice below
-					if (strpos($part, '=') === FALSE)
+					if (\strpos($part, '=') === FALSE)
 						continue;
 
 					// Separate the key and value
-					list ($key, $value) = explode('=', trim($part));
+					list ($key, $value) = \explode('=', \trim($part));
 
 					if ($key === 'q')
 					{
 						// There is a quality for this type
-						$quality = (float) trim($value);
+						$quality = (float) \trim($value);
 					}
 				}
 
@@ -445,7 +445,7 @@ class Kohana_Request implements HTTP_Request {
 		$accepts = (array) $accepts;
 
 		// Order by quality
-		arsort($accepts);
+		\arsort($accepts);
 
 		return $accepts;
 	}
@@ -549,16 +549,16 @@ class Kohana_Request implements HTTP_Request {
 		// Initialise the header
 		$this->_header = new HTTP_Header(array());
 
-		if (strpos($uri, '?') !== FALSE) {
+		if (\strpos($uri, '?') !== FALSE) {
 			// This shouldn't be happening, the arguments should be pre-parsed to the base url and the $_GET array
 			throw new \UnexpectedValueException('Cannot accept querystring arguments in \Request::$uri');
 		}
 
 		// Fail if they're trying to do old-school external request execution
-		if (strpos($uri, '://') === FALSE)
+		if (\strpos($uri, '://') === FALSE)
 		{
 			// Remove leading and trailing slashes from the URI
-			$this->_uri = trim($uri, '/');
+			$this->_uri = \trim($uri, '/');
 		}
 		else
 		{
@@ -585,7 +585,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function uri()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -635,7 +635,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function referrer()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -649,7 +649,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function directory()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -663,7 +663,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function controller()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -677,7 +677,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function action()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -692,7 +692,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function requested_with()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -731,7 +731,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function method()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -746,7 +746,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function protocol()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -764,7 +764,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function secure()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -782,7 +782,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function headers($key = NULL)
 	{
-		if (($key instanceof HTTP_Header) OR is_array($key) OR (func_num_args() > 1)) {
+		if (($key instanceof HTTP_Header) OR \is_array($key) OR (\func_num_args() > 1)) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -804,7 +804,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function cookie($key = NULL)
 	{
-		if (is_array($key) OR (func_num_args() > 1)) {
+		if (\is_array($key) OR (\func_num_args() > 1)) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -825,7 +825,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function body()
 	{
-		if (func_num_args() > 0) {
+		if (\func_num_args() > 0) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -840,7 +840,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function content_length()
 	{
-		return strlen($this->body());
+		return \strlen($this->body());
 	}
 
 	/**
@@ -863,7 +863,7 @@ class Kohana_Request implements HTTP_Request {
 		}
 		else
 		{
-			$body = http_build_query($post, NULL, '&');
+			$body = \http_build_query($post, NULL, '&');
 			$this->body($body)
 				->headers('content-type', 'application/x-www-form-urlencoded; charset='.Kohana::$charset);
 		}
@@ -889,7 +889,7 @@ class Kohana_Request implements HTTP_Request {
 			}
 
 			// Create the cookie string
-			$this->_header['cookie'] = implode('; ', $cookie_string);
+			$this->_header['cookie'] = \implode('; ', $cookie_string);
 		}
 
 		$output = $this->method().' '.$this->uri().' '.$this->protocol()."\r\n";
@@ -908,7 +908,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function query($key = NULL)
 	{
-		if (is_array($key) OR (func_num_args() > 1)) {
+		if (\is_array($key) OR (\func_num_args() > 1)) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 
@@ -930,7 +930,7 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function post($key = NULL)
 	{
-		if (is_array($key) OR (func_num_args() > 1)) {
+		if (\is_array($key) OR (\func_num_args() > 1)) {
 			throw new BadMethodCallException(__METHOD__.' is immutable');
 		}
 

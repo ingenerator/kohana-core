@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Native PHP session class.
  *
@@ -15,7 +15,7 @@ class Kohana_Session_Native extends Session {
 	 */
 	public function id()
 	{
-		return session_id();
+		return \session_id();
 	}
 
 	/**
@@ -38,11 +38,11 @@ class Kohana_Session_Native extends Session {
 		 * set to Cookie::$domain if available, otherwise default to ini setting
 		 */
 		$session_cookie_domain = empty(Cookie::$domain)
-		    ? ini_get('session.cookie_domain')
+		    ? \ini_get('session.cookie_domain')
 		    : Cookie::$domain;
 
 		// Sync up the session cookie with Cookie parameters
-		session_set_cookie_params(
+		\session_set_cookie_params(
 			$this->_lifetime,
 			Cookie::$path,
 			$session_cookie_domain,
@@ -51,19 +51,19 @@ class Kohana_Session_Native extends Session {
 		);
 
 		// Do not allow PHP to send Cache-Control headers
-		session_cache_limiter(FALSE);
+		\session_cache_limiter(FALSE);
 
 		// Set the session cookie name
-		session_name($this->_name);
+		\session_name($this->_name);
 
 		if ($id)
 		{
 			// Set the session id
-			session_id($id);
+			\session_id($id);
 		}
 
 		// Start the session
-		session_start();
+		\session_start();
 
 		// Use the $_SESSION global for storing data
 		$this->_data =& $_SESSION;
@@ -77,9 +77,9 @@ class Kohana_Session_Native extends Session {
 	protected function _regenerate()
 	{
 		// Regenerate the session id
-		session_regenerate_id();
+		\session_regenerate_id();
 
-		return session_id();
+		return \session_id();
 	}
 
 	/**
@@ -88,7 +88,7 @@ class Kohana_Session_Native extends Session {
 	protected function _write()
 	{
 		// Write and close the session
-		session_write_close();
+		\session_write_close();
 
 		return TRUE;
 	}
@@ -99,7 +99,7 @@ class Kohana_Session_Native extends Session {
 	protected function _restart()
 	{
 		// Fire up a new session
-		$status = session_start();
+		$status = \session_start();
 
 		// Use the $_SESSION global for storing data
 		$this->_data =& $_SESSION;
@@ -113,10 +113,10 @@ class Kohana_Session_Native extends Session {
 	protected function _destroy()
 	{
 		// Destroy the current session
-		session_destroy();
+		\session_destroy();
 
 		// Did destruction work?
-		$status = ! session_id();
+		$status = ! \session_id();
 
 		if ($status)
 		{

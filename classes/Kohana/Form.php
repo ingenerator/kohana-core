@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Form helper class. Unless otherwise noted, all generated HTML will be made
  * safe using the [HTML::chars] method. This prevents against simple XSS
@@ -45,7 +45,7 @@ class Kohana_Form {
 			// Allow empty form actions (submits back to the current url).
 			$action = '';
 		}
-		elseif (strpos($action, '://') === FALSE)
+		elseif (\strpos($action, '://') === FALSE)
 		{
 			// Make the URI absolute
 			$action = URL::site($action);
@@ -254,13 +254,13 @@ class Kohana_Form {
 		// Set the input name
 		$attributes['name'] = $name;
 
-		if (is_array($selected))
+		if (\is_array($selected))
 		{
 			// This is a multi-select, god save us!
 			$attributes[] = 'multiple';
 		}
 
-		if ( ! is_array($selected))
+		if ( ! \is_array($selected))
 		{
 			if ($selected === NULL)
 			{
@@ -283,7 +283,7 @@ class Kohana_Form {
 		{
 			foreach ($options as $value => $name)
 			{
-				if (is_array($name))
+				if (\is_array($name))
 				{
 					// Create a new optgroup
 					$group = array('label' => $value);
@@ -299,7 +299,7 @@ class Kohana_Form {
 						// Create a new attribute set for this option
 						$option = array('value' => $_value);
 
-						if (in_array($_value, $selected))
+						if (\in_array($_value, $selected))
 						{
 							// This option is selected
 							$option[] = 'selected';
@@ -310,7 +310,7 @@ class Kohana_Form {
 					}
 
 					// Compile the options into a string
-					$_options = "\n".implode("\n", $_options)."\n";
+					$_options = "\n".\implode("\n", $_options)."\n";
 
 					$options[$value] = '<optgroup'.HTML::attributes($group).'>'.$_options.'</optgroup>';
 				}
@@ -322,7 +322,7 @@ class Kohana_Form {
 					// Create a new attribute set for this option
 					$option = array('value' => $value);
 
-					if (in_array($value, $selected))
+					if (\in_array($value, $selected))
 					{
 						// This option is selected
 						$option[] = 'selected';
@@ -334,7 +334,7 @@ class Kohana_Form {
 			}
 
 			// Compile the options into a single string
-			$options = "\n".implode("\n", $options)."\n";
+			$options = "\n".\implode("\n", $options)."\n";
 		}
 
 		return '<select'.HTML::attributes($attributes).'>'.$options.'</select>';
@@ -374,7 +374,7 @@ class Kohana_Form {
 	{
 		if ( ! empty($attributes['src']))
 		{
-			if (strpos($attributes['src'], '://') === FALSE)
+			if (\strpos($attributes['src'], '://') === FALSE)
 			{
 				// Add the base URL
 				$attributes['src'] = URL::base($index).$attributes['src'];
@@ -422,7 +422,7 @@ class Kohana_Form {
 		if ($text === NULL)
 		{
 			// Use the input name as the text
-			$text = ucwords(preg_replace('/[\W_]+/', ' ', $input));
+			$text = \ucwords(\preg_replace('/[\W_]+/', ' ', $input));
 		}
 
 		// Set the label target

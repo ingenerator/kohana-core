@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * UTF8::transliterate_to_ascii
  *
@@ -36,9 +36,9 @@ function _transliterate_to_ascii($str, $case = 0)
 			);
 		}
 
-		$str = str_replace(
-			array_keys($utf8_lower_accents),
-			array_values($utf8_lower_accents),
+		$str = \str_replace(
+			\array_keys($utf8_lower_accents),
+			\array_values($utf8_lower_accents),
 			$str
 		);
 	}
@@ -66,9 +66,9 @@ function _transliterate_to_ascii($str, $case = 0)
 			);
 		}
 
-		$str = str_replace(
-			array_keys($utf8_upper_accents),
-			array_values($utf8_upper_accents),
+		$str = \str_replace(
+			\array_keys($utf8_upper_accents),
+			\array_values($utf8_upper_accents),
 			$str
 		);
 	}

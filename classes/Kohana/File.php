@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * File helper class.
  *
@@ -24,32 +24,32 @@ class Kohana_File {
 	public static function mime($filename)
 	{
 		// Get the complete path to the file
-		$filename = realpath($filename);
+		$filename = \realpath($filename);
 
 		// Get the extension from the filename
-		$extension = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
+		$extension = \strtolower(\pathinfo($filename, PATHINFO_EXTENSION));
 
-		if (preg_match('/^(?:jpe?g|png|[gt]if|bmp|swf)$/', $extension))
+		if (\preg_match('/^(?:jpe?g|png|[gt]if|bmp|swf)$/', $extension))
 		{
 			// Use getimagesize() to find the mime type on images
-			$file = getimagesize($filename);
+			$file = \getimagesize($filename);
 
 			if (isset($file['mime']))
 				return $file['mime'];
 		}
 
-		if (class_exists('finfo', FALSE))
+		if (\class_exists('finfo', FALSE))
 		{
-			if ($info = new finfo(defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME))
+			if ($info = new finfo(\defined('FILEINFO_MIME_TYPE') ? FILEINFO_MIME_TYPE : FILEINFO_MIME))
 			{
 				return $info->file($filename);
 			}
 		}
 
-		if (ini_get('mime_magic.magicfile') AND function_exists('mime_content_type'))
+		if (\ini_get('mime_magic.magicfile') AND \function_exists('mime_content_type'))
 		{
 			// The mime_content_type function is only useful with a magic file
-			return mime_content_type($filename);
+			return \mime_content_type($filename);
 		}
 
 		if ( ! empty($extension))
@@ -120,7 +120,7 @@ class Kohana_File {
 					{
 						$types[$mime] = array( (string) $ext);
 					}
-					elseif ( ! in_array($ext, $types[$mime]))
+					elseif ( ! \in_array($ext, $types[$mime]))
 					{
 						$types[$mime][] = (string) $ext;
 					}
@@ -139,7 +139,7 @@ class Kohana_File {
 	 */
 	public static function ext_by_mime($type)
 	{
-		return current(File::exts_by_mime($type));
+		return \current(File::exts_by_mime($type));
 	}
 
 	/**
@@ -155,10 +155,10 @@ class Kohana_File {
 	public static function split($filename, $piece_size = 10)
 	{
 		// Open the input file
-		$file = fopen($filename, 'rb');
+		$file = \fopen($filename, 'rb');
 
 		// Change the piece size to bytes
-		$piece_size = floor($piece_size * 1024 * 1024);
+		$piece_size = \floor($piece_size * 1024 * 1024);
 
 		// Write files in 8k blocks
 		$block_size = 1024 * 8;
@@ -166,14 +166,14 @@ class Kohana_File {
 		// Total number of pieces
 		$pieces = 0;
 
-		while ( ! feof($file))
+		while ( ! \feof($file))
 		{
 			// Create another piece
 			$pieces += 1;
 
 			// Create a new file piece
-			$piece = str_pad($pieces, 3, '0', STR_PAD_LEFT);
-			$piece = fopen($filename.'.'.$piece, 'wb+');
+			$piece = \str_pad($pieces, 3, '0', STR_PAD_LEFT);
+			$piece = \fopen($filename.'.'.$piece, 'wb+');
 
 			// Number of bytes read
 			$read = 0;
@@ -181,7 +181,7 @@ class Kohana_File {
 			do
 			{
 				// Transfer the data in blocks
-				fwrite($piece, fread($file, $block_size));
+				\fwrite($piece, \fread($file, $block_size));
 
 				// Another block has been read
 				$read += $block_size;
@@ -189,11 +189,11 @@ class Kohana_File {
 			while ($read < $piece_size);
 
 			// Close the piece
-			fclose($piece);
+			\fclose($piece);
 		}
 
 		// Close the file
-		fclose($file);
+		\fclose($file);
 
 		return $pieces;
 	}
@@ -209,7 +209,7 @@ class Kohana_File {
 	public static function join($filename)
 	{
 		// Open the file
-		$file = fopen($filename, 'wb+');
+		$file = \fopen($filename, 'wb+');
 
 		// Read files in 8k blocks
 		$block_size = 1024 * 8;
@@ -217,22 +217,22 @@ class Kohana_File {
 		// Total number of pieces
 		$pieces = 0;
 
-		while (is_file($piece = $filename.'.'.str_pad($pieces + 1, 3, '0', STR_PAD_LEFT)))
+		while (\is_file($piece = $filename.'.'.\str_pad($pieces + 1, 3, '0', STR_PAD_LEFT)))
 		{
 			// Read another piece
 			$pieces += 1;
 
 			// Open the piece for reading
-			$piece = fopen($piece, 'rb');
+			$piece = \fopen($piece, 'rb');
 
-			while ( ! feof($piece))
+			while ( ! \feof($piece))
 			{
 				// Transfer the data in blocks
-				fwrite($file, fread($piece, $block_size));
+				\fwrite($file, \fread($piece, $block_size));
 			}
 
 			// Close the piece
-			fclose($piece);
+			\fclose($piece);
 		}
 
 		return $pieces;

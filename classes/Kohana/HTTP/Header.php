@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * The Kohana_HTTP_Header class provides an Object-Orientated interface
  * to HTTP headers. This can parse header arrays returned from the
@@ -29,15 +29,15 @@ class Kohana_HTTP_Header extends ArrayObject {
 		$parsed = array();
 
 		// Resource light iteration
-		$parts_keys = array_keys($parts);
+		$parts_keys = \array_keys($parts);
 		foreach ($parts_keys as $key)
 		{
-			$value = trim(str_replace(array("\r", "\n"), '', $parts[$key]));
+			$value = \trim(\str_replace(array("\r", "\n"), '', $parts[$key]));
 
 			$pattern = '~\b(\;\s*+)?q\s*+=\s*+([.0-9]+)~';
 
 			// If there is no quality directive, return default
-			if ( ! preg_match($pattern, $value, $quality))
+			if ( ! \preg_match($pattern, $value, $quality))
 			{
 				$parsed[$value] = (float) HTTP_Header::DEFAULT_QUALITY;
 			}
@@ -51,7 +51,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 				}
 
 				// Remove the quality value from the string and apply quality
-				$parsed[trim(preg_replace($pattern, '', $value, 1), '; ')] = (float) $quality;
+				$parsed[\trim(\preg_replace($pattern, '', $value, 1), '; ')] = (float) $quality;
 			}
 		}
 
@@ -69,7 +69,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public static function parse_accept_header($accepts = NULL)
 	{
-		$accepts = explode(',', (string) $accepts);
+		$accepts = \explode(',', (string) $accepts);
 
 		// If there is no accept, lets accept everything
 		if ($accepts === NULL)
@@ -81,11 +81,11 @@ class Kohana_HTTP_Header extends ArrayObject {
 		$parsed_accept = array();
 
 		// This method of iteration uses less resource
-		$keys = array_keys($accepts);
+		$keys = \array_keys($accepts);
 		foreach ($keys as $key)
 		{
 			// Extract the parts
-			$parts = explode('/', $key, 2);
+			$parts = \explode('/', $key, 2);
 
 			// Invalid content type- bail
 			if ( ! isset($parts[1]))
@@ -114,7 +114,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 			return array('*' => (float) HTTP_Header::DEFAULT_QUALITY);
 		}
 
-		return HTTP_Header::accept_quality(explode(',', (string) $charset));
+		return HTTP_Header::accept_quality(\explode(',', (string) $charset));
 	}
 
 	/**
@@ -139,7 +139,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		}
 		else
 		{
-			return HTTP_Header::accept_quality(explode(',', (string) $encoding));
+			return HTTP_Header::accept_quality(\explode(',', (string) $encoding));
 		}
 	}
 
@@ -159,15 +159,15 @@ class Kohana_HTTP_Header extends ArrayObject {
 			return array('*' => array('*' => (float) HTTP_Header::DEFAULT_QUALITY));
 		}
 
-		$language = HTTP_Header::accept_quality(explode(',', (string) $language));
+		$language = HTTP_Header::accept_quality(\explode(',', (string) $language));
 
 		$parsed_language = array();
 
-		$keys = array_keys($language);
+		$keys = \array_keys($language);
 		foreach ($keys as $key)
 		{
 			// Extract the parts
-			$parts = explode('-', $key, 2);
+			$parts = \explode('-', $key, 2);
 
 			// Invalid content type- bail
 			if ( ! isset($parts[1]))
@@ -208,10 +208,10 @@ class Kohana_HTTP_Header extends ArrayObject {
 
 		foreach ($cache_control as $key => $value)
 		{
-			$parts[] = (is_int($key)) ? $value : ($key.'='.$value);
+			$parts[] = (\is_int($key)) ? $value : ($key.'='.$value);
 		}
 
-		return implode(', ', $parts);
+		return \implode(', ', $parts);
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public static function parse_cache_control($cache_control)
 	{
-		$directives = explode(',', strtolower($cache_control));
+		$directives = \explode(',', \strtolower($cache_control));
 
 		if ($directives === FALSE)
 			return FALSE;
@@ -242,15 +242,15 @@ class Kohana_HTTP_Header extends ArrayObject {
 
 		foreach ($directives as $directive)
 		{
-			if (strpos($directive, '=') !== FALSE)
+			if (\strpos($directive, '=') !== FALSE)
 			{
-				list($key, $value) = explode('=', trim($directive), 2);
+				list($key, $value) = \explode('=', \trim($directive), 2);
 
-				$output[$key] = ctype_digit($value) ? (int) $value : $value;
+				$output[$key] = \ctype_digit($value) ? (int) $value : $value;
 			}
 			else
 			{
-				$output[] = trim($directive);
+				$output[] = \trim($directive);
 			}
 		}
 
@@ -294,7 +294,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		 *
 		 * HTTP header declarations should be treated as case-insensitive
 		 */
-		$input = array_change_key_case( (array) $input, CASE_LOWER);
+		$input = \array_change_key_case( (array) $input, CASE_LOWER);
 
 		parent::__construct($input, $flags, $iterator_class);
 	}
@@ -317,9 +317,9 @@ class Kohana_HTTP_Header extends ArrayObject {
 			// Put the keys back the Case-Convention expected
 			$key = Text::ucfirst($key);
 
-			if (is_array($value))
+			if (\is_array($value))
 			{
-				$header .= $key.': '.(implode(', ', $value))."\r\n";
+				$header .= $key.': '.(\implode(', ', $value))."\r\n";
 			}
 			else
 			{
@@ -345,7 +345,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	public function offsetSet($index, $newval, $replace = TRUE)
 	{
 		// Ensure the index is lowercase
-		$index = strtolower($index);
+		$index = \strtolower($index);
 
 		if ($replace OR ! $this->offsetExists($index))
 		{
@@ -354,7 +354,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 
 		$current_value = $this->offsetGet($index);
 
-		if (is_array($current_value))
+		if (\is_array($current_value))
 		{
 			$current_value[] = $newval;
 		}
@@ -376,7 +376,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public function offsetExists($index)
 	{
-		return parent::offsetExists(strtolower($index));
+		return parent::offsetExists(\strtolower($index));
 	}
 
 	/**
@@ -389,7 +389,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public function offsetUnset($index)
 	{
-		return parent::offsetUnset(strtolower($index));
+		return parent::offsetUnset(\strtolower($index));
 	}
 
 	/**
@@ -402,7 +402,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 */
 	public function offsetGet($index)
 	{
-		return parent::offsetGet(strtolower($index));
+		return parent::offsetGet(\strtolower($index));
 	}
 
 	/**
@@ -420,7 +420,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		 *
 		 * HTTP header declarations should be treated as case-insensitive
 		 */
-		$input = array_change_key_case( (array) $input, CASE_LOWER);
+		$input = \array_change_key_case( (array) $input, CASE_LOWER);
 
 		return parent::exchangeArray($input);
 	}
@@ -440,7 +440,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	{
 		$headers = array();
 
-		if (preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $header_line, $matches))
+		if (\preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $header_line, $matches))
 		{
 			foreach ($matches[0] as $key => $value)
 			{
@@ -448,7 +448,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 			}
 		}
 
-		return strlen($header_line);
+		return \strlen($header_line);
 	}
 
 	/**
@@ -489,7 +489,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		}
 
 		// If not a real mime, try and find it in config
-		if (strpos($type, '/') === FALSE)
+		if (\strpos($type, '/') === FALSE)
 		{
 			$mime = Kohana::$config->load('mimes.'.$type);
 
@@ -507,7 +507,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 			return $quality;
 		}
 
-		$parts = explode('/', $type, 2);
+		$parts = \explode('/', $type, 2);
 
 		if (isset($this->_accept_content[$parts[0]][$parts[1]]))
 		{
@@ -596,7 +596,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		{
 			if ($this->offsetExists('Accept-Charset'))
 			{
-				$charset_header = strtolower($this->offsetGet('Accept-Charset'));
+				$charset_header = \strtolower($this->offsetGet('Accept-Charset'));
 				$this->_accept_charset = HTTP_Header::parse_charset_header($charset_header);
 			}
 			else
@@ -605,7 +605,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 			}
 		}
 
-		$charset = strtolower($charset);
+		$charset = \strtolower($charset);
 
 		if (isset($this->_accept_charset[$charset]))
 		{
@@ -687,7 +687,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		}
 
 		// Normalize the encoding
-		$encoding = strtolower($encoding);
+		$encoding = \strtolower($encoding);
 
 		if (isset($this->_accept_encoding[$encoding]))
 		{
@@ -770,7 +770,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		{
 			if ($this->offsetExists('Accept-Language'))
 			{
-				$language_header = strtolower($this->offsetGet('Accept-Language'));
+				$language_header = \strtolower($this->offsetGet('Accept-Language'));
 			}
 			else
 			{
@@ -781,7 +781,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 		}
 
 		// Normalize the language
-		$language_parts = explode('-', strtolower($language), 2);
+		$language_parts = \explode('-', \strtolower($language), 2);
 
 		if (isset($this->_accept_language[$language_parts[0]]))
 		{
@@ -870,9 +870,9 @@ class Kohana_HTTP_Header extends ArrayObject {
 
 		foreach ($headers as $header => $value)
 		{
-			if (is_array($value))
+			if (\is_array($value))
 			{
-				$value = implode(', ', $value);
+				$value = \implode(', ', $value);
 			}
 
 			$processed_headers[] = Text::ucfirst($header).': '.$value;
@@ -894,10 +894,10 @@ class Kohana_HTTP_Header extends ArrayObject {
 			$processed_headers['Set-Cookie'] = $cookies;
 		}
 
-		if (is_callable($callback))
+		if (\is_callable($callback))
 		{
 			// Use the callback method to set header
-			return call_user_func($callback, $response, $processed_headers, $replace);
+			return \call_user_func($callback, $response, $processed_headers, $replace);
 		}
 		else
 		{
@@ -918,12 +918,12 @@ class Kohana_HTTP_Header extends ArrayObject {
 	protected function _send_headers_to_php(array $headers, $replace)
 	{
 		// If the headers have been sent, get out
-		if (headers_sent())
+		if (\headers_sent())
 			return $this;
 
 		foreach ($headers as $key => $line)
 		{
-			if ($key == 'Set-Cookie' AND is_array($line))
+			if ($key == 'Set-Cookie' AND \is_array($line))
 			{
 				// Send cookies
 				foreach ($line as $name => $value)
@@ -934,7 +934,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 				continue;
 			}
 
-			header($line, $replace);
+			\header($line, $replace);
 		}
 
 		return $this;

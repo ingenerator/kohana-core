@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Core
@@ -120,7 +120,7 @@ class Kohana_CoreTest extends Unittest_TestCase
 		$files = Kohana::list_files('config');
 
 		$this->assertInternalType('array', $files);
-		$this->assertGreaterThan(3, count($files));
+		$this->assertGreaterThan(3, \count($files));
 
 		$this->assertSame(array(), Kohana::list_files('geshmuck'));
 	}
@@ -212,7 +212,7 @@ class Kohana_CoreTest extends Unittest_TestCase
 	 */
 	public function test_message($file, $key, $default, $expected)
 	{
-		$test_path = realpath(dirname(__FILE__).'/../test_data/message_tests');
+		$test_path = \realpath(\dirname(__FILE__).'/../test_data/message_tests');
 		Kohana::modules(array('top' => "$test_path/top_module", 'bottom' => "$test_path/bottom_module"));
 
 		$this->assertEquals($expected, Kohana::message($file, $key, $default, $expected));
@@ -243,8 +243,8 @@ class Kohana_CoreTest extends Unittest_TestCase
 	 */
 	public function test_error_handler($code, $error, $file, $line)
 	{
-		$error_level = error_reporting();
-		error_reporting(E_ALL);
+		$error_level = \error_reporting();
+		\error_reporting(E_ALL);
 		try
 		{
 			Kohana::error_handler($code, $error, $file, $line);
@@ -254,7 +254,7 @@ class Kohana_CoreTest extends Unittest_TestCase
 			$this->assertEquals($code, $e->getCode());
 			$this->assertEquals($error, $e->getMessage());
 		}
-		error_reporting($error_level);
+		\error_reporting($error_level);
 	}
 
 	/**
@@ -370,11 +370,11 @@ class Kohana_CoreTest extends Unittest_TestCase
 		$this->assertInternalType('array', $include_paths);
 
 		// We must have at least 2 items in include paths (APP / SYS)
-		$this->assertGreaterThan(2, count($include_paths));
+		$this->assertGreaterThan(2, \count($include_paths));
 		// Make sure said paths are in the include paths
 		// And make sure they're in the correct positions
-		$this->assertSame(APPPATH, reset($include_paths));
-		$this->assertSame(SYSPATH, end($include_paths));
+		$this->assertSame(APPPATH, \reset($include_paths));
+		$this->assertSame(SYSPATH, \end($include_paths));
 
 		foreach ($modules as $module)
 		{

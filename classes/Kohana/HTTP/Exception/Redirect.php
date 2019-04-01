@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Redirect HTTP exception class. Used for all [HTTP_Exception]'s where the status
  * code indicates a redirect.
@@ -23,7 +23,7 @@ abstract class Kohana_HTTP_Exception_Redirect extends HTTP_Exception_Expected {
 		if ($uri === NULL)
 			return $this->headers('Location');
 
-		if (strpos($uri, '://') === FALSE)
+		if (\strpos($uri, '://') === FALSE)
 		{
 			// Make the URI into a URL
 			$uri = URL::site($uri, TRUE, ! empty(Kohana::$index_file));

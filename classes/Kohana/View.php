@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Acts as an object wrapper for HTML pages with embedded PHP, called "views".
  * Variables can be assigned with the view object and referenced locally within
@@ -45,16 +45,16 @@ class Kohana_View {
 	protected static function capture($kohana_view_filename, array $kohana_view_data)
 	{
 		// Import the view variables to local namespace
-		extract($kohana_view_data, EXTR_SKIP);
+		\extract($kohana_view_data, EXTR_SKIP);
 
 		if (View::$_global_data)
 		{
 			// Import the global view variables to local namespace
-			extract(View::$_global_data, EXTR_SKIP | EXTR_REFS);
+			\extract(View::$_global_data, EXTR_SKIP | EXTR_REFS);
 		}
 
 		// Capture the view output
-		ob_start();
+		\ob_start();
 
 		try
 		{
@@ -64,14 +64,14 @@ class Kohana_View {
 		catch (Exception $e)
 		{
 			// Delete the output buffer
-			ob_end_clean();
+			\ob_end_clean();
 
 			// Re-throw the exception
 			throw $e;
 		}
 
 		// Get the captured output and close the buffer
-		return ob_get_clean();
+		return \ob_get_clean();
 	}
 
 	/**
@@ -94,7 +94,7 @@ class Kohana_View {
 	 */
 	public static function set_global($key, $value = NULL)
 	{
-		if (is_array($key) OR $key instanceof Traversable)
+		if (\is_array($key) OR $key instanceof Traversable)
 		{
 			foreach ($key as $name => $value)
 			{
@@ -166,11 +166,11 @@ class Kohana_View {
 	 */
 	public function & __get($key)
 	{
-		if (array_key_exists($key, $this->_data))
+		if (\array_key_exists($key, $this->_data))
 		{
 			return $this->_data[$key];
 		}
-		elseif (array_key_exists($key, View::$_global_data))
+		elseif (\array_key_exists($key, View::$_global_data))
 		{
 			return View::$_global_data[$key];
 		}
@@ -294,7 +294,7 @@ class Kohana_View {
 	 */
 	public function set($key, $value = NULL)
 	{
-		if (is_array($key) OR $key instanceof Traversable)
+		if (\is_array($key) OR $key instanceof Traversable)
 		{
 			foreach ($key as $name => $value)
 			{

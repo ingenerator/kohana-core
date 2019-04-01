@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * A port of [phputf8](http://phputf8.sourceforge.net/) to a unified set
  * of files. Provides multi-byte aware replacement string functions.
@@ -55,7 +55,7 @@ class Kohana_UTF8 {
 			$charset = Kohana::$charset;
 		}
 
-		if (is_array($var) OR is_object($var))
+		if (\is_array($var) OR \is_object($var))
 		{
 			foreach ($var as $key => $val)
 			{
@@ -63,7 +63,7 @@ class Kohana_UTF8 {
 				$var[UTF8::clean($key)] = UTF8::clean($val);
 			}
 		}
-		elseif (is_string($var) AND $var !== '')
+		elseif (\is_string($var) AND $var !== '')
 		{
 			// Remove control characters
 			$var = UTF8::strip_ascii_ctrl($var);
@@ -71,16 +71,16 @@ class Kohana_UTF8 {
 			if ( ! UTF8::is_ascii($var))
 			{
 				// Temporarily save the mb_substitute_character() value into a variable
-				$mb_substitute_character = mb_substitute_character();
+				$mb_substitute_character = \mb_substitute_character();
 
 				// Disable substituting illegal characters with the default '?' character
-				mb_substitute_character('none');
+				\mb_substitute_character('none');
 
 				// convert encoding, this is expensive, used when $var is not ASCII
-				$var = mb_convert_encoding($var, $charset, $charset);
+				$var = \mb_convert_encoding($var, $charset, $charset);
 
 				// Reset mb_substitute_character() value back to the original setting
-				mb_substitute_character($mb_substitute_character);
+				\mb_substitute_character($mb_substitute_character);
 			}
 		}
 
@@ -98,12 +98,12 @@ class Kohana_UTF8 {
 	 */
 	public static function is_ascii($str)
 	{
-		if (is_array($str))
+		if (\is_array($str))
 		{
-			$str = implode($str);
+			$str = \implode($str);
 		}
 
-		return ! preg_match('/[^\x00-\x7F]/S', $str);
+		return ! \preg_match('/[^\x00-\x7F]/S', $str);
 	}
 
 	/**
@@ -116,7 +116,7 @@ class Kohana_UTF8 {
 	 */
 	public static function strip_ascii_ctrl($str)
 	{
-		return preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
+		return \preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]+/S', '', $str);
 	}
 
 	/**
@@ -129,7 +129,7 @@ class Kohana_UTF8 {
 	 */
 	public static function strip_non_ascii($str)
 	{
-		return preg_replace('/[^\x00-\x7F]+/S', '', $str);
+		return \preg_replace('/[^\x00-\x7F]+/S', '', $str);
 	}
 
 	/**
@@ -169,7 +169,7 @@ class Kohana_UTF8 {
 	public static function strlen($str)
 	{
 		if (UTF8::$server_utf8)
-			return mb_strlen($str, Kohana::$charset);
+			return \mb_strlen($str, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -200,7 +200,7 @@ class Kohana_UTF8 {
 	public static function strpos($str, $search, $offset = 0)
 	{
 		if (UTF8::$server_utf8)
-			return mb_strpos($str, $search, $offset, Kohana::$charset);
+			return \mb_strpos($str, $search, $offset, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -230,7 +230,7 @@ class Kohana_UTF8 {
 	public static function strrpos($str, $search, $offset = 0)
 	{
 		if (UTF8::$server_utf8)
-			return mb_strrpos($str, $search, $offset, Kohana::$charset);
+			return \mb_strrpos($str, $search, $offset, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -261,8 +261,8 @@ class Kohana_UTF8 {
 	{
 		if (UTF8::$server_utf8)
 			return ($length === NULL)
-				? mb_substr($str, $offset, mb_strlen($str), Kohana::$charset)
-				: mb_substr($str, $offset, $length, Kohana::$charset);
+				? \mb_substr($str, $offset, \mb_strlen($str), Kohana::$charset)
+				: \mb_substr($str, $offset, $length, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -315,7 +315,7 @@ class Kohana_UTF8 {
 	public static function strtolower($str)
 	{
 		if (UTF8::$server_utf8)
-			return mb_strtolower($str, Kohana::$charset);
+			return \mb_strtolower($str, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -341,7 +341,7 @@ class Kohana_UTF8 {
 	public static function strtoupper($str)
 	{
 		if (UTF8::$server_utf8)
-			return mb_strtoupper($str, Kohana::$charset);
+			return \mb_strtoupper($str, Kohana::$charset);
 
 		if ( ! isset(UTF8::$called[__FUNCTION__]))
 		{
@@ -765,5 +765,5 @@ class Kohana_UTF8 {
 if (Kohana_UTF8::$server_utf8 === NULL)
 {
 	// Determine if this server supports UTF-8 natively
-	Kohana_UTF8::$server_utf8 = extension_loaded('mbstring');
+	Kohana_UTF8::$server_utf8 = \extension_loaded('mbstring');
 }

@@ -1,8 +1,8 @@
-<?php defined('SYSPATH') OR die('No direct script access.') ?>
+<?php \defined('SYSPATH') OR die('No direct script access.') ?>
 <?php
 
 // Unique error identifier
-$error_id = uniqid('error');
+$error_id = \uniqid('error');
 
 ?>
 <style type="text/css">
@@ -49,7 +49,7 @@ function koggle(elem)
 }
 </script>
 <div id="kohana_error">
-	<h1><span class="type"><?php echo $class ?> [ <?php echo $code ?> ]:</span> <span class="message"><?php echo htmlspecialchars( (string) $message, ENT_QUOTES | ENT_IGNORE, Kohana::$charset, TRUE); ?></span></h1>
+	<h1><span class="type"><?php echo $class ?> [ <?php echo $code ?> ]:</span> <span class="message"><?php echo \htmlspecialchars( (string) $message, ENT_QUOTES | ENT_IGNORE, Kohana::$charset, TRUE); ?></span></h1>
 	<div id="<?php echo $error_id ?>" class="content">
 		<p><span class="file"><?php echo Debug::path($file) ?> [ <?php echo $line ?> ]</span></p>
 		<?php echo Debug::source($file, $line) ?>
@@ -89,8 +89,8 @@ function koggle(elem)
 	</div>
 	<h2><a href="#<?php echo $env_id = $error_id.'environment' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Environment') ?></a></h2>
 	<div id="<?php echo $env_id ?>" class="content collapsed">
-		<?php $included = get_included_files() ?>
-		<h3><a href="#<?php echo $env_id = $error_id.'environment_included' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Included files') ?></a> (<?php echo count($included) ?>)</h3>
+		<?php $included = \get_included_files() ?>
+		<h3><a href="#<?php echo $env_id = $error_id.'environment_included' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Included files') ?></a> (<?php echo \count($included) ?>)</h3>
 		<div id="<?php echo $env_id ?>" class="collapsed">
 			<table cellspacing="0">
 				<?php foreach ($included as $file): ?>
@@ -100,8 +100,8 @@ function koggle(elem)
 				<?php endforeach ?>
 			</table>
 		</div>
-		<?php $included = get_loaded_extensions() ?>
-		<h3><a href="#<?php echo $env_id = $error_id.'environment_loaded' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Loaded extensions') ?></a> (<?php echo count($included) ?>)</h3>
+		<?php $included = \get_loaded_extensions() ?>
+		<h3><a href="#<?php echo $env_id = $error_id.'environment_loaded' ?>" onclick="return koggle('<?php echo $env_id ?>')"><?php echo __('Loaded extensions') ?></a> (<?php echo \count($included) ?>)</h3>
 		<div id="<?php echo $env_id ?>" class="collapsed">
 			<table cellspacing="0">
 				<?php foreach ($included as $file): ?>
@@ -112,13 +112,13 @@ function koggle(elem)
 			</table>
 		</div>
 		<?php foreach (array('_SESSION', '_GET', '_POST', '_FILES', '_COOKIE', '_SERVER') as $var): ?>
-		<?php if (empty($GLOBALS[$var]) OR ! is_array($GLOBALS[$var])) continue ?>
-		<h3><a href="#<?php echo $env_id = $error_id.'environment'.strtolower($var) ?>" onclick="return koggle('<?php echo $env_id ?>')">$<?php echo $var ?></a></h3>
+		<?php if (empty($GLOBALS[$var]) OR ! \is_array($GLOBALS[$var])) continue ?>
+		<h3><a href="#<?php echo $env_id = $error_id.'environment'.\strtolower($var) ?>" onclick="return koggle('<?php echo $env_id ?>')">$<?php echo $var ?></a></h3>
 		<div id="<?php echo $env_id ?>" class="collapsed">
 			<table cellspacing="0">
 				<?php foreach ($GLOBALS[$var] as $key => $value): ?>
 				<tr>
-					<td><code><?php echo htmlspecialchars( (string) $key, ENT_QUOTES, Kohana::$charset, TRUE); ?></code></td>
+					<td><code><?php echo \htmlspecialchars( (string) $key, ENT_QUOTES, Kohana::$charset, TRUE); ?></code></td>
 					<td><pre><?php echo Debug::dump($value) ?></pre></td>
 				</tr>
 				<?php endforeach ?>

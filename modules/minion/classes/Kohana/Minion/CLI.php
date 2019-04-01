@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 
 class Kohana_Minion_CLI {
 
@@ -48,7 +48,7 @@ class Kohana_Minion_CLI {
 	public static function options($options = NULL)
 	{
 		// Get all of the requested options
-		$options = func_get_args();
+		$options = \func_get_args();
 
 		// Found option values
 		$values = array();
@@ -65,7 +65,7 @@ class Kohana_Minion_CLI {
 			// Get the option
 			$opt = $_SERVER['argv'][$i];
 
-			if (substr($opt, 0, 2) !== '--')
+			if (\substr($opt, 0, 2) !== '--')
 			{
 				// This is a positional argument
 				$values[] = $opt;
@@ -73,12 +73,12 @@ class Kohana_Minion_CLI {
 			}
 
 			// Remove the "--" prefix
-			$opt = substr($opt, 2);
+			$opt = \substr($opt, 2);
 
-			if (strpos($opt, '='))
+			if (\strpos($opt, '='))
 			{
 				// Separate the name and value
-				list ($opt, $value) = explode('=', $opt, 2);
+				list ($opt, $value) = \explode('=', $opt, 2);
 			}
 			else
 			{
@@ -92,7 +92,7 @@ class Kohana_Minion_CLI {
 		{
 			foreach ($values as $opt => $value)
 			{
-				if ( ! in_array($opt, $options))
+				if ( ! \in_array($opt, $options))
 				{
 					// Set the given value
 					unset($values[$opt]);
@@ -100,7 +100,7 @@ class Kohana_Minion_CLI {
 			}
 		}
 
-		return count($options) == 1 ? array_pop($values) : $values;
+		return \count($options) == 1 ? \array_pop($values) : $values;
 	}
 
 	/**
@@ -127,16 +127,16 @@ class Kohana_Minion_CLI {
 		$options_output = '';
 		if ( ! empty($options))
 		{
-			$options_output = ' [ '.implode(', ', $options).' ]';
+			$options_output = ' [ '.\implode(', ', $options).' ]';
 		}
 
-		fwrite(STDOUT, $text.$options_output.': ');
+		\fwrite(STDOUT, $text.$options_output.': ');
 
 		// Read the input from keyboard.
-		$input = trim(fgets(STDIN));
+		$input = \trim(\fgets(STDIN));
 
 		// If options are provided and the choice is not in the array, tell them to try again
-		if ( ! empty($options) && ! in_array($input, $options))
+		if ( ! empty($options) && ! \in_array($input, $options))
 		{
 			Minion_CLI::write('This is not a valid option. Please try again.');
 
@@ -165,24 +165,24 @@ class Kohana_Minion_CLI {
 
 		if (Kohana::$is_windows)
 		{
-			$vbscript = sys_get_temp_dir().'Minion_CLI_Password.vbs';
+			$vbscript = \sys_get_temp_dir().'Minion_CLI_Password.vbs';
 
 			// Create temporary file
-			file_put_contents($vbscript, 'wscript.echo(InputBox("'.addslashes($text).'"))');
+			\file_put_contents($vbscript, 'wscript.echo(InputBox("'.\addslashes($text).'"))');
 
-			$password = shell_exec('cscript //nologo '.escapeshellarg($vbscript));
+			$password = \shell_exec('cscript //nologo '.\escapeshellarg($vbscript));
 
 			// Remove temporary file.
-			unlink($vbscript);
+			\unlink($vbscript);
 		}
 		else
 		{
-			$password = shell_exec('/usr/bin/env bash -c \'read -s -p "'.escapeshellcmd($text).'" var && echo $var\'');
+			$password = \shell_exec('/usr/bin/env bash -c \'read -s -p "'.\escapeshellcmd($text).'" var && echo $var\'');
 		}
 
 		Minion_CLI::write();
 
-		return trim($password);
+		return \trim($password);
 	}
 
 	/**
@@ -193,7 +193,7 @@ class Kohana_Minion_CLI {
 	 */
 	public static function write($text = '')
 	{
-		if (is_array($text))
+		if (\is_array($text))
 		{
 			foreach ($text as $line)
 			{
@@ -202,7 +202,7 @@ class Kohana_Minion_CLI {
 		}
 		else
 		{
-			fwrite(STDOUT, $text.PHP_EOL);
+			\fwrite(STDOUT, $text.PHP_EOL);
 		}
 	}
 
@@ -226,7 +226,7 @@ class Kohana_Minion_CLI {
 	{
 		// Append a newline if $end_line is TRUE
 		$text = $end_line ? $text.PHP_EOL : $text;
-		fwrite(STDOUT, "\r\033[K".$text);
+		\fwrite(STDOUT, "\r\033[K".$text);
 	}
 
 	/**
@@ -248,8 +248,8 @@ class Kohana_Minion_CLI {
 
 			while ($time > 0)
 			{
-				fwrite(STDOUT, $time.'... ');
-				sleep(1);
+				\fwrite(STDOUT, $time.'... ');
+				\sleep(1);
 				$time--;
 			}
 
@@ -259,7 +259,7 @@ class Kohana_Minion_CLI {
 		{
 			if ($seconds > 0)
 			{
-				sleep($seconds);
+				\sleep($seconds);
 			}
 			else
 			{
@@ -290,12 +290,12 @@ class Kohana_Minion_CLI {
 			return $text;
 		}
 
-		if (!array_key_exists($foreground, Minion_CLI::$foreground_colors))
+		if (!\array_key_exists($foreground, Minion_CLI::$foreground_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI foreground color: '.$foreground);
 		}
 
-		if ($background !== null and !array_key_exists($background, Minion_CLI::$background_colors))
+		if ($background !== null and !\array_key_exists($background, Minion_CLI::$background_colors))
 		{
 			throw new Kohana_Exception('Invalid CLI background color: '.$background);
 		}

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Form helper
@@ -137,7 +137,7 @@ class Kohana_FormTest extends Unittest_TestCase
 		}
 
 		// Add on any attributes
-		if (is_array($attributes))
+		if (\is_array($attributes))
 		{
 			$matcher['attributes'] = $attributes + $matcher['attributes'];
 		}
@@ -209,7 +209,7 @@ class Kohana_FormTest extends Unittest_TestCase
 			$matcher['attributes']['value'] = $value;
 		}
 
-		if (is_array($attributes))
+		if (\is_array($attributes))
 		{
 			$matcher['attributes'] = $attributes + $matcher['attributes'];
 		}
@@ -266,7 +266,7 @@ class Kohana_FormTest extends Unittest_TestCase
 		}
 
 
-		if (is_array($attributes))
+		if (\is_array($attributes))
 		{
 			$matcher['attributes'] = $attributes + $matcher['attributes'];
 		}

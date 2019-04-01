@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Wrapper for configuration arrays. Multiple configuration readers can be
  * attached to allow loading configuration from files, database, etc.
@@ -40,7 +40,7 @@ class Kohana_Config {
 		if ($first === TRUE)
 		{
 			// Place the log reader at the top of the stack
-			array_unshift($this->_sources, $source);
+			\array_unshift($this->_sources, $source);
 		}
 		else
 		{
@@ -64,7 +64,7 @@ class Kohana_Config {
 	 */
 	public function detach(Kohana_Config_Source $source)
 	{
-		if (($key = array_search($source, $this->_sources)) !== FALSE)
+		if (($key = \array_search($source, $this->_sources)) !== FALSE)
 		{
 			// Remove the writer
 			unset($this->_sources[$key]);
@@ -88,7 +88,7 @@ class Kohana_Config {
 	 */
 	public function load($group)
 	{
-		if ( ! count($this->_sources))
+		if ( ! \count($this->_sources))
 		{
 			throw new Kohana_Exception('No configuration sources attached');
 		}
@@ -98,15 +98,15 @@ class Kohana_Config {
 			throw new Kohana_Exception("Need to specify a config group");
 		}
 
-		if ( ! is_string($group))
+		if ( ! \is_string($group))
 		{
 			throw new Kohana_Exception("Config group must be a string");
 		}
 
-		if (strpos($group, '.') !== FALSE)
+		if (\strpos($group, '.') !== FALSE)
 		{
 			// Split the config group and path
-			list($group, $path) = explode('.', $group, 2);
+			list($group, $path) = \explode('.', $group, 2);
 		}
 
 		if (isset($this->_groups[$group]))
@@ -121,7 +121,7 @@ class Kohana_Config {
 		$config = array();
 
 		// We search from the "lowest" source and work our way up
-		$sources = array_reverse($this->_sources);
+		$sources = \array_reverse($this->_sources);
 
 		foreach ($sources as $source)
 		{

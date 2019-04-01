@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.2.2 (2019-04-01)
+
+* Explicitly use namespaced calls for all global functions for performance 
+  https://veewee.github.io/blog/optimizing-php-performance-by-fq-function-calls/
+
 ## v4.2.1 (2018-05-31)
 
 * Support hyphenated task names in minion e.g. do:some-complex-thing becomes Task_Db_SomeComplexThing

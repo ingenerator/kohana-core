@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the View class
@@ -29,7 +29,7 @@ class Kohana_ViewTest extends Unittest_TestCase
 		self::$old_modules = Kohana::modules();
 
 		$new_modules = self::$old_modules+array(
-			'test_views' => realpath(dirname(__FILE__).'/../test_data/')
+			'test_views' => \realpath(\dirname(__FILE__).'/../test_data/')
 		);
 		Kohana::modules($new_modules);
 	}
