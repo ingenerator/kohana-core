@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Array helper.
  *
@@ -30,11 +30,11 @@ class Kohana_Arr {
 	public static function is_assoc(array $array)
 	{
 		// Keys of the array
-		$keys = array_keys($array);
+		$keys = \array_keys($array);
 
 		// If the array keys of the keys match the keys, then the array must
 		// not be associative (e.g. the keys array looked like {0:0, 1:1...}).
-		return array_keys($keys) !== $keys;
+		return \array_keys($keys) !== $keys;
 	}
 
 	/**
@@ -54,7 +54,7 @@ class Kohana_Arr {
 	 */
 	public static function is_array($value)
 	{
-		if (is_array($value))
+		if (\is_array($value))
 		{
 			// Definitely an array
 			return TRUE;
@@ -62,7 +62,7 @@ class Kohana_Arr {
 		else
 		{
 			// Possibly a Traversable object, functionally the same as an array
-			return (is_object($value) AND $value instanceof Traversable);
+			return (\is_object($value) AND $value instanceof Traversable);
 		}
 	}
 
@@ -94,14 +94,14 @@ class Kohana_Arr {
 			return $default;
 		}
 
-		if (is_array($path))
+		if (\is_array($path))
 		{
 			// The path has already been separated into keys
 			$keys = $path;
 		}
 		else
 		{
-			if (array_key_exists($path, $array))
+			if (\array_key_exists($path, $array))
 			{
 				// No need to do extra processing
 				return $array[$path];
@@ -114,20 +114,20 @@ class Kohana_Arr {
 			}
 
 			// Remove starting delimiters and spaces
-			$path = ltrim($path, "{$delimiter} ");
+			$path = \ltrim($path, "{$delimiter} ");
 
 			// Remove ending delimiters, spaces, and wildcards
-			$path = rtrim($path, "{$delimiter} *");
+			$path = \rtrim($path, "{$delimiter} *");
 
 			// Split the keys by delimiter
-			$keys = explode($delimiter, $path);
+			$keys = \explode($delimiter, $path);
 		}
 
 		do
 		{
-			$key = array_shift($keys);
+			$key = \array_shift($keys);
 
-			if (ctype_digit($key))
+			if (\ctype_digit($key))
 			{
 				// Make the key an integer
 				$key = (int) $key;
@@ -161,7 +161,7 @@ class Kohana_Arr {
 				$values = array();
 				foreach ($array as $arr)
 				{
-					if ($value = Arr::path($arr, implode('.', $keys)))
+					if ($value = Arr::path($arr, \implode('.', $keys)))
 					{
 						$values[] = $value;
 					}
@@ -209,18 +209,18 @@ class Kohana_Arr {
 
 		// The path has already been separated into keys
 		$keys = $path;
-		if ( ! is_array($path))
+		if ( ! \is_array($path))
 		{
 			// Split the keys by delimiter
-			$keys = explode($delimiter, $path);
+			$keys = \explode($delimiter, $path);
 		}
 
 		// Set current $array to inner-most array path
-		while (count($keys) > 1)
+		while (\count($keys) > 1)
 		{
-			$key = array_shift($keys);
+			$key = \array_shift($keys);
 
-			if (ctype_digit($key))
+			if (\ctype_digit($key))
 			{
 				// Make the key an integer
 				$key = (int) $key;
@@ -235,7 +235,7 @@ class Kohana_Arr {
 		}
 
 		// Set key on inner-most array
-		$array[array_shift($keys)] = $value;
+		$array[\array_shift($keys)] = $value;
 	}
 
 	/**
@@ -356,9 +356,9 @@ class Kohana_Arr {
 	 */
 	public static function unshift( array & $array, $key, $val)
 	{
-		$array = array_reverse($array, TRUE);
+		$array = \array_reverse($array, TRUE);
 		$array[$key] = $val;
-		$array = array_reverse($array, TRUE);
+		$array = \array_reverse($array, TRUE);
 
 		return $array;
 	}
@@ -391,22 +391,22 @@ class Kohana_Arr {
 	{
 		foreach ($array as $key => $val)
 		{
-			if (is_array($val))
+			if (\is_array($val))
 			{
 				$array[$key] = Arr::map($callbacks, $array[$key], $keys);
 			}
-			elseif ( ! is_array($keys) OR in_array($key, $keys))
+			elseif ( ! \is_array($keys) OR \in_array($key, $keys))
 			{
-				if (is_array($callbacks))
+				if (\is_array($callbacks))
 				{
 					foreach ($callbacks as $cb)
 					{
-						$array[$key] = call_user_func($cb, $array[$key]);
+						$array[$key] = \call_user_func($cb, $array[$key]);
 					}
 				}
 				else
 				{
-					$array[$key] = call_user_func($callbacks, $array[$key]);
+					$array[$key] = \call_user_func($callbacks, $array[$key]);
 				}
 			}
 		}
@@ -440,9 +440,9 @@ class Kohana_Arr {
 		{
 			foreach ($array2 as $key => $value)
 			{
-				if (is_array($value)
+				if (\is_array($value)
 					AND isset($array1[$key])
-					AND is_array($array1[$key])
+					AND \is_array($array1[$key])
 				)
 				{
 					$array1[$key] = Arr::merge($array1[$key], $value);
@@ -457,24 +457,24 @@ class Kohana_Arr {
 		{
 			foreach ($array2 as $value)
 			{
-				if ( ! in_array($value, $array1, TRUE))
+				if ( ! \in_array($value, $array1, TRUE))
 				{
 					$array1[] = $value;
 				}
 			}
 		}
 
-		if (func_num_args() > 2)
+		if (\func_num_args() > 2)
 		{
-			foreach (array_slice(func_get_args(), 2) as $array2)
+			foreach (\array_slice(\func_get_args(), 2) as $array2)
 			{
 				if (Arr::is_assoc($array2))
 				{
 					foreach ($array2 as $key => $value)
 					{
-						if (is_array($value)
+						if (\is_array($value)
 							AND isset($array1[$key])
-							AND is_array($array1[$key])
+							AND \is_array($array1[$key])
 						)
 						{
 							$array1[$key] = Arr::merge($array1[$key], $value);
@@ -489,7 +489,7 @@ class Kohana_Arr {
 				{
 					foreach ($array2 as $value)
 					{
-						if ( ! in_array($value, $array1, TRUE))
+						if ( ! \in_array($value, $array1, TRUE))
 						{
 							$array1[] = $value;
 						}
@@ -520,16 +520,16 @@ class Kohana_Arr {
 	 */
 	public static function overwrite($array1, $array2)
 	{
-		foreach (array_intersect_key($array2, $array1) as $key => $value)
+		foreach (\array_intersect_key($array2, $array1) as $key => $value)
 		{
 			$array1[$key] = $value;
 		}
 
-		if (func_num_args() > 2)
+		if (\func_num_args() > 2)
 		{
-			foreach (array_slice(func_get_args(), 2) as $array2)
+			foreach (\array_slice(\func_get_args(), 2) as $array2)
 			{
-				foreach (array_intersect_key($array2, $array1) as $key => $value)
+				foreach (\array_intersect_key($array2, $array1) as $key => $value)
 				{
 					$array1[$key] = $value;
 				}
@@ -558,7 +558,7 @@ class Kohana_Arr {
 		$command = $params = NULL;
 
 		// command[param,param]
-		if (preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match))
+		if (\preg_match('/^([^\(]*+)\((.*)\)$/', $str, $match))
 		{
 			// command
 			$command = $match[1];
@@ -566,8 +566,8 @@ class Kohana_Arr {
 			if ($match[2] !== '')
 			{
 				// param,param
-				$params = preg_split('/(?<!\\\\),/', $match[2]);
-				$params = str_replace('\,', ',', $params);
+				$params = \preg_split('/(?<!\\\\),/', $match[2]);
+				$params = \str_replace('\,', ',', $params);
 			}
 		}
 		else
@@ -576,10 +576,10 @@ class Kohana_Arr {
 			$command = $str;
 		}
 
-		if (strpos($command, '::') !== FALSE)
+		if (\strpos($command, '::') !== FALSE)
 		{
 			// Create a static method callable command
-			$command = explode('::', $command, 2);
+			$command = \explode('::', $command, 2);
 		}
 
 		return array($command, $params);
@@ -609,9 +609,9 @@ class Kohana_Arr {
 		$flat = array();
 		foreach ($array as $key => $value)
 		{
-			if (is_array($value))
+			if (\is_array($value))
 			{
-				$flat = array_merge($flat, Arr::flatten($value));
+				$flat = \array_merge($flat, Arr::flatten($value));
 			}
 			else
 			{

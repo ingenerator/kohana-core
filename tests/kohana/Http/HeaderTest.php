@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Unit Tests for Kohana_HTTP_Header
  *
@@ -412,13 +412,13 @@ class Kohana_HTTP_HeaderTest extends Unittest_TestCase {
 
 		foreach ($expected as $key => $value)
 		{
-			if (is_int($key))
+			if (\is_int($key))
 			{
-				$this->assertTrue(in_array($value, $parsed));
+				$this->assertTrue(\in_array($value, $parsed));
 			}
 			else
 			{
-				$this->assertTrue(array_key_exists($key, $parsed));
+				$this->assertTrue(\array_key_exists($key, $parsed));
 				$this->assertSame($value, $parsed[$key]);
 			}
 		}
@@ -814,7 +814,7 @@ class Kohana_HTTP_HeaderTest extends Unittest_TestCase {
 		foreach ($headers as $header)
 		{
 			
-			$this->assertEquals(strlen($header), $http_header->parse_header_string(NULL, $header));
+			$this->assertEquals(\strlen($header), $http_header->parse_header_string(NULL, $header));
 		}
 
 		$this->assertSame($expected, $http_header->getArrayCopy());

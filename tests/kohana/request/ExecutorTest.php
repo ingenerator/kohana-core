@@ -135,7 +135,7 @@ class Kohana_Request_ExecutorTest extends PHPUnit_Framework_TestCase
 		$response = $this->newSubject()->execute(\Request::with(['uri' => $url]));
 
 		$this->assertSame(200, $response->status());
-		$this->assertEquals($expect, json_decode($response, TRUE));
+		$this->assertEquals($expect, \json_decode($response, TRUE));
 	}
 
 	public function provider_controller_class()
@@ -177,7 +177,7 @@ class Kohana_Request_ExecutorTest extends PHPUnit_Framework_TestCase
 		$controller_class,
 		$expect
 	) {
-		if ( ! class_exists($controller_class)) {
+		if ( ! \class_exists($controller_class)) {
 			$this->defineExtensionClass($controller_class, ClassReturningController::class);
 		}
 		$this->routes = [$this->givenRouteWithDefaults('', $route_defaults)];
@@ -187,9 +187,9 @@ class Kohana_Request_ExecutorTest extends PHPUnit_Framework_TestCase
 
 	protected function defineExtensionClass($fqcn, $base_class)
 	{
-		$parts = array_filter(explode('\\', $fqcn));
-		$class = array_pop($parts);
-		$ns    = implode('\\', $parts);
+		$parts = \array_filter(\explode('\\', $fqcn));
+		$class = \array_pop($parts);
+		$ns    = \implode('\\', $parts);
 		if ($ns) {
 			$ns = 'namespace '.$ns.';';
 		}
@@ -228,7 +228,7 @@ class ClassReturningController extends Controller
 
 	public function execute()
 	{
-		$this->response->body(get_class($this).'::'.$this->request->action());
+		$this->response->body(\get_class($this).'::'.$this->request->action());
 
 		return $this->response;
 	}
@@ -257,7 +257,7 @@ class Controller_RequestCapture extends Controller
 	public function execute()
 	{
 		$this->response->body(
-			json_encode(
+			\json_encode(
 				[
 					'directory'  => $this->request->directory(),
 					'controller' => $this->request->controller(),

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 
 class Kohana_HTTP_Exception_305 extends HTTP_Exception_Expected {
 
@@ -33,7 +33,7 @@ class Kohana_HTTP_Exception_305 extends HTTP_Exception_Expected {
 		if ($location = $this->headers('location') === NULL)
 			throw new Kohana_Exception('A \'location\' must be specified for a redirect');
 
-		if (strpos($location, '://') === FALSE)
+		if (\strpos($location, '://') === FALSE)
 			throw new Kohana_Exception('An absolute URI to the proxy server must be specified');
 
 		return TRUE;

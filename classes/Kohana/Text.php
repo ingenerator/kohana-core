@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Text helper class. Provides simple methods for working with text.
  *
@@ -62,17 +62,17 @@ class Kohana_Text {
 		$limit = (int) $limit;
 		$end_char = ($end_char === NULL) ? '…' : $end_char;
 
-		if (trim($str) === '')
+		if (\trim($str) === '')
 			return $str;
 
 		if ($limit <= 0)
 			return $end_char;
 
-		preg_match('/^\s*+(?:\S++\s*+){1,'.$limit.'}/u', $str, $matches);
+		\preg_match('/^\s*+(?:\S++\s*+){1,'.$limit.'}/u', $str, $matches);
 
 		// Only attach the end character if the matched string is shorter
 		// than the starting string.
-		return rtrim($matches[0]).((strlen($matches[0]) === strlen($str)) ? '' : $end_char);
+		return \rtrim($matches[0]).((\strlen($matches[0]) === \strlen($str)) ? '' : $end_char);
 	}
 
 	/**
@@ -93,21 +93,21 @@ class Kohana_Text {
 
 		$limit = (int) $limit;
 
-		if (trim($str) === '' OR UTF8::strlen($str) <= $limit)
+		if (\trim($str) === '' OR UTF8::strlen($str) <= $limit)
 			return $str;
 
 		if ($limit <= 0)
 			return $end_char;
 
 		if ($preserve_words === FALSE)
-			return rtrim(UTF8::substr($str, 0, $limit)).$end_char;
+			return \rtrim(UTF8::substr($str, 0, $limit)).$end_char;
 
 		// Don't preserve words. The limit is considered the top limit.
 		// No strings with a length longer than $limit should be returned.
-		if ( ! preg_match('/^.{0,'.$limit.'}\s/us', $str, $matches))
+		if ( ! \preg_match('/^.{0,'.$limit.'}\s/us', $str, $matches))
 			return $end_char;
 
-		return rtrim($matches[0]).((strlen($matches[0]) === strlen($str)) ? '' : $end_char);
+		return \rtrim($matches[0]).((\strlen($matches[0]) === \strlen($str)) ? '' : $end_char);
 	}
 
 	/**
@@ -127,14 +127,14 @@ class Kohana_Text {
 	{
 		static $i;
 
-		if (func_num_args() === 0)
+		if (\func_num_args() === 0)
 		{
 			$i = 0;
 			return '';
 		}
 
-		$args = func_get_args();
-		return $args[($i++ % count($args))];
+		$args = \func_get_args();
+		return $args[($i++ % \count($args))];
 	}
 
 	/**
@@ -202,30 +202,30 @@ class Kohana_Text {
 		}
 
 		// Split the pool into an array of characters
-		$pool = ($utf8 === TRUE) ? UTF8::str_split($pool, 1) : str_split($pool, 1);
+		$pool = ($utf8 === TRUE) ? UTF8::str_split($pool, 1) : \str_split($pool, 1);
 
 		// Largest pool key
-		$max = count($pool) - 1;
+		$max = \count($pool) - 1;
 
 		$str = '';
 		for ($i = 0; $i < $length; $i++)
 		{
 			// Select a random character from the pool and add it to the string
-			$str .= $pool[mt_rand(0, $max)];
+			$str .= $pool[\mt_rand(0, $max)];
 		}
 
 		// Make sure alnum strings contain at least one letter and one digit
 		if ($type === 'alnum' AND $length > 1)
 		{
-			if (ctype_alpha($str))
+			if (\ctype_alpha($str))
 			{
 				// Add a random digit
-				$str[mt_rand(0, $length - 1)] = chr(mt_rand(48, 57));
+				$str[\mt_rand(0, $length - 1)] = \chr(\mt_rand(48, 57));
 			}
-			elseif (ctype_digit($str))
+			elseif (\ctype_digit($str))
 			{
 				// Add a random letter
-				$str[mt_rand(0, $length - 1)] = chr(mt_rand(65, 90));
+				$str[\mt_rand(0, $length - 1)] = \chr(\mt_rand(65, 90));
 			}
 		}
 
@@ -246,7 +246,7 @@ class Kohana_Text {
 	public static function ucfirst($string, $delimiter = '-')
 	{
 		// Put the keys back the Case-Convention expected
-		return implode($delimiter, array_map('UTF8::ucfirst', explode($delimiter, $string)));
+		return \implode($delimiter, \array_map('UTF8::ucfirst', \explode($delimiter, $string)));
 	}
 
 	/**
@@ -259,7 +259,7 @@ class Kohana_Text {
 	 */
 	public static function reduce_slashes($str)
 	{
-		return preg_replace('#(?<!:)//+#', '/', $str);
+		return \preg_replace('#(?<!:)//+#', '/', $str);
 	}
 
 	/**
@@ -281,10 +281,10 @@ class Kohana_Text {
 	{
 		foreach ( (array) $badwords as $key => $badword)
 		{
-			$badwords[$key] = str_replace('\*', '\S*?', preg_quote( (string) $badword));
+			$badwords[$key] = \str_replace('\*', '\S*?', \preg_quote( (string) $badword));
 		}
 
-		$regex = '('.implode('|', $badwords).')';
+		$regex = '('.\implode('|', $badwords).')';
 
 		if ($replace_partial_words === FALSE)
 		{
@@ -297,13 +297,13 @@ class Kohana_Text {
 		// if $replacement is a single character: replace each of the characters of the badword with $replacement
 		if (UTF8::strlen($replacement) == 1)
 		{
-			return preg_replace_callback($regex, function($matches) use ($replacement) {
-				return str_repeat($replacement, UTF8::strlen($matches[1]));
+			return \preg_replace_callback($regex, function($matches) use ($replacement) {
+				return \str_repeat($replacement, UTF8::strlen($matches[1]));
 			}, $str);
 		}
 
 		// if $replacement is not a single character, fully replace the badword with $replacement
-		return preg_replace($regex, $replacement, $str);
+		return \preg_replace($regex, $replacement, $str);
 	}
 
 	/**
@@ -317,9 +317,9 @@ class Kohana_Text {
 	public static function similar(array $words)
 	{
 		// First word is the word to match against
-		$word = current($words);
+		$word = \current($words);
 
-		for ($i = 0, $max = strlen($word); $i < $max; ++$i)
+		for ($i = 0, $max = \strlen($word); $i < $max; ++$i)
 		{
 			foreach ($words as $w)
 			{
@@ -330,7 +330,7 @@ class Kohana_Text {
 		}
 
 		// Return the similar text
-		return substr($word, 0, $i);
+		return \substr($word, 0, $i);
 	}
 
 	/**
@@ -366,10 +366,10 @@ class Kohana_Text {
 	public static function auto_link_urls($text)
 	{
 		// Find and replace all http/https/ftp/ftps links that are not part of an existing html anchor
-		$text = preg_replace_callback('~\b(?<!href="|">)(?:ht|f)tps?://[^<\s]+(?:/|\b)~i', 'Text::_auto_link_urls_callback1', $text);
+		$text = \preg_replace_callback('~\b(?<!href="|">)(?:ht|f)tps?://[^<\s]+(?:/|\b)~i', 'Text::_auto_link_urls_callback1', $text);
 
 		// Find and replace all naked www.links.com (without http://)
-		return preg_replace_callback('~\b(?<!://|">)www(?:\.[a-z0-9][-a-z0-9]*+)+\.[a-z]{2,6}[^<\s]*\b~i', 'Text::_auto_link_urls_callback2', $text);
+		return \preg_replace_callback('~\b(?<!://|">)www(?:\.[a-z0-9][-a-z0-9]*+)+\.[a-z]{2,6}[^<\s]*\b~i', 'Text::_auto_link_urls_callback2', $text);
 	}
 
 	protected static function _auto_link_urls_callback1($matches)
@@ -399,7 +399,7 @@ class Kohana_Text {
 		// Find and replace all email addresses that are not part of an existing html mailto anchor
 		// Note: The "58;" negative lookbehind prevents matching of existing encoded html mailto anchors
 		//       The html entity for a colon (:) is &#58; or &#058; or &#0058; etc.
-		return preg_replace_callback('~\b(?<!href="mailto:|58;)(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}\b(?!</a>)~i', 'Text::_auto_link_emails_callback', $text);
+		return \preg_replace_callback('~\b(?<!href="mailto:|58;)(?!\.)[-+_a-z0-9.]++(?<!\.)@(?![-.])[-a-z0-9.]+(?<!\.)\.[a-z]{2,6}\b(?!</a>)~i', 'Text::_auto_link_emails_callback', $text);
 	}
 
 	protected static function _auto_link_emails_callback($matches)
@@ -422,43 +422,43 @@ class Kohana_Text {
 	public static function auto_p($str, $br = TRUE)
 	{
 		// Trim whitespace
-		if (($str = trim($str)) === '')
+		if (($str = \trim($str)) === '')
 			return '';
 
 		// Standardize newlines
-		$str = str_replace(array("\r\n", "\r"), "\n", $str);
+		$str = \str_replace(array("\r\n", "\r"), "\n", $str);
 
 		// Trim whitespace on each line
-		$str = preg_replace('~^[ \t]+~m', '', $str);
-		$str = preg_replace('~[ \t]+$~m', '', $str);
+		$str = \preg_replace('~^[ \t]+~m', '', $str);
+		$str = \preg_replace('~[ \t]+$~m', '', $str);
 
 		// The following regexes only need to be executed if the string contains html
-		if ($html_found = (strpos($str, '<') !== FALSE))
+		if ($html_found = (\strpos($str, '<') !== FALSE))
 		{
 			// Elements that should not be surrounded by p tags
 			$no_p = '(?:p|div|h[1-6r]|ul|ol|li|blockquote|d[dlt]|pre|t[dhr]|t(?:able|body|foot|head)|c(?:aption|olgroup)|form|s(?:elect|tyle)|a(?:ddress|rea)|ma(?:p|th))';
 
 			// Put at least two linebreaks before and after $no_p elements
-			$str = preg_replace('~^<'.$no_p.'[^>]*+>~im', "\n$0", $str);
-			$str = preg_replace('~</'.$no_p.'\s*+>$~im', "$0\n", $str);
+			$str = \preg_replace('~^<'.$no_p.'[^>]*+>~im', "\n$0", $str);
+			$str = \preg_replace('~</'.$no_p.'\s*+>$~im', "$0\n", $str);
 		}
 
 		// Do the <p> magic!
-		$str = '<p>'.trim($str).'</p>';
-		$str = preg_replace('~\n{2,}~', "</p>\n\n<p>", $str);
+		$str = '<p>'.\trim($str).'</p>';
+		$str = \preg_replace('~\n{2,}~', "</p>\n\n<p>", $str);
 
 		// The following regexes only need to be executed if the string contains html
 		if ($html_found !== FALSE)
 		{
 			// Remove p tags around $no_p elements
-			$str = preg_replace('~<p>(?=</?'.$no_p.'[^>]*+>)~i', '', $str);
-			$str = preg_replace('~(</?'.$no_p.'[^>]*+>)</p>~i', '$1', $str);
+			$str = \preg_replace('~<p>(?=</?'.$no_p.'[^>]*+>)~i', '', $str);
+			$str = \preg_replace('~(</?'.$no_p.'[^>]*+>)</p>~i', '$1', $str);
 		}
 
 		// Convert single linebreaks to <br />
 		if ($br === TRUE)
 		{
-			$str = preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
+			$str = \preg_replace('~(?<!\n)\n(?!\n)~', "<br />\n", $str);
 		}
 
 		return $str;
@@ -483,7 +483,7 @@ class Kohana_Text {
 		$format = ($format === NULL) ? '%01.2f %s' : (string) $format;
 
 		// IEC prefixes (binary)
-		if ($si == FALSE OR strpos($force_unit, 'i') !== FALSE)
+		if ($si == FALSE OR \strpos($force_unit, 'i') !== FALSE)
 		{
 			$units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
 			$mod   = 1024;
@@ -496,12 +496,12 @@ class Kohana_Text {
 		}
 
 		// Determine unit to use
-		if (($power = array_search( (string) $force_unit, $units)) === FALSE)
+		if (($power = \array_search( (string) $force_unit, $units)) === FALSE)
 		{
-			$power = ($bytes > 0) ? floor(log($bytes, $mod)) : 0;
+			$power = ($bytes > 0) ? \floor(\log($bytes, $mod)) : 0;
 		}
 
-		return sprintf($format, $bytes / pow($mod, $power), $units[$power]);
+		return \sprintf($format, $bytes / \pow($mod, $power), $units[$power]);
 	}
 
 	/**
@@ -536,7 +536,7 @@ class Kohana_Text {
 			if ($number / $unit >= 1)
 			{
 				// $value = the number of times the number is divisible by unit
-				$number -= $unit * ($value = (int) floor($number / $unit));
+				$number -= $unit * ($value = (int) \floor($number / $unit));
 				// Temporary var for textifying the current unit
 				$item = '';
 
@@ -560,7 +560,7 @@ class Kohana_Text {
 				// then we need to modify the previous entry
 				if (empty($item))
 				{
-					array_pop($text);
+					\array_pop($text);
 
 					$item = $last_item;
 				}
@@ -570,12 +570,12 @@ class Kohana_Text {
 			}
 		}
 
-		if (count($text) > 1)
+		if (\count($text) > 1)
 		{
-			$and = array_pop($text);
+			$and = \array_pop($text);
 		}
 
-		$text = implode(', ', $text);
+		$text = \implode(', ', $text);
 
 		if (isset($and))
 		{
@@ -608,7 +608,7 @@ class Kohana_Text {
 			(</(a|em|span|strong|i|b)>\s*)*                 # optional closing inline tags with optional white space after each
 			((</(p|h[1-6]|li|dt|dd)>)|$))                   # end with a closing p, h1-6, li or the end of the string
 		%x";
-		return preg_replace($widont_regex, '$1&nbsp;$2', $str);
+		return \preg_replace($widont_regex, '$1&nbsp;$2', $str);
 	}
 
 	/**
@@ -631,7 +631,7 @@ class Kohana_Text {
 	 */
 	public static function user_agent($agent, $value)
 	{
-		if (is_array($value))
+		if (\is_array($value))
 		{
 			$data = array();
 			foreach ($value as $part)
@@ -653,12 +653,12 @@ class Kohana_Text {
 
 			foreach ($browsers as $search => $name)
 			{
-				if (stripos($agent, $search) !== FALSE)
+				if (\stripos($agent, $search) !== FALSE)
 				{
 					// Set the browser name
 					$info['browser'] = $name;
 
-					if (preg_match('#'.preg_quote($search).'[^0-9.]*+([0-9.][0-9.a-z]*)#i', $agent, $matches))
+					if (\preg_match('#'.\preg_quote($search).'[^0-9.]*+([0-9.][0-9.a-z]*)#i', $agent, $matches))
 					{
 						// Set the version number
 						$info['version'] = $matches[1];
@@ -680,7 +680,7 @@ class Kohana_Text {
 
 			foreach ($group as $search => $name)
 			{
-				if (stripos($agent, $search) !== FALSE)
+				if (\stripos($agent, $search) !== FALSE)
 				{
 					// Set the value name
 					return $name;

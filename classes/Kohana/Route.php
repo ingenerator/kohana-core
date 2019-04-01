@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Routes are used to determine the controller and action for a requested URI.
  * Every route generates a regular expression which is used to match a URI
@@ -130,7 +130,7 @@ class Kohana_Route {
 	 */
 	public static function name(Route $route)
 	{
-		return array_search($route, Route::$_routes);
+		return \array_search($route, Route::$_routes);
 	}
 
 	/**
@@ -232,16 +232,16 @@ class Kohana_Route {
 	{
 		// The URI should be considered literal except for keys and optional parts
 		// Escape everything preg_quote would escape except for : ( ) < >
-		$expression = preg_replace('#'.Route::REGEX_ESCAPE.'#', '\\\\$0', $uri);
+		$expression = \preg_replace('#'.Route::REGEX_ESCAPE.'#', '\\\\$0', $uri);
 
-		if (strpos($expression, '(') !== FALSE)
+		if (\strpos($expression, '(') !== FALSE)
 		{
 			// Make optional parts of the URI non-capturing and optional
-			$expression = str_replace(array('(', ')'), array('(?:', ')?'), $expression);
+			$expression = \str_replace(array('(', ')'), array('(?:', ')?'), $expression);
 		}
 
 		// Insert default regex for keys
-		$expression = str_replace(array('<', '>'), array('(?P<', '>'.Route::REGEX_SEGMENT.')'), $expression);
+		$expression = \str_replace(array('<', '>'), array('(?P<', '>'.Route::REGEX_SEGMENT.')'), $expression);
 
 		if ($regex)
 		{
@@ -253,7 +253,7 @@ class Kohana_Route {
 			}
 
 			// Replace the default regex with the user-specified regex
-			$expression = str_replace($search, $replace, $expression);
+			$expression = \str_replace($search, $replace, $expression);
 		}
 
 		return '#^'.$expression.'$#uD';
@@ -342,7 +342,7 @@ class Kohana_Route {
 			return $this->_defaults;
 		}
 
-		if (isset($defaults['controller']) AND substr($defaults['controller'], 0, 1) === '\\')
+		if (isset($defaults['controller']) AND \substr($defaults['controller'], 0, 1) === '\\')
 		{
 			if (isset($defaults['directory']))
 			{
@@ -385,7 +385,7 @@ class Kohana_Route {
 	 */
 	public function filter($callback)
 	{
-		if ( ! is_callable($callback))
+		if ( ! \is_callable($callback))
 		{
 			throw new Kohana_Exception('Invalid Route::callback specified');
 		}
@@ -417,15 +417,15 @@ class Kohana_Route {
 	public function matches(Request $request)
 	{
 		// Get the URI from the Request
-		$uri = trim($request->uri(), '/');
+		$uri = \trim($request->uri(), '/');
 
-		if ( ! preg_match($this->_route_regex, $uri, $matches))
+		if ( ! \preg_match($this->_route_regex, $uri, $matches))
 			return FALSE;
 
 		$params = array();
 		foreach ($matches as $key => $value)
 		{
-			if (is_int($key))
+			if (\is_int($key))
 			{
 				// Skip all unnamed keys
 				continue;
@@ -447,13 +447,13 @@ class Kohana_Route {
 		if ( ! empty($params['controller']))
 		{
 			// PSR-0: Replace underscores with spaces, run ucwords, then replace underscore
-			$params['controller'] = str_replace(' ', '_', ucwords(str_replace('_', ' ', $params['controller'])));
+			$params['controller'] = \str_replace(' ', '_', \ucwords(\str_replace('_', ' ', $params['controller'])));
 		}
 
 		if ( ! empty($params['directory']))
 		{
 			// PSR-0: Replace underscores with spaces, run ucwords, then replace underscore
-			$params['directory'] = str_replace(' ', '_', ucwords(str_replace('_', ' ', $params['directory'])));
+			$params['directory'] = \str_replace(' ', '_', \ucwords(\str_replace('_', ' ', $params['directory'])));
 		}
 
 		if ($this->_filters)
@@ -461,14 +461,14 @@ class Kohana_Route {
 			foreach ($this->_filters as $callback)
 			{
 				// Execute the filter giving it the route, params, and request
-				$return = call_user_func($callback, $this, $params, $request);
+				$return = \call_user_func($callback, $this, $params, $request);
 
 				if ($return === FALSE)
 				{
 					// Filter has aborted the match
 					return FALSE;
 				}
-				elseif (is_array($return))
+				elseif (\is_array($return))
 				{
 					// Filter has modified the parameters
 					$params = $return;
@@ -500,9 +500,9 @@ class Kohana_Route {
 		if ($params)
 		{
 			// @issue #4079 rawurlencode parameters
-			$params = array_map('rawurlencode', $params);
+			$params = \array_map('rawurlencode', $params);
 			// decode slashes back, see Apache docs about AllowEncodedSlashes and AcceptPathInfo
-			$params = str_replace(array('%2F', '%5C'), array('/', '\\'), $params);
+			$params = \str_replace(array('%2F', '%5C'), array('/', '\\'), $params);
 		}
 
 		$defaults = $this->_defaults;
@@ -520,7 +520,7 @@ class Kohana_Route {
 			$missing = array();
 
 			$pattern = '#(?:'.Route::REGEX_KEY.'|'.Route::REGEX_GROUP.')#';
-			$result = preg_replace_callback($pattern, function ($matches) use (&$compile, $defaults, &$missing, $params, &$required)
+			$result = \preg_replace_callback($pattern, function ($matches) use (&$compile, $defaults, &$missing, $params, &$required)
 			{
 				if ($matches[0][0] === '<')
 				{
@@ -567,7 +567,7 @@ class Kohana_Route {
 			{
 				throw new Kohana_Exception(
 					'Required route parameter not passed: :param',
-					array(':param' => reset($missing))
+					array(':param' => \reset($missing))
 				);
 			}
 
@@ -577,7 +577,7 @@ class Kohana_Route {
 		list($uri) = $compile($this->_uri, TRUE);
 
 		// Trim all extra slashes from the URI
-		$uri = preg_replace('#//+#', '/', rtrim($uri, '/'));
+		$uri = \preg_replace('#//+#', '/', \rtrim($uri, '/'));
 
 		return $uri;
 	}

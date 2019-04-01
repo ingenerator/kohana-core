@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Logging API
@@ -61,7 +61,7 @@ class Kohana_LogTest extends Unittest_TestCase
 		$this->assertSame($logger, $logger->attach($writer));
 
 		$this->assertAttributeSame(
-			array(spl_object_hash($writer) => array('object' => $writer, 'levels' => array())),
+			array(\spl_object_hash($writer) => array('object' => $writer, 'levels' => array())),
 			'_writers',
 			$logger
 		);
@@ -83,7 +83,7 @@ class Kohana_LogTest extends Unittest_TestCase
 		$this->assertSame($logger, $logger->attach($writer, Log::NOTICE, Log::CRITICAL));
 
 		$this->assertAttributeSame(
-			array(spl_object_hash($writer) => array('object' => $writer, 'levels' => array(Log::CRITICAL, Log::ERROR, Log::WARNING, Log::NOTICE))),
+			array(\spl_object_hash($writer) => array('object' => $writer, 'levels' => array(Log::CRITICAL, Log::ERROR, Log::WARNING, Log::NOTICE))),
 			'_writers',
 			$logger
 		);

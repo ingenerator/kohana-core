@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the cookie class
@@ -217,7 +217,7 @@ class Kohana_CookieTest extends Unittest_TestCase
 	 */
 	public function test_salt_creates_different_hash_for_different_data($first_args, $changed_args)
 	{
-		$second_args = array_merge($first_args, $changed_args);
+		$second_args = \array_merge($first_args, $changed_args);
 		$hashes = array();
 		foreach (array($first_args, $second_args) as $args)
 		{
@@ -263,7 +263,7 @@ class Kohana_CookieTest extends Unittest_TestCase
 	// @codingStandardsIgnoreEnd
 	{
 		$this->assertCount(1, Kohana_CookieTest_TestableCookie::$_mock_cookies_set);
-		$relevant_values = array_intersect_key(Kohana_CookieTest_TestableCookie::$_mock_cookies_set[0], $expected);
+		$relevant_values = \array_intersect_key(Kohana_CookieTest_TestableCookie::$_mock_cookies_set[0], $expected);
 		$this->assertEquals($expected, $relevant_values);
 	}
 

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * UTF8::ucfirst
  *
@@ -11,8 +11,8 @@
 function _ucfirst($str)
 {
 	if (UTF8::is_ascii($str))
-		return ucfirst($str);
+		return \ucfirst($str);
 
-	preg_match('/^(.?)(.*)$/us', $str, $matches);
+	\preg_match('/^(.?)(.*)$/us', $str, $matches);
 	return UTF8::strtoupper($matches[1]).$matches[2];
 }

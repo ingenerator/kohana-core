@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * HTML helper class. Provides generic methods for generating various HTML
  * tags and making output HTML safe.
@@ -68,7 +68,7 @@ class Kohana_HTML {
 	 */
 	public static function chars($value, $double_encode = TRUE)
 	{
-		return htmlspecialchars( (string) $value, ENT_QUOTES, Kohana::$charset, $double_encode);
+		return \htmlspecialchars( (string) $value, ENT_QUOTES, Kohana::$charset, $double_encode);
 	}
 
 	/**
@@ -84,7 +84,7 @@ class Kohana_HTML {
 	 */
 	public static function entities($value, $double_encode = TRUE)
 	{
-		return htmlentities( (string) $value, ENT_QUOTES, Kohana::$charset, $double_encode);
+		return \htmlentities( (string) $value, ENT_QUOTES, Kohana::$charset, $double_encode);
 	}
 
 	/**
@@ -118,7 +118,7 @@ class Kohana_HTML {
 		}
 		else
 		{
-			if (strpos($uri, '://') !== FALSE)
+			if (\strpos($uri, '://') !== FALSE)
 			{
 				if (HTML::$windowed_urls === TRUE AND empty($attributes['target']))
 				{
@@ -159,7 +159,7 @@ class Kohana_HTML {
 		if ($title === NULL)
 		{
 			// Use the file name as the title
-			$title = basename($file);
+			$title = \basename($file);
 		}
 
 		// Add the file link to the attributes
@@ -206,7 +206,7 @@ class Kohana_HTML {
 	 */
 	public static function style($file, array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
-		if (strpos($file, '://') === FALSE AND strpos($file, '//') !== 0)
+		if (\strpos($file, '://') === FALSE AND \strpos($file, '//') !== 0)
 		{
 			// Add the base URL
 			$file = URL::site($file, $protocol, $index);
@@ -239,7 +239,7 @@ class Kohana_HTML {
 	 */
 	public static function script($file, array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
-		if (strpos($file, '://') === FALSE AND strpos($file, '//') !== 0)
+		if (\strpos($file, '://') === FALSE AND \strpos($file, '//') !== 0)
 		{
 			// Add the base URL
 			$file = URL::site($file, $protocol, $index);
@@ -269,7 +269,7 @@ class Kohana_HTML {
 	 */
 	public static function image($file, array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
-		if (strpos($file, '://') === FALSE)
+		if (\strpos($file, '://') === FALSE)
 		{
 			// Add the base URL
 			$file = URL::site($file, $protocol, $index);
@@ -317,7 +317,7 @@ class Kohana_HTML {
 				continue;
 			}
 
-			if (is_int($key))
+			if (\is_int($key))
 			{
 				// Assume non-associative keys are mirrored attributes
 				$key = $value;

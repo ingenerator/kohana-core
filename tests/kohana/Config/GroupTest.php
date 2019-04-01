@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the Config group lib
@@ -186,7 +186,7 @@ class Kohana_Config_GroupTest extends Kohana_Unittest_TestCase
 		$vars   = array('kohana' => 'cool', 'unit_tests' => 'boring');
 		$config = $this->get_mock_group('hehehe', $vars);
 
-		$this->assertSame(serialize($vars), (string) $config);
+		$this->assertSame(\serialize($vars), (string) $config);
 	}
 }
 

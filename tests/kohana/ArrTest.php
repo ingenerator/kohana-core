@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the Arr lib that's shipped with kohana
@@ -51,7 +51,7 @@ class Kohana_ArrTest extends Unittest_TestCase
 	{
 		$result = Arr::callback($str);
 
-		$this->assertSame(2, count($result));
+		$this->assertSame(2, \count($result));
 		$this->assertSame($expected, $result);
 	}
 
@@ -124,7 +124,7 @@ class Kohana_ArrTest extends Unittest_TestCase
 	{
 		$array = Arr::extract($array, $paths, $default);
 
-		$this->assertSame(count($expected), count($array));
+		$this->assertSame(\count($expected), \count($array));
 		$this->assertSame($expected, $array);
 	}
 
@@ -161,7 +161,7 @@ class Kohana_ArrTest extends Unittest_TestCase
 	{
 		$array = Arr::pluck($array, $key);
 
-		$this->assertSame(count($expected), count($array));
+		$this->assertSame(\count($expected), \count($array));
 		$this->assertSame($expected, $array);
 	}
 
@@ -527,7 +527,7 @@ class Kohana_ArrTest extends Unittest_TestCase
 	{
 		$range = Arr::range($step, $max);
 
-		$this->assertSame( (int) floor($max / $step), count($range));
+		$this->assertSame( (int) \floor($max / $step), \count($range));
 
 		$current = $step;
 
@@ -569,11 +569,11 @@ class Kohana_ArrTest extends Unittest_TestCase
 		Arr::unshift($array, $key, $value);
 
 		$this->assertNotSame($original, $array);
-		$this->assertSame(count($original) + 1, count($array));
+		$this->assertSame(\count($original) + 1, \count($array));
 		$this->assertArrayHasKey($key, $array);
 
-		$this->assertSame($value, reset($array));
-		$this->assertSame(key($array), $key);
+		$this->assertSame($value, \reset($array));
+		$this->assertSame(\key($array), $key);
 	}
 
 	/**

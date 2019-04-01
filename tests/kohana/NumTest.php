@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Num
@@ -26,8 +26,8 @@ class Kohana_NumTest extends Unittest_TestCase
 	{
 		parent::setUp();
 
-		$this->default_locale = setlocale(LC_ALL, 0);
-		setlocale(LC_ALL, 'en_US.utf8');
+		$this->default_locale = \setlocale(LC_ALL, 0);
+		\setlocale(LC_ALL, 'en_US.utf8');
 	}
 
 	/**
@@ -39,7 +39,7 @@ class Kohana_NumTest extends Unittest_TestCase
 	{
 		parent::tearDown();
 
-		setlocale(LC_ALL, $this->default_locale);
+		\setlocale(LC_ALL, $this->default_locale);
 	}
 
 	/**

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * View fragment caching. This is primarily used to cache small parts of a view
  * that rarely change. For instance, you may want to cache the footer of your
@@ -92,10 +92,10 @@ class Kohana_Fragment {
 		else
 		{
 			// Start the output buffer
-			ob_start();
+			\ob_start();
 
 			// Store the cache key by the buffer level
-			Fragment::$_caches[ob_get_level()] = $cache_key;
+			Fragment::$_caches[\ob_get_level()] = $cache_key;
 
 			return FALSE;
 		}
@@ -111,7 +111,7 @@ class Kohana_Fragment {
 	public static function save()
 	{
 		// Get the buffer level
-		$level = ob_get_level();
+		$level = \ob_get_level();
 
 		if (isset(Fragment::$_caches[$level]))
 		{
@@ -122,7 +122,7 @@ class Kohana_Fragment {
 			unset(Fragment::$_caches[$level]);
 
 			// Get the output buffer and display it at the same time
-			$fragment = ob_get_flush();
+			$fragment = \ob_get_flush();
 
 			// Cache the fragment
 			Kohana::cache($cache_key, $fragment);

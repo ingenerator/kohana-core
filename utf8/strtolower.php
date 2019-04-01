@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * UTF8::strtolower
  *
@@ -11,7 +11,7 @@
 function _strtolower($str)
 {
 	if (UTF8::is_ascii($str))
-		return strtolower($str);
+		return \strtolower($str);
 
 	static $utf8_upper_to_lower = NULL;
 
@@ -69,7 +69,7 @@ function _strtolower($str)
 	if ($uni === FALSE)
 		return FALSE;
 
-	for ($i = 0, $c = count($uni); $i < $c; $i++)
+	for ($i = 0, $c = \count($uni); $i < $c; $i++)
 	{
 		if (isset($utf8_upper_to_lower[$uni[$i]]))
 		{

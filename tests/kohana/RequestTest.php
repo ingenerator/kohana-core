@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Unit tests for request class
@@ -291,7 +291,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 	public function provider_post_max_size_exceeded()
 	{
 		// Get the post max size
-		$post_max_size = Num::bytes(ini_get('post_max_size'));
+		$post_max_size = Num::bytes(\ini_get('post_max_size'));
 
 		return array(
 			array(

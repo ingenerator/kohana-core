@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Provides simple benchmarking and profiling. To display the statistics that
  * have been collected, load the `profiler/stats` [View]:
@@ -38,16 +38,16 @@ class Kohana_Profiler {
 		static $counter = 0;
 
 		// Create a unique token based on the counter
-		$token = 'kp/'.base_convert($counter++, 10, 32);
+		$token = 'kp/'.\base_convert($counter++, 10, 32);
 
 		Profiler::$_marks[$token] = array
 		(
-			'group' => strtolower($group),
+			'group' => \strtolower($group),
 			'name'  => (string) $name,
 
 			// Start the benchmark
-			'start_time'   => microtime(TRUE),
-			'start_memory' => memory_get_usage(),
+			'start_time'   => \microtime(TRUE),
+			'start_memory' => \memory_get_usage(),
 
 			// Set the stop keys without values
 			'stop_time'    => FALSE,
@@ -68,8 +68,8 @@ class Kohana_Profiler {
 	public static function stop($token)
 	{
 		// Stop the benchmark
-		Profiler::$_marks[$token]['stop_time']   = microtime(TRUE);
-		Profiler::$_marks[$token]['stop_memory'] = memory_get_usage();
+		Profiler::$_marks[$token]['stop_time']   = \microtime(TRUE);
+		Profiler::$_marks[$token]['stop_memory'] = \memory_get_usage();
 	}
 
 	/**
@@ -166,7 +166,7 @@ class Kohana_Profiler {
 		}
 
 		// Determine the number of tokens
-		$count = count($tokens);
+		$count = \count($tokens);
 
 		// Determine the averages
 		$average = array(
@@ -195,7 +195,7 @@ class Kohana_Profiler {
 		// Which groups do we need to calculate stats for?
 		$groups = ($groups === NULL)
 			? Profiler::groups()
-			: array_intersect_key(Profiler::groups(), array_flip( (array) $groups));
+			: \array_intersect_key(Profiler::groups(), \array_flip( (array) $groups));
 
 		// All statistics
 		$stats = array();
@@ -256,7 +256,7 @@ class Kohana_Profiler {
 			}
 
 			// Determine the number of names (subgroups)
-			$count = count($names);
+			$count = \count($names);
 
 			// Determine the averages
 			$groups[$group]['average']['time']   = $groups[$group]['total']['time'] / $count;
@@ -282,8 +282,8 @@ class Kohana_Profiler {
 		if ($mark['stop_time'] === FALSE)
 		{
 			// The benchmark has not been stopped yet
-			$mark['stop_time']   = microtime(TRUE);
-			$mark['stop_memory'] = memory_get_usage();
+			$mark['stop_time']   = \microtime(TRUE);
+			$mark['stop_memory'] = \memory_get_usage();
 		}
 
 		return array
@@ -310,7 +310,7 @@ class Kohana_Profiler {
 		// Load the stats from cache, which is valid for 1 day
 		$stats = Kohana::cache('profiler_application_stats', NULL, 3600 * 24);
 
-		if ( ! is_array($stats) OR $stats['count'] > Profiler::$rollover)
+		if ( ! \is_array($stats) OR $stats['count'] > Profiler::$rollover)
 		{
 			// Initialize the stats array
 			$stats = array(
@@ -327,10 +327,10 @@ class Kohana_Profiler {
 		}
 
 		// Get the application run time
-		$time = microtime(TRUE) - KOHANA_START_TIME;
+		$time = \microtime(TRUE) - KOHANA_START_TIME;
 
 		// Get the total memory usage
-		$memory = memory_get_usage() - KOHANA_START_MEMORY;
+		$memory = \memory_get_usage() - KOHANA_START_MEMORY;
 
 		// Calculate max time
 		if ($stats['max']['time'] === NULL OR $time > $stats['max']['time'])

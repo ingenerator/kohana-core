@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Exception Class
@@ -55,16 +55,16 @@ class Kohana_ExceptionTest extends Unittest_TestCase
 	 */
 	public function test_constructor($arguments, $expected_message, $expected_code)
 	{
-		switch (count($arguments))
+		switch (\count($arguments))
 		{
 			case 1:
-				$exception = new Kohana_Exception(reset($arguments));
+				$exception = new Kohana_Exception(\reset($arguments));
 			break;
 			case 2:
-				$exception = new Kohana_Exception(reset($arguments), next($arguments));
+				$exception = new Kohana_Exception(\reset($arguments), \next($arguments));
 			break;
 			default:
-				$exception = new Kohana_Exception(reset($arguments), next($arguments), next($arguments));
+				$exception = new Kohana_Exception(\reset($arguments), \next($arguments), \next($arguments));
 		}
 
 		$this->assertSame($expected_code, $exception->getCode());

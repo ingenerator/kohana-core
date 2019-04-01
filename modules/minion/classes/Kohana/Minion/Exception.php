@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 /**
  * Minion exception
  *
@@ -48,7 +48,7 @@ class Kohana_Minion_Exception extends Kohana_Exception {
 		catch (Exception $e)
 		{
 			// Clean the output buffer if one exists
-			ob_get_level() and ob_clean();
+			\ob_get_level() and \ob_clean();
 
 			// Display the exception text
 			echo Kohana_Exception::text($e), "\n";

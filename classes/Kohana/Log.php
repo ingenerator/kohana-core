@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Message logging with observer-based log writing.
  *
@@ -47,7 +47,7 @@ class Kohana_Log {
 			Log::$_instance = new Log;
 
 			// Write the logs at shutdown
-			register_shutdown_function(array(Log::$_instance, 'write'));
+			\register_shutdown_function(array(Log::$_instance, 'write'));
 		}
 
 		return Log::$_instance;
@@ -76,9 +76,9 @@ class Kohana_Log {
 	 */
 	public function attach(Log_Writer $writer, $levels = array(), $min_level = 0)
 	{
-		if ( ! is_array($levels))
+		if ( ! \is_array($levels))
 		{
-			$levels = range($min_level, $levels);
+			$levels = \range($min_level, $levels);
 		}
 
 		$this->_writers["{$writer}"] = array
@@ -125,7 +125,7 @@ class Kohana_Log {
 		if ($values)
 		{
 			// Insert the values into the message
-			$message = strtr($message, $values);
+			$message = \strtr($message, $values);
 		}
 
 		// Grab a copy of the trace
@@ -136,16 +136,16 @@ class Kohana_Log {
 		else
 		{
 			// Older php version don't have 'DEBUG_BACKTRACE_IGNORE_ARGS', so manually remove the args from the backtrace
-			if ( ! defined('DEBUG_BACKTRACE_IGNORE_ARGS'))
+			if ( ! \defined('DEBUG_BACKTRACE_IGNORE_ARGS'))
 			{
-				$trace = array_map(function ($item) {
+				$trace = \array_map(function ($item) {
 					unset($item['args']);
 					return $item;
-				}, array_slice(debug_backtrace(FALSE), 1));
+				}, \array_slice(\debug_backtrace(FALSE), 1));
 			}
 			else
 			{
-				$trace = array_slice(debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1);
+				$trace = \array_slice(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1);
 			}
 		}
 
@@ -157,7 +157,7 @@ class Kohana_Log {
 		// Create a new message
 		$this->_messages[] = array
 		(
-			'time'       => time(),
+			'time'       => \time(),
 			'level'      => $level,
 			'body'       => $message,
 			'trace'      => $trace,
@@ -212,7 +212,7 @@ class Kohana_Log {
 
 				foreach ($messages as $message)
 				{
-					if (in_array($message['level'], $writer['levels']))
+					if (\in_array($message['level'], $writer['levels']))
 					{
 						// Writer accepts this kind of message
 						$filtered[] = $message;

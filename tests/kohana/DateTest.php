@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Date class
@@ -28,11 +28,11 @@ class Kohana_DateTest extends Unittest_TestCase
 	{
 		parent::setUp();
 
-		$this->_original_timezone = date_default_timezone_get();
-		$this->default_locale = setlocale(LC_ALL, 0);
+		$this->_original_timezone = \date_default_timezone_get();
+		$this->default_locale = \setlocale(LC_ALL, 0);
 
-		date_default_timezone_set('America/Chicago');
-		setlocale(LC_ALL, 'en_US.utf8');
+		\date_default_timezone_set('America/Chicago');
+		\setlocale(LC_ALL, 'en_US.utf8');
 	}
 
 	/**
@@ -42,8 +42,8 @@ class Kohana_DateTest extends Unittest_TestCase
 	public function tearDown()
 	// @codingStandardsIgnoreEnd
 	{
-		date_default_timezone_set($this->_original_timezone);
-		setlocale(LC_ALL, $this->default_locale);
+		\date_default_timezone_set($this->_original_timezone);
+		\setlocale(LC_ALL, $this->default_locale);
 
 		parent::tearDown();
 	}
@@ -232,7 +232,7 @@ class Kohana_DateTest extends Unittest_TestCase
 
 		$this->assertSame(
 			$expected,
-			count($days)
+			\count($days)
 		);
 
 		// This should be a mirrored array, days => days
@@ -385,7 +385,7 @@ class Kohana_DateTest extends Unittest_TestCase
 	 */
 	public function provider_span()
 	{
-		$time = time();
+		$time = \time();
 		return array(
 			// Test that it must specify an output format
 			array(
@@ -461,7 +461,7 @@ class Kohana_DateTest extends Unittest_TestCase
 	 */
 	public function provider_fuzzy_span()
 	{
-		$now = time();
+		$now = \time();
 
 		return array(
 			array('moments ago', $now - 30, $now),
@@ -521,8 +521,8 @@ class Kohana_DateTest extends Unittest_TestCase
 			array('several decades ago', $now - 50*12*31*24*60*60, $now),
 			array('in several decades', $now + 50*12*31*24*60*60, $now),
 
-			array('a long time ago', $now - pow(10,10), $now),
-			array('in a long time', $now + pow(10,10), $now),
+			array('a long time ago', $now - \pow(10,10), $now),
+			array('in a long time', $now + \pow(10,10), $now),
 		);
 	}
 

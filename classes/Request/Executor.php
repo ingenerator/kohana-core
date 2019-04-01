@@ -66,7 +66,7 @@ class Request_Executor
 	{
 		foreach ($this->routes as $name => $route) {
 			if ($params = $route->matches($request)) {
-				return array_merge(['action' => Route::$default_action], $params);
+				return \array_merge(['action' => Route::$default_action], $params);
 			}
 		}
 
@@ -104,7 +104,7 @@ class Request_Executor
 	{
 		$class = $this->get_controller_class_name($request);
 
-		if ( ! class_exists($class)) {
+		if ( ! \class_exists($class)) {
 			throw HTTP_Exception::factory(
 				404,
 				'The requested URL :uri was not found on this server.',
@@ -132,7 +132,7 @@ class Request_Executor
 	protected function get_controller_class_name(Request $request)
 	{
 		$controller = $request->controller();
-		if (substr($controller, 0, 1) === '\\') {
+		if (\substr($controller, 0, 1) === '\\') {
 			// Use the FQCN with no prefix / directory / etc
 			return $controller;
 		}
@@ -141,7 +141,7 @@ class Request_Executor
 		$directory = $request->directory();
 		if ($directory) {
 			// Add the directory name to the class prefix
-			$prefix .= str_replace(['\\', '/'], '_', trim($directory, '/')).'_';
+			$prefix .= \str_replace(['\\', '/'], '_', \trim($directory, '/')).'_';
 		}
 
 		return $prefix.$controller;

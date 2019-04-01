@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Syslog log writer.
  *
@@ -29,7 +29,7 @@ class Kohana_Log_Syslog extends Log_Writer {
 		$this->_ident = $ident;
 
 		// Open the connection to syslog
-		openlog($this->_ident, LOG_CONS, $facility);
+		\openlog($this->_ident, LOG_CONS, $facility);
 	}
 
 	/**
@@ -42,11 +42,11 @@ class Kohana_Log_Syslog extends Log_Writer {
 	{
 		foreach ($messages as $message)
 		{
-			syslog($message['level'], $message['body']);
+			\syslog($message['level'], $message['body']);
 
 			if (isset($message['additional']['exception']))
 			{
-				syslog(Log_Writer::$strace_level, $message['additional']['exception']->getTraceAsString());
+				\syslog(Log_Writer::$strace_level, $message['additional']['exception']->getTraceAsString());
 			}
 		}
 	}
@@ -59,7 +59,7 @@ class Kohana_Log_Syslog extends Log_Writer {
 	public function __destruct()
 	{
 		// Close connection to syslog
-		closelog();
+		\closelog();
 	}
 
 }

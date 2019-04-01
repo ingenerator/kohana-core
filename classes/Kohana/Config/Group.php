@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 
 /**
  * The group wrapper acts as an interface to all the config directives
@@ -55,7 +55,7 @@ class Kohana_Config_Group extends ArrayObject {
 	 */
 	public function __toString()
 	{
-		return serialize($this->getArrayCopy());
+		return \serialize($this->getArrayCopy());
 	}
 
 	/**

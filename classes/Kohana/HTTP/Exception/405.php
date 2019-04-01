@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 
 class Kohana_HTTP_Exception_405 extends HTTP_Exception_Expected {
 
@@ -14,9 +14,9 @@ class Kohana_HTTP_Exception_405 extends HTTP_Exception_Expected {
 	 */
 	public function allowed($methods)
 	{
-		if (is_array($methods))
+		if (\is_array($methods))
 		{
-			$methods = implode(',', $methods);
+			$methods = \implode(',', $methods);
 		}
 
 		$this->headers('allow', $methods);

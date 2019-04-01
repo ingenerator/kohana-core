@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Contains the most low-level helpers methods in Kohana:
  *
@@ -92,10 +92,10 @@ abstract class Kohana_HTTP {
 	public static function parse_header_string($header_string)
 	{
 		// If the PECL HTTP extension is loaded
-		if (extension_loaded('http'))
+		if (\extension_loaded('http'))
 		{
 			// Use the fast method to parse header string
-			$headers = version_compare(phpversion('http'), '2.0.0', '>=') ?
+			$headers = \version_compare(\phpversion('http'), '2.0.0', '>=') ?
 				\http\Header::parse($header_string) :
 				http_parse_headers($header_string);
 			return new HTTP_Header($headers);
@@ -105,7 +105,7 @@ abstract class Kohana_HTTP {
 		$headers = array();
 
 		// Match all HTTP headers
-		if (preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $header_string, $matches))
+		if (\preg_match_all('/(\w[^\s:]*):[ ]*([^\r\n]*(?:\r\n[ \t][^\r\n]*)*)/', $header_string, $matches))
 		{
 			// Parse each matched header
 			foreach ($matches[0] as $key => $value)
@@ -120,7 +120,7 @@ abstract class Kohana_HTTP {
 				else
 				{
 					// If the entry is an array
-					if (is_array($headers[$matches[1][$key]]))
+					if (\is_array($headers[$matches[1][$key]]))
 					{
 						// Apply the new entry to the array
 						$headers[$matches[1][$key]][] = $matches[2][$key];
@@ -154,16 +154,16 @@ abstract class Kohana_HTTP {
 	public static function request_headers()
 	{
 		// If running on apache server
-		if (function_exists('apache_request_headers'))
+		if (\function_exists('apache_request_headers'))
 		{
 			// Return the much faster method
 			return new HTTP_Header(apache_request_headers());
 		}
 		// If the PECL HTTP tools are installed
-		elseif (extension_loaded('http'))
+		elseif (\extension_loaded('http'))
 		{
 			// Return the much faster method
-			$headers = version_compare(phpversion('http'), '2.0.0', '>=') ?
+			$headers = \version_compare(\phpversion('http'), '2.0.0', '>=') ?
 				\http\Env::getRequestHeader() :
 				http_get_request_headers();
 			return new HTTP_Header($headers);
@@ -187,13 +187,13 @@ abstract class Kohana_HTTP {
 		foreach ($_SERVER as $key => $value)
 		{
 			// If there is no HTTP header here, skip
-			if (strpos($key, 'HTTP_') !== 0)
+			if (\strpos($key, 'HTTP_') !== 0)
 			{
 				continue;
 			}
 
 			// This is a dirty hack to ensure HTTP_X_FOO_BAR becomes X-FOO-BAR
-			$headers[str_replace('_', '-', substr($key, 5))] = $value;
+			$headers[\str_replace('_', '-', \substr($key, 5))] = $value;
 		}
 
 		return new HTTP_Header($headers);
@@ -215,10 +215,10 @@ abstract class Kohana_HTTP {
 
 		foreach ($params as $key => $value)
 		{
-			$encoded[] = $key.'='.rawurlencode($value);
+			$encoded[] = $key.'='.\rawurlencode($value);
 		}
 
-		return implode('&', $encoded);
+		return \implode('&', $encoded);
 	}
 
 }

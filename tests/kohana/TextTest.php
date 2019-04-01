@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the kohana text class (Kohana_Text)
@@ -529,7 +529,7 @@ class Kohana_TextTest extends Unittest_TestCase
 						<li>vicevoorzitter@xxxx.com</li>
 					</ul>';
 
-		$this->assertFalse(strpos('vice', Text::auto_link_emails($original)));
+		$this->assertFalse(\strpos('vice', Text::auto_link_emails($original)));
 	}
 
 
@@ -690,7 +690,7 @@ class Kohana_TextTest extends Unittest_TestCase
 	public function test_auto_link_emails($expected, $text)
 	{
 		// Use html_entity_decode because emails will be randomly encoded by HTML::mailto
-		$this->assertSame($expected, html_entity_decode(Text::auto_link_emails($text)));
+		$this->assertSame($expected, \html_entity_decode(Text::auto_link_emails($text)));
 	}
 
 	/**
@@ -728,7 +728,7 @@ class Kohana_TextTest extends Unittest_TestCase
 		{
 			$this->assertNotContains('http://', $linked_text);
 		}
-		elseif (count($urls))
+		elseif (\count($urls))
 		{
 			foreach ($urls as $url)
 			{

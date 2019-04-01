@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Validation rules.
  *
@@ -17,14 +17,14 @@ class Kohana_Valid {
 	 */
 	public static function not_empty($value)
 	{
-		if (is_object($value) AND $value instanceof ArrayObject)
+		if (\is_object($value) AND $value instanceof ArrayObject)
 		{
 			// Get the array from the ArrayObject
 			$value = $value->getArrayCopy();
 		}
 
 		// Value cannot be NULL, FALSE, '', or an empty array
-		return ! in_array($value, array(NULL, FALSE, '', array()), TRUE);
+		return ! \in_array($value, array(NULL, FALSE, '', array()), TRUE);
 	}
 
 	/**
@@ -36,7 +36,7 @@ class Kohana_Valid {
 	 */
 	public static function regex($value, $expression)
 	{
-		return (bool) preg_match($expression, (string) $value);
+		return (bool) \preg_match($expression, (string) $value);
 	}
 
 	/**
@@ -72,7 +72,7 @@ class Kohana_Valid {
 	 */
 	public static function exact_length($value, $length)
 	{
-		if (is_array($length))
+		if (\is_array($length))
 		{
 			foreach ($length as $strlen)
 			{
@@ -135,7 +135,7 @@ class Kohana_Valid {
 			$expression = '/^[-_a-z0-9\'+*$^&%=~!?{}]++(?:\.[-_a-z0-9\'+*$^&%=~!?{}]+)*+@(?:(?![-.])[-a-z0-9.]+(?<![-.])\.[a-z]{2,6}|\d{1,3}(?:\.\d{1,3}){3})$/iD';
 		}
 
-		return (bool) preg_match($expression, (string) $email);
+		return (bool) \preg_match($expression, (string) $email);
 	}
 
 	/**
@@ -153,7 +153,7 @@ class Kohana_Valid {
 			return FALSE; // Empty fields cause issues with checkdnsrr()
 
 		// Check if the email domain has a valid MX record
-		return (bool) checkdnsrr(preg_replace('/^[^@]++@/', '', $email), 'MX');
+		return (bool) \checkdnsrr(\preg_replace('/^[^@]++@/', '', $email), 'MX');
 	}
 
 	/**
@@ -165,7 +165,7 @@ class Kohana_Valid {
 	public static function url($url)
 	{
 		// Based on http://www.apps.ietf.org/rfc/rfc1738.html#sec-5
-		if ( ! preg_match(
+		if ( ! \preg_match(
 			'~^
 
 			# scheme
@@ -206,13 +206,13 @@ class Kohana_Valid {
 
 		// Check maximum length of the whole hostname
 		// http://en.wikipedia.org/wiki/Domain_name#cite_note-0
-		if (strlen($matches[1]) > 253)
+		if (\strlen($matches[1]) > 253)
 			return FALSE;
 
 		// An extra check for the top level domain
 		// It must start with a letter
-		$tld = ltrim(substr($matches[1], (int) strrpos($matches[1], '.')), '.');
-		return ctype_alpha($tld[0]);
+		$tld = \ltrim(\substr($matches[1], (int) \strrpos($matches[1], '.')), '.');
+		return \ctype_alpha($tld[0]);
 	}
 
 	/**
@@ -233,7 +233,7 @@ class Kohana_Valid {
 			$flags = $flags | FILTER_FLAG_NO_PRIV_RANGE;
 		}
 
-		return (bool) filter_var($ip, FILTER_VALIDATE_IP, $flags);
+		return (bool) \filter_var($ip, FILTER_VALIDATE_IP, $flags);
 	}
 
 	/**
@@ -247,7 +247,7 @@ class Kohana_Valid {
 	public static function credit_card($number, $type = NULL)
 	{
 		// Remove all non-digit characters from the number
-		if (($number = preg_replace('/\D+/', '', $number)) === '')
+		if (($number = \preg_replace('/\D+/', '', $number)) === '')
 			return FALSE;
 
 		if ($type == NULL)
@@ -255,7 +255,7 @@ class Kohana_Valid {
 			// Use the default type
 			$type = 'default';
 		}
-		elseif (is_array($type))
+		elseif (\is_array($type))
 		{
 			foreach ($type as $t)
 			{
@@ -270,20 +270,20 @@ class Kohana_Valid {
 		$cards = Kohana::$config->load('credit_cards');
 
 		// Check card type
-		$type = strtolower($type);
+		$type = \strtolower($type);
 
 		if ( ! isset($cards[$type]))
 			return FALSE;
 
 		// Check card number length
-		$length = strlen($number);
+		$length = \strlen($number);
 
 		// Validate the card length by the card type
-		if ( ! in_array($length, preg_split('/\D+/', $cards[$type]['length'])))
+		if ( ! \in_array($length, \preg_split('/\D+/', $cards[$type]['length'])))
 			return FALSE;
 
 		// Check card number prefix
-		if ( ! preg_match('/^'.$cards[$type]['prefix'].'/', $number))
+		if ( ! \preg_match('/^'.$cards[$type]['prefix'].'/', $number))
 			return FALSE;
 
 		// No Luhn check required
@@ -306,14 +306,14 @@ class Kohana_Valid {
 		// Converting to an integer may pass PHP_INT_MAX and result in an error!
 		$number = (string) $number;
 
-		if ( ! ctype_digit($number))
+		if ( ! \ctype_digit($number))
 		{
 			// Luhn can only be used on numbers!
 			return FALSE;
 		}
 
 		// Check number length
-		$length = strlen($number);
+		$length = \strlen($number);
 
 		// Checksum of the card number
 		$checksum = 0;
@@ -321,13 +321,13 @@ class Kohana_Valid {
 		for ($i = $length - 1; $i >= 0; $i -= 2)
 		{
 			// Add up every 2nd digit, starting from the right
-			$checksum += substr($number, $i, 1);
+			$checksum += \substr($number, $i, 1);
 		}
 
 		for ($i = $length - 2; $i >= 0; $i -= 2)
 		{
 			// Add up every 2nd digit doubled, starting from the right
-			$double = substr($number, $i, 1) * 2;
+			$double = \substr($number, $i, 1) * 2;
 
 			// Subtract 9 from the double where value is greater than 10
 			$checksum += ($double >= 10) ? ($double - 9) : $double;
@@ -346,16 +346,16 @@ class Kohana_Valid {
 	 */
 	public static function phone($number, $lengths = NULL)
 	{
-		if ( ! is_array($lengths))
+		if ( ! \is_array($lengths))
 		{
 			$lengths = array(7,10,11);
 		}
 
 		// Remove all non-digit characters from the number
-		$number = preg_replace('/\D+/', '', $number);
+		$number = \preg_replace('/\D+/', '', $number);
 
 		// Check if the number is within range
-		return in_array(strlen($number), $lengths);
+		return \in_array(\strlen($number), $lengths);
 	}
 
 	/**
@@ -366,7 +366,7 @@ class Kohana_Valid {
 	 */
 	public static function date($str)
 	{
-		return (strtotime($str) !== FALSE);
+		return (\strtotime($str) !== FALSE);
 	}
 
 	/**
@@ -382,11 +382,11 @@ class Kohana_Valid {
 
 		if ($utf8 === TRUE)
 		{
-			return (bool) preg_match('/^\pL++$/uD', $str);
+			return (bool) \preg_match('/^\pL++$/uD', $str);
 		}
 		else
 		{
-			return ctype_alpha($str);
+			return \ctype_alpha($str);
 		}
 	}
 
@@ -401,11 +401,11 @@ class Kohana_Valid {
 	{
 		if ($utf8 === TRUE)
 		{
-			return (bool) preg_match('/^[\pL\pN]++$/uD', $str);
+			return (bool) \preg_match('/^[\pL\pN]++$/uD', $str);
 		}
 		else
 		{
-			return ctype_alnum($str);
+			return \ctype_alnum($str);
 		}
 	}
 
@@ -427,7 +427,7 @@ class Kohana_Valid {
 			$regex = '/^[-a-z0-9_]++$/iD';
 		}
 
-		return (bool) preg_match($regex, $str);
+		return (bool) \preg_match($regex, $str);
 	}
 
 	/**
@@ -441,11 +441,11 @@ class Kohana_Valid {
 	{
 		if ($utf8 === TRUE)
 		{
-			return (bool) preg_match('/^\pN++$/uD', $str);
+			return (bool) \preg_match('/^\pN++$/uD', $str);
 		}
 		else
 		{
-			return (is_int($str) AND $str >= 0) OR ctype_digit($str);
+			return (\is_int($str) AND $str >= 0) OR \ctype_digit($str);
 		}
 	}
 
@@ -461,10 +461,10 @@ class Kohana_Valid {
 	public static function numeric($str)
 	{
 		// Get the decimal point for the current locale
-		list($decimal) = array_values(localeconv());
+		list($decimal) = \array_values(\localeconv());
 
 		// A lookahead is used to make sure the string contains at least one digit (before or after the decimal point)
-		return (bool) preg_match('/^-?+(?=.*[0-9])[0-9]*+'.preg_quote($decimal).'?+[0-9]*+$/D', (string) $str);
+		return (bool) \preg_match('/^-?+(?=.*[0-9])[0-9]*+'.\preg_quote($decimal).'?+[0-9]*+$/D', (string) $str);
 	}
 
 	/**
@@ -517,9 +517,9 @@ class Kohana_Valid {
 		}
 
 		// Get the decimal point for the current locale
-		list($decimal) = array_values(localeconv());
+		list($decimal) = \array_values(\localeconv());
 
-		return (bool) preg_match('/^[+-]?[0-9]'.$digits.preg_quote($decimal).'[0-9]{'.( (int) $places).'}$/D', $str);
+		return (bool) \preg_match('/^[+-]?[0-9]'.$digits.\preg_quote($decimal).'[0-9]{'.( (int) $places).'}$/D', $str);
 	}
 
 	/**
@@ -532,7 +532,7 @@ class Kohana_Valid {
 	 */
 	public static function color($str)
 	{
-		return (bool) preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
+		return (bool) \preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
 	}
 
 	/**

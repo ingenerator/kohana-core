@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php \defined('SYSPATH') OR die('No direct script access.');
 /**
  * Base session class.
  *
@@ -48,13 +48,13 @@ abstract class Kohana_Session {
 			$config = Kohana::$config->load('session')->get($type);
 
 			// Set the session class name
-			$class = 'Session_'.ucfirst($type);
+			$class = 'Session_'.\ucfirst($type);
 
 			// Create a new session instance
 			Session::$instances[$type] = $session = new $class($config, $id);
 
 			// Write the session at shutdown
-			register_shutdown_function(array($session, 'write'));
+			\register_shutdown_function(array($session, 'write'));
 		}
 
 		return Session::$instances[$type];
@@ -191,7 +191,7 @@ abstract class Kohana_Session {
 	 */
 	public function get($key, $default = NULL)
 	{
-		return array_key_exists($key, $this->_data) ? $this->_data[$key] : $default;
+		return \array_key_exists($key, $this->_data) ? $this->_data[$key] : $default;
 	}
 
 	/**
@@ -254,7 +254,7 @@ abstract class Kohana_Session {
 	 */
 	public function delete($key)
 	{
-		$args = func_get_args();
+		$args = \func_get_args();
 
 		foreach ($args as $key)
 		{
@@ -278,7 +278,7 @@ abstract class Kohana_Session {
 
 		try
 		{
-			if (is_string($data = $this->_read($id)))
+			if (\is_string($data = $this->_read($id)))
 			{
                 // Decode the data
                 $data = $this->_decode($data);
@@ -297,7 +297,7 @@ abstract class Kohana_Session {
 			throw new Session_Exception('Error reading session data.', NULL, Session_Exception::SESSION_CORRUPT);
 		}
 
-		if (is_array($data))
+		if (\is_array($data))
 		{
 			// Load the data locally
 			$this->_data = $data;
@@ -330,7 +330,7 @@ abstract class Kohana_Session {
 	 */
 	public function write()
 	{
-		if (headers_sent() OR $this->_destroyed)
+		if (\headers_sent() OR $this->_destroyed)
 		{
 			// Session cannot be written when the headers are sent or when
 			// the session has been destroyed
@@ -338,7 +338,7 @@ abstract class Kohana_Session {
 		}
 
 		// Set the last active timestamp
-		$this->_data['last_active'] = time();
+		$this->_data['last_active'] = \time();
 
 		try
 		{
@@ -403,7 +403,7 @@ abstract class Kohana_Session {
 	 */
 	protected function _serialize($data)
 	{
-		return serialize($data);
+		return \serialize($data);
 	}
 
 	/**
@@ -414,7 +414,7 @@ abstract class Kohana_Session {
 	 */
 	protected function _unserialize($data)
 	{
-		return unserialize($data);
+		return \unserialize($data);
 	}
 
 	/**
@@ -425,7 +425,7 @@ abstract class Kohana_Session {
 	 */
 	protected function _encode($data)
 	{
-		return base64_encode($data);
+		return \base64_encode($data);
 	}
 
 	/**
@@ -436,7 +436,7 @@ abstract class Kohana_Session {
 	 */
 	protected function _decode($data)
 	{
-		return base64_decode($data);
+		return \base64_decode($data);
 	}
 
 	/**
