@@ -3,7 +3,7 @@
  * @author    Andrew Coulton <andrew@ingenerator.com>
  */
 
-class Kohana_Request_ExecutorTest extends PHPUnit_Framework_TestCase
+class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 {
 	protected $routes = [];
 
