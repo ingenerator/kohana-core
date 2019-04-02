@@ -8,7 +8,7 @@
  * @copyright  (c) 2008-2009 Kohana Team
  * @license    http://kohanaphp.com/license
  */
-abstract class Kohana_Unittest_Database_TestCase extends PHPUnit_Extensions_Database_TestCase {
+abstract class Kohana_Unittest_Database_TestCase extends \PHPUnit\Extensions\Database\TestCase {
 
 
 	/**

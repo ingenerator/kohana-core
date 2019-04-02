@@ -56,7 +56,7 @@ class Kohana_Unittest_Tests {
 	{
 		static $suite = NULL;
 
-		if ($suite instanceof PHPUnit_Framework_TestSuite)
+		if ($suite instanceof \PHPUnit\Framework\TestSuite)
 		{
 			return $suite;
 		}
@@ -258,7 +258,7 @@ class Kohana_Unittest_Tests {
 					}
 					else
 					{
-						PHPUnit_Util_Filter::addFileToWhitelist($file);
+						\PHPUnit\Util\Filter::addFileToWhitelist($file);
 					}
 				}
 			}
