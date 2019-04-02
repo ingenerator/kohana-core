@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.2.3 (2019-04-02)
+
+* Bundle kohana/minion as an optional module with this package.
+
 ## v4.2.2 (2019-04-01)
 
 * Explicitly use namespaced calls for all global functions for performance 
