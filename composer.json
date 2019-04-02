@@ -20,12 +20,13 @@
 		"php":        "^5.5||^7.0"
 	},
 	"require-dev": {
-		"kohana/unittest":     "3.3.*@dev",
-		"kohana/koharness":    "*@dev"
+		"kohana/koharness":    "*@dev",
+		"phpunit/phpunit":     "3.7.24 - 4"
 	},
 	"replace": {
 		"kohana/core": "3.3.*",
-		"kohana/minion": "3.3.*"
+		"kohana/minion": "3.3.*",
+		"kohana/unittest": "3.3.*"
 	},
 	"conflict": {
 		"kohana/core": "*"

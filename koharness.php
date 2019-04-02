@@ -2,7 +2,7 @@
 // Configuration for koharness - builds a standalone skeleton Kohana app for running unit tests
 $base = [
     'modules' => [
-        'unittest' => __DIR__.'/vendor/kohana/unittest',
+        'unittest' => __DIR__.'/modules/unittest',
     ],
     'syspath' => __DIR__,
 ];
