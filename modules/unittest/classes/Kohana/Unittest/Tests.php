@@ -50,33 +50,20 @@ class Kohana_Unittest_Tests {
 	/**
 	 * Creates the test suite for kohana
 	 *
-	 * @return Unittest_TestSuite
+	 * @return \PHPUnit\Framework\TestSuite
 	 */
 	static function suite()
 	{
 		static $suite = NULL;
 
-		if ($suite instanceof PHPUnit_Framework_TestSuite)
+		if ($suite instanceof \PHPUnit\Framework\TestSuite)
 		{
 			return $suite;
 		}
 
 		Unittest_Tests::configure_environment();
 
-		$suite = new Unittest_TestSuite;
-		
-		// Load the whitelist and blacklist for code coverage		
-		$config = Kohana::$config->load('unittest');
-		
-		if ($config->use_whitelist)
-		{
-			Unittest_Tests::whitelist(NULL, $suite);
-		}
-		
-		if (\count($config['blacklist']))
-		{
-			Unittest_Tests::blacklist($config->blacklist, $suite);
-		}
+		$suite = new \PHPUnit\Framework\TestSuite;
 
 		// Add tests
 		$files = Kohana::list_files('tests');
@@ -90,10 +77,10 @@ class Kohana_Unittest_Tests {
 	 *
 	 * Uses recursion to scan subdirectories
 	 *
-	 * @param Unittest_TestSuite  $suite   The test suite to add to
+	 * @param \PHPUnit\Framework\TestSuite  $suite   The test suite to add to
 	 * @param array                        $files   Array of files to test
 	 */
-	static function addTests(Unittest_TestSuite $suite, array $files)
+	static function addTests(\PHPUnit\Framework\TestSuite $suite, array $files)
 	{
 
 		foreach ($files as $path => $file)
@@ -120,7 +107,6 @@ class Kohana_Unittest_Tests {
 						require_once($file);
 					}
 
-					$suite->addFileToBlacklist($file);
 				}
 			}
 		}
@@ -134,17 +120,7 @@ class Kohana_Unittest_Tests {
 	 */
 	static public function blacklist(array $blacklist_items, Unittest_TestSuite $suite = NULL)
 	{
-		foreach ($blacklist_items as $item)
-		{
-			if (\is_dir($item))
-			{
-				$suite->addDirectoryToBlacklist($item);
-			}
-			else
-			{
-				$suite->addFileToBlacklist($item);
-			}
-		}
+        throw new \BadMethodCallException();
 	}
 
 	/**
@@ -158,21 +134,7 @@ class Kohana_Unittest_Tests {
 	 */
 	static public function whitelist(array $directories = NULL, Unittest_TestSuite $suite = NULL)
 	{
-		if (empty($directories))
-		{
-			$directories = self::get_config_whitelist();
-		}
-
-		if (\count($directories))
-		{
-			foreach ($directories as & $directory)
-			{
-				$directory = \realpath($directory).'/';
-			}
-
-			// Only whitelist the "top" files in the cascading filesystem
-			self::set_whitelist(Kohana::list_files('classes', $directories), $suite);
-		}
+        throw new \BadMethodCallException();
 	}
 
 	/**
@@ -183,44 +145,7 @@ class Kohana_Unittest_Tests {
 	 */
 	static protected function get_config_whitelist()
 	{
-		$config = Kohana::$config->load('unittest');
-		$directories = array();
-
-		if ($config->whitelist['app'])
-		{
-			$directories['k_app'] = APPPATH;
-		}
-
-		if ($modules = $config->whitelist['modules'])
-		{
-			$k_modules = Kohana::modules();
-
-			// Have to do this because kohana merges config...
-			// If you want to include all modules & override defaults then TRUE must be the first
-			// value in the modules array of your app/config/unittest file
-			if (\array_search(TRUE, $modules, TRUE) === (\count($modules) - 1))
-			{
-				$modules = $k_modules;
-			}
-			elseif (\array_search(FALSE, $modules, TRUE) === FALSE)
-			{
-				$modules = \array_intersect_key($k_modules, \array_combine($modules, $modules));
-			}
-			else
-			{
-				// modules are disabled
-				$modules = array();
-			}
-
-			$directories += $modules;
-		}
-
-		if ($config->whitelist['system'])
-		{
-			$directories['k_sys'] = SYSPATH;
-		}
-
-		return $directories;
+        throw new \BadMethodCallException();
 	}
 
 	/**
@@ -231,37 +156,6 @@ class Kohana_Unittest_Tests {
 	 */
 	static protected function set_whitelist($files, Unittest_TestSuite $suite = NULL)
 	{
-
-		foreach ($files as $file)
-		{
-			if (\is_array($file))
-			{
-				self::set_whitelist($file, $suite);
-			}
-			else
-			{
-				if ( ! isset(Unittest_tests::$cache[$file]))
-				{
-					$relative_path = \substr($file, \strrpos($file, 'classes'.DIRECTORY_SEPARATOR) + 8, -\strlen(EXT));
-					$cascading_file = Kohana::find_file('classes', $relative_path);
-
-					// The theory is that if this file is the highest one in the cascading filesystem
-					// then it's safe to whitelist
-					Unittest_tests::$cache[$file] =  ($cascading_file === $file);
-				}
-
-				if (Unittest_tests::$cache[$file])
-				{
-					if (isset($suite))
-					{
-						$suite->addFileToWhitelist($file);
-					}
-					else
-					{
-						PHPUnit_Util_Filter::addFileToWhitelist($file);
-					}
-				}
-			}
-		}
+	    throw new \BadMethodCallException();
 	}
 }

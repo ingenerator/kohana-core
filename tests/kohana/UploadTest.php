@@ -113,9 +113,13 @@ class Kohana_UploadTest extends Unittest_TestCase
 	}
 
 	/**
-	 * Provides test data for test_vali()
+	 * Provides test data for test_valid()
 	 *
+     * Not clear if this is actually testing anything as well as being a data provider
+     * but as it's tagged as a test lets tag it as performing zero assertions
+     *
 	 * @test
+     * @doesNotPerformAssertions
 	 * @return array
 	 */
 	public function provider_valid()

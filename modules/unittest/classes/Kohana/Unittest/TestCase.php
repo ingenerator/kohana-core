@@ -4,7 +4,7 @@
  * A version of the stock PHPUnit testcase that includes some extra helpers
  * and default settings
  */
-abstract class Kohana_Unittest_TestCase extends PHPUnit_Framework_TestCase {
+abstract class Kohana_Unittest_TestCase extends \PHPUnit\Framework\TestCase {
 	
 	/**
 	 * Make sure PHPUnit backs up globals
@@ -97,15 +97,7 @@ abstract class Kohana_Unittest_TestCase extends PHPUnit_Framework_TestCase {
 
 	/**
 	 * Evaluate an HTML or XML string and assert its structure and/or contents.
-	 *
-	 * NOTE:
-	 * Overriding this method to remove the deprecation error
-	 * when tested with PHPUnit 4.2.0+
-	 *
-	 * TODO:
-	 * this should be removed when phpunit-dom-assertions gets released
-	 * https://github.com/phpunit/phpunit-dom-assertions
-	 *
+	 * @deprecated
 	 * @param array $matcher
 	 * @param string $actual
 	 * @param string $message
@@ -114,57 +106,7 @@ abstract class Kohana_Unittest_TestCase extends PHPUnit_Framework_TestCase {
 	 */
 	public static function assertTag($matcher, $actual, $message = '', $isHtml = true)
 	{
-		//trigger_error(__METHOD__ . ' is deprecated', E_USER_DEPRECATED);
-
-		$matched = static::tag_match($matcher, $actual, $message, $isHtml);
-		static::assertTrue($matched, $message);
+        throw new \BadMethodCallException();
 	}
 
-	/**
-	 * This assertion is the exact opposite of assertTag
-	 *
-	 * Rather than asserting that $matcher results in a match, it asserts that
-	 * $matcher does not match
-	 *
-	 * NOTE:
-	 * Overriding this method to remove the deprecation error
-	 * when tested with PHPUnit 4.2.0+
-	 *
-	 * TODO:
-	 * this should be removed when phpunit-dom-assertions gets released
-	 * https://github.com/phpunit/phpunit-dom-assertions
-	 *
-	 * @param array $matcher
-	 * @param string $actual
-	 * @param string $message
-	 * @param bool $isHtml
-	 * @uses Unittest_TestCase::tag_match
-	 */
-	public static function assertNotTag($matcher, $actual, $message = '', $isHtml = true)
-	{
-		//trigger_error(__METHOD__ . ' is deprecated', E_USER_DEPRECATED);
-
-		$matched = static::tag_match($matcher, $actual, $message, $isHtml);
-		static::assertFalse($matched, $message);
-	}
-
-	/**
-	 * Helper function to match HTML string tags against certain criteria
-	 *
-	 * TODO:
-	 * this should be removed when phpunit-dom-assertions gets released
-	 * https://github.com/phpunit/phpunit-dom-assertions
-	 *
-	 * @param array $matcher
-	 * @param string $actual
-	 * @param string $message
-	 * @param bool $isHtml
-	 * @return bool TRUE if there is a match FALSE otherwise
-	 */
-	protected static function tag_match($matcher, $actual, $message = '', $isHtml = true)
-	{
-		$dom = PHPUnit_Util_XML::load($actual, $isHtml);
-		$tags = PHPUnit_Util_XML::findNodes($dom, $matcher, $isHtml);
-		return \count($tags) > 0 && $tags[0] instanceof DOMNode;
-	}
 }

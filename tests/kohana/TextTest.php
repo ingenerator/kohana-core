@@ -69,10 +69,7 @@ class Kohana_TextTest extends Unittest_TestCase
 
 		foreach ($tags as $tag)
 		{
-			$this->assertNotTag(
-				array('tag' => $tag, 'ancestor' => array('tag' => 'p')),
-				$output
-			);
+			$this->assertEquals($text, $output);
 		}
 	}
 

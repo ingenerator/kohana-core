@@ -22,7 +22,7 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 */
 	public function provider_body()
 	{
-		$view = $this->getMock('View');
+		$view = $this->createMock('View');
 		$view->expects($this->any())
 			->method('__toString')
 			->will($this->returnValue('foo'));
@@ -131,7 +131,7 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 * @dataProvider provider_cookie_set
 	 * @param string $key 
 	 * @param string $value 
-	 * @param string $expected 
+	 * @param array $expected
 	 * @return void
 	 */
 	public function test_cookie_set($key, $value, $expected)
