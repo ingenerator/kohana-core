@@ -107,7 +107,6 @@ class Kohana_Unittest_Tests {
 						require_once($file);
 					}
 
-					$suite->addFileToBlacklist($file);
 				}
 			}
 		}
