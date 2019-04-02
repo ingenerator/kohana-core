@@ -109,20 +109,4 @@ abstract class Kohana_Unittest_TestCase extends \PHPUnit\Framework\TestCase {
         throw new \BadMethodCallException();
 	}
 
-	/**
-	 * This assertion is the exact opposite of assertTag
-	 *
-	 * Rather than asserting that $matcher results in a match, it asserts that
-	 * $matcher does not match
-	 * @deprecated
-	 * @param array $matcher
-	 * @param string $actual
-	 * @param string $message
-	 * @param bool $isHtml
-	 * @uses Unittest_TestCase::tag_match
-	 */
-	public static function assertNotTag($matcher, $actual, $message = '', $isHtml = true)
-	{
-        throw new \BadMethodCallException();
-	}
 }

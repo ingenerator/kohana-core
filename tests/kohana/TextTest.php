@@ -65,15 +65,11 @@ class Kohana_TextTest extends Unittest_TestCase
 	 */
 	function test_auto_para_does_not_enclose_html_tags_in_paragraphs(array $tags, $text)
 	{
-	    $this->markTestSkipped('Relies on asserting tags');
 		$output = Text::auto_p($text);
 
 		foreach ($tags as $tag)
 		{
-			$this->assertNotTag(
-				array('tag' => $tag, 'ancestor' => array('tag' => 'p')),
-				$output
-			);
+			$this->assertEquals($text, $output);
 		}
 	}
 
