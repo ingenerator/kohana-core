@@ -2,6 +2,13 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.3.0 (2019-04-02)
+
+* Drop support for PHP < 7.2
+* Fixup tests for PHPUnit 7
+* Skip some tests in kohana form (we're barely using it anyway and don't plan to continue)
+* Replace use of each() to reach PHP 7.2 compatibility
+
 ## v4.2.3 (2019-04-02)
 
 * Bundle kohana/minion as an optional module with this package.
