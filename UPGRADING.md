@@ -5,6 +5,11 @@ removes features / options that aren't in use. There are a few breaking changes
 
 ## 4.2.x series
 
+### Update your unittest module path if required
+
+If you're using kohana/unittest it's now provided with this package : change your bootstrap
+to point to vendor/ingenerator/kohana-core/modules/unittest.
+
 ### Update your minion module path if required
 
 If you're using kohana/minion it's now provided with this package : change your bootstrap
