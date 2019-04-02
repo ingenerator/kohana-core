@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 
 /**
  * Unit testing helpers
@@ -22,7 +22,7 @@ class Kohana_Unittest_Helpers {
 		if ( ! isset(self::$_has_internet))
 		{
 			// The @ operator is used here to avoid DNS errors when there is no connection.
-			$sock = @fsockopen("www.google.com", 80, $errno, $errstr, 1);
+			$sock = @\fsockopen("www.google.com", 80, $errno, $errstr, 1);
 
 			self::$_has_internet = (bool) $sock ? TRUE : FALSE;
 		}
@@ -38,7 +38,7 @@ class Kohana_Unittest_Helpers {
 	 */
 	static public function dir_separator($path)
 	{
-		return str_replace('/', DIRECTORY_SEPARATOR, $path);
+		return \str_replace('/', DIRECTORY_SEPARATOR, $path);
 	}
 
 	/**
@@ -48,32 +48,32 @@ class Kohana_Unittest_Helpers {
 	 */
 	static public function clean_cache_dir()
 	{
-		$cache_dir = opendir(Kohana::$cache_dir);
+		$cache_dir = \opendir(Kohana::$cache_dir);
 
-		while ($dir = readdir($cache_dir))
+		while ($dir = \readdir($cache_dir))
 		{
 			// Cache files are split into directories based on first two characters of hash
-			if ($dir[0] !== '.' AND strlen($dir) === 2)
+			if ($dir[0] !== '.' AND \strlen($dir) === 2)
 			{
 				$dir = self::dir_separator(Kohana::$cache_dir.'/'.$dir.'/');
 	
-				$cache = opendir($dir);
+				$cache = \opendir($dir);
 
-				while ($file = readdir($cache))
+				while ($file = \readdir($cache))
 				{
 					if ($file[0] !== '.')
 					{
-						unlink($dir.$file);
+						\unlink($dir.$file);
 					}
 				}
 
-				closedir($cache);
+				\closedir($cache);
 
-				rmdir($dir);
+				\rmdir($dir);
 			}
 		}
 
-		closedir($cache_dir);
+		\closedir($cache_dir);
 	}
 
 	/**
@@ -96,15 +96,15 @@ class Kohana_Unittest_Helpers {
 	 */
 	public function set_environment(array $environment)
 	{
-		if ( ! count($environment))
+		if ( ! \count($environment))
 			return FALSE;
 
 		foreach ($environment as $option => $value)
 		{
-			$backup_needed = ! array_key_exists($option, $this->_environment_backup);
+			$backup_needed = ! \array_key_exists($option, $this->_environment_backup);
 
 			// Handle changing superglobals
-			if (in_array($option, array('_GET', '_POST', '_SERVER', '_FILES')))
+			if (\in_array($option, array('_GET', '_POST', '_SERVER', '_FILES')))
 			{
 				// For some reason we need to do this in order to change the superglobals
 				global $$option;
@@ -118,9 +118,9 @@ class Kohana_Unittest_Helpers {
 				$$option = $value;
 			}
 			// If this is a static property i.e. Html::$windowed_urls
-			elseif (strpos($option, '::$') !== FALSE)
+			elseif (\strpos($option, '::$') !== FALSE)
 			{
-				list($class, $var) = explode('::$', $option, 2);
+				list($class, $var) = \explode('::$', $option, 2);
 
 				$class = new ReflectionClass($class);
 
@@ -132,7 +132,7 @@ class Kohana_Unittest_Helpers {
 				$class->setStaticPropertyValue($var, $value);
 			}
 			// If this is an environment variable
-			elseif (preg_match('/^[A-Z_-]+$/', $option) OR isset($_SERVER[$option]))
+			elseif (\preg_match('/^[A-Z_-]+$/', $option) OR isset($_SERVER[$option]))
 			{
 				if ($backup_needed)
 				{
@@ -149,7 +149,7 @@ class Kohana_Unittest_Helpers {
 					$this->_environment_backup[$option] = Kohana::$config->load($option);
 				}
 
-				list($group, $var) = explode('.', $option, 2);
+				list($group, $var) = \explode('.', $option, 2);
 
 				Kohana::$config->load($group)->set($var, $value);
 			}

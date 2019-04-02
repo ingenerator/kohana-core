@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 
 /**
  * A version of the stock PHPUnit testcase that includes some extra helpers
@@ -165,6 +165,6 @@ abstract class Kohana_Unittest_TestCase extends PHPUnit_Framework_TestCase {
 	{
 		$dom = PHPUnit_Util_XML::load($actual, $isHtml);
 		$tags = PHPUnit_Util_XML::findNodes($dom, $matcher, $isHtml);
-		return count($tags) > 0 && $tags[0] instanceof DOMNode;
+		return \count($tags) > 0 && $tags[0] instanceof DOMNode;
 	}
 }

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 
 /**
  * PHPUnit testsuite for kohana application
@@ -19,7 +19,7 @@ class Kohana_Unittest_Tests {
 	 */
 	static function autoload($class)
 	{
-		$file = str_replace('_', '/', $class);
+		$file = \str_replace('_', '/', $class);
 
 		if ($file = Kohana::find_file('tests', $file))
 		{
@@ -38,10 +38,10 @@ class Kohana_Unittest_Tests {
 	 */
 	static public function configure_environment($do_whitelist = TRUE, $do_blacklist = TRUE)
 	{
-		restore_exception_handler();
-		restore_error_handler();
+		\restore_exception_handler();
+		\restore_error_handler();
 
-		spl_autoload_register(array('Unittest_tests', 'autoload'));
+		\spl_autoload_register(array('Unittest_tests', 'autoload'));
 
 		Unittest_tests::$cache = (($cache = Kohana::cache('unittest_whitelist_cache')) === NULL) ? array() : $cache;
 
@@ -73,7 +73,7 @@ class Kohana_Unittest_Tests {
 			Unittest_Tests::whitelist(NULL, $suite);
 		}
 		
-		if (count($config['blacklist']))
+		if (\count($config['blacklist']))
 		{
 			Unittest_Tests::blacklist($config->blacklist, $suite);
 		}
@@ -98,7 +98,7 @@ class Kohana_Unittest_Tests {
 
 		foreach ($files as $path => $file)
 		{
-			if (is_array($file))
+			if (\is_array($file))
 			{
 				if ($path != 'tests'.DIRECTORY_SEPARATOR.'test_data')
 				{					
@@ -108,10 +108,10 @@ class Kohana_Unittest_Tests {
 			else
 			{
 				// Make sure we only include php files
-				if (is_file($file) AND substr($file, -strlen(EXT)) === EXT)
+				if (\is_file($file) AND \substr($file, -\strlen(EXT)) === EXT)
 				{
 					// The default PHPUnit TestCase extension
-					if ( ! strpos($file, 'TestCase'.EXT))
+					if ( ! \strpos($file, 'TestCase'.EXT))
 					{
 						$suite->addTestFile($file);
 					}
@@ -136,7 +136,7 @@ class Kohana_Unittest_Tests {
 	{
 		foreach ($blacklist_items as $item)
 		{
-			if (is_dir($item))
+			if (\is_dir($item))
 			{
 				$suite->addDirectoryToBlacklist($item);
 			}
@@ -163,11 +163,11 @@ class Kohana_Unittest_Tests {
 			$directories = self::get_config_whitelist();
 		}
 
-		if (count($directories))
+		if (\count($directories))
 		{
 			foreach ($directories as & $directory)
 			{
-				$directory = realpath($directory).'/';
+				$directory = \realpath($directory).'/';
 			}
 
 			// Only whitelist the "top" files in the cascading filesystem
@@ -198,13 +198,13 @@ class Kohana_Unittest_Tests {
 			// Have to do this because kohana merges config...
 			// If you want to include all modules & override defaults then TRUE must be the first
 			// value in the modules array of your app/config/unittest file
-			if (array_search(TRUE, $modules, TRUE) === (count($modules) - 1))
+			if (\array_search(TRUE, $modules, TRUE) === (\count($modules) - 1))
 			{
 				$modules = $k_modules;
 			}
-			elseif (array_search(FALSE, $modules, TRUE) === FALSE)
+			elseif (\array_search(FALSE, $modules, TRUE) === FALSE)
 			{
-				$modules = array_intersect_key($k_modules, array_combine($modules, $modules));
+				$modules = \array_intersect_key($k_modules, \array_combine($modules, $modules));
 			}
 			else
 			{
@@ -234,7 +234,7 @@ class Kohana_Unittest_Tests {
 
 		foreach ($files as $file)
 		{
-			if (is_array($file))
+			if (\is_array($file))
 			{
 				self::set_whitelist($file, $suite);
 			}
@@ -242,7 +242,7 @@ class Kohana_Unittest_Tests {
 			{
 				if ( ! isset(Unittest_tests::$cache[$file]))
 				{
-					$relative_path = substr($file, strrpos($file, 'classes'.DIRECTORY_SEPARATOR) + 8, -strlen(EXT));
+					$relative_path = \substr($file, \strrpos($file, 'classes'.DIRECTORY_SEPARATOR) + 8, -\strlen(EXT));
 					$cascading_file = Kohana::find_file('classes', $relative_path);
 
 					// The theory is that if this file is the highest one in the cascading filesystem

@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php \defined('SYSPATH') or die('No direct script access.');
 /**
  * TestCase for testing a database
  *
@@ -74,9 +74,9 @@ abstract class Kohana_Unittest_Database_TestCase extends PHPUnit_Extensions_Data
 		// Get the unittesting db connection
 		$config = Kohana::$config->load('database.'.$this->_database_connection);
 
-		if(strtolower($config['type']) !== 'pdo')
+		if(\strtolower($config['type']) !== 'pdo')
 		{
-			$config['connection']['dsn'] = strtolower($config['type']).':'.
+			$config['connection']['dsn'] = \strtolower($config['type']).':'.
 			'host='.$config['connection']['hostname'].';'.
 			'dbname='.$config['connection']['database'];
 		}
