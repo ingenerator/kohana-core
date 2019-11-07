@@ -90,6 +90,74 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$this->assertEquals([], $request->post());
 	}
 
+	public function provider_incoming_uri()
+	{
+		return [
+			[
+				// PATH_INFO over all else
+				[
+					'PATH_INFO'    => '/foo/bar',
+					'REQUEST_URI'  => 'well this broke',
+					'PHP_SELF'     => 'also wrong',
+					'REDIRECT_URL' => 'Wrongty wrong'
+				],
+				'foo/bar'
+			],
+			[
+				// No PATH_INFO - omg! Use REQUEST_URI - valid URL PATH
+				['REQUEST_URI' => '/myscript.php'],
+				'myscript.php'
+			],
+			[
+				// No PATH_INFO - omg! Use REQUEST_URI - valid URL PATH and lose the querystring
+				['REQUEST_URI' => '/myscript.php?lose=me'],
+				'myscript.php'
+			],
+			[
+				// No PATH_INFO - omg! Use REQUEST_URI - but parse_url says there's an invalid URL PATH
+				// Note can't use the example in the code comment as :// in url triggers our error
+				// on attempting an external request
+				['REQUEST_URI' => '//judge.php'],
+				'judge.php'
+			],
+			[
+				// No PATH_INFO - omg! Use REQUEST_URI - but parse_url says there's an invalid URL PATH
+				// And they sent a querystring too, the loons
+				['REQUEST_URI' => '//judge.php?lose=me'],
+				'judge.php'
+			],
+			[
+				// No PATH_INFO and it's the docroot (this does happen btw)
+				['REQUEST_URI' => '/'],
+				'/'
+			],
+			[
+				// No PATH_INFO and it's the docroot (this does happen btw)
+				['REQUEST_URI' => '/?fo=1'],
+				'/'
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider provider_incoming_uri
+	 */
+	public function test_from_globals_detects_incoming_uri($server, $expect)
+	{
+		$this->setEnvironment(
+			[
+				'Request::$initial'    => NULL,
+				'Request::$client_ip'  => NULL,
+				'Request::$user_agent' => NULL,
+				'_SERVER'              => $server,
+				'_GET'                 => [],
+				'_POST'                => [],
+			]
+		);
+		$request = Request::fromGlobals();
+		$this->assertSame($expect, $request->uri());
+	}
+
 	/**
 	 * Ensure that parameters can be read
 	 *

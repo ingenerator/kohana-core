@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Do not throw an exception on requests to invalid URLS like //index.php?stuff=query
+
 ## v4.3.0 (2019-04-02)
 
 * Drop support for PHP < 7.2
