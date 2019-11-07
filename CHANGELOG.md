@@ -2,6 +2,7 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Fix some errors in migrating unit test mocking to PHPUnit 7
 * Do not throw an exception on requests to invalid URLS like //index.php?stuff=query
 
 ## v4.3.0 (2019-04-02)
