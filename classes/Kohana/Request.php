@@ -141,21 +141,28 @@ class Kohana_Request implements HTTP_Request {
 
 			if (isset($_SERVER['REQUEST_URI']))
 			{
-				/**
-				 * We use REQUEST_URI as the fallback value. The reason
-				 * for this is we might have a malformed URL such as:
-				 *
-				 *  http://localhost/http://example.com/judge.php
-				 *
-				 * which parse_url can't handle. So rather than leave empty
-				 * handed, we'll use this.
-				 */
-				$uri = $_SERVER['REQUEST_URI'];
+				$uri = \parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 
-				if ($request_uri = \parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH))
+				if ( ! $uri) 
 				{
-					// Valid URL path found, set it.
-					$uri = $request_uri;
+					/**
+					 * We use REQUEST_URI as the fallback value. The reason
+					 * for this is we might have a malformed URL such as:
+					 *
+					 *  http://localhost/http://example.com/judge.php
+					 *
+					 * which parse_url can't handle. So rather than leave empty
+					 * handed, we'll use this.
+					 *
+					 * This also covers urls that are not actually malformed but parse_url dislikes
+					 * such as `//index.php`.
+					 *
+					 * However, REQUEST_URI may include a querystring if one was provided, and we
+					 * need to strip that off so it behaves the same as parse_url would - otherwise
+					 * the request itself gives an exception on construction because of the QS in
+					 * the URL.
+					 */
+					 $uri = explode('?', $_SERVER['REQUEST_URI'])[0];
 				}
 
 				// Decode the request URI

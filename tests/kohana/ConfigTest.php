@@ -114,7 +114,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 		// To get around this we have to specify a totally random name for the second mock object
 		$reader1 = $this->createMock('Kohana_Config_Reader');
 		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')
-            ->setConstructorArgs([ array(), array(), 'MY_AWESOME_READER'])
+            ->setMockClassName('MY_AWESOME_READER')
             ->getMock();
 
 		$config->attach($reader1);
@@ -155,7 +155,9 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	{
 		$config = new Config;
 
-		$reader = $this->getMockBuilder('Kohana_Config_Reader')->setConstructorArgs([array('load')])->getMock();
+		$reader = $this->getMockBuilder('Kohana_Config_Reader')
+            ->setMethods(['load'])
+            ->getMock();
 
 		$reader
 			->expects($this->once())
@@ -180,7 +182,9 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	{
 		$config = new Config;
 
-		$reader = $this->getMockBuilder('Kohana_Config_Reader')->setConstructorArgs([array('load')])->getMock();
+		$reader = $this->getMockBuilder('Kohana_Config_Reader')
+            ->setMethods(['load'])
+            ->getMock();
 
 		$reader
 			->expects($this->once())
@@ -261,8 +265,12 @@ class Kohana_ConfigTest extends Unittest_TestCase
 		$config = new Kohana_Config;
 
 		$reader1 = $this->createMock('Kohana_Config_Reader');
-		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')->setConstructorArgs([array('write')])->getMock();
-		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')->setConstructorArgs([array('write')])->getMock();
+		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')
+            ->setMethods(['write'])
+            ->getMock();
+		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')
+            ->setMethods(['write'])
+            ->getMock();
 
 		$writer1
 			->expects($this->once())
@@ -291,10 +299,12 @@ class Kohana_ConfigTest extends Unittest_TestCase
 		$group_name =  'lolumns';
 
 		$reader1 = $this->getMockBuilder('Kohana_Config_Reader')
-            ->setConstructorArgs([ array('load'), array(), 'Unittest_Config_Reader_1'])
+            ->setMethods(['load'])
+            ->setMockClassName('Unittest_Config_Reader_1')
             ->getMock();
 		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')
-            ->setConstructorArgs([ array('load'), array(), 'Unittest_Config_Reader_2'])
+            ->setMethods(['load'])
+            ->setMockClassName('Unittest_Config_Reader_2')
             ->getMock();
 
 		$reader1
@@ -339,7 +349,9 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	 */
 	public function test_load_reuses_config_groups()
 	{
-		$reader = $this->getMockBuilder('Kohana_Config_Reader')->setConstructorArgs([array('load')])->getMock();
+		$reader = $this->getMockBuilder('Kohana_Config_Reader')
+            ->setMethods(['load'])
+            ->getMock();
 		$reader
 			->expects($this->once())
 			->method('load')
@@ -366,8 +378,12 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	{
 		$config = new Kohana_Config;
 
-		$reader1 = $this->getMockBuilder('Kohana_Config_Reader')->setConstructorArgs([array('load')])->getMock();
-		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')->setConstructorArgs([array('load')])->getMock();
+		$reader1 = $this->getMockBuilder('Kohana_Config_Reader')
+            ->setMethods(['load'])
+            ->getMock();
+		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')
+            ->setMethods(['load'])
+            ->getMock();
 
 		$reader1
 			->expects($this->once())
@@ -381,8 +397,12 @@ class Kohana_ConfigTest extends Unittest_TestCase
 			->with('something')
 			->will($this->returnValue(array('kohana' => 'good')));
 
-		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')->setConstructorArgs([array('write')])->getMock();
-		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')->setConstructorArgs([array('write')])->getMock();
+		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')
+            ->setMethods(['write'])
+            ->getMock();
+		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')
+            ->setMethods(['write'])
+            ->getMock();
 
 		// Due to crazy limitations in phpunit's mocking engine we have to be fairly
 		// liberal here as to what order we receive the config items
