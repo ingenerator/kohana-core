@@ -36,6 +36,9 @@ class Kohana_Response implements HTTP_Response {
 		// Informational 1xx
 		100 => 'Continue',
 		101 => 'Switching Protocols',
+		102 => 'Processing',
+		103 => 'Early Hints',
+		// 104-199 Unassigned
 
 		// Success 2xx
 		200 => 'OK',
@@ -45,6 +48,11 @@ class Kohana_Response implements HTTP_Response {
 		204 => 'No Content',
 		205 => 'Reset Content',
 		206 => 'Partial Content',
+		207 => 'Multi-Status',
+		208 => 'Already Reported',
+		//209-225,Unassigned,
+		226 => 'IM Used',
+		//227-299,Unassigned,
 
 		// Redirection 3xx
 		300 => 'Multiple Choices',
@@ -55,6 +63,8 @@ class Kohana_Response implements HTTP_Response {
 		305 => 'Use Proxy',
 		// 306 is deprecated but reserved
 		307 => 'Temporary Redirect',
+		308 => 'Permanent Redirect',
+		//309-399,Unassigned,
 
 		// Client Error 4xx
 		400 => 'Bad Request',
@@ -75,7 +85,22 @@ class Kohana_Response implements HTTP_Response {
 		415 => 'Unsupported Media Type',
 		416 => 'Requested Range Not Satisfiable',
 		417 => 'Expectation Failed',
-        422 => 'Unprocessable Entity',
+		//418-420,Unassigned,
+		421 => 'Misdirected Request',
+		422 => 'Unprocessable Entity',
+		423 => 'Locked',
+		424 => 'Failed Dependency',
+		425 => 'Too Early',
+		426 => 'Upgrade Required',
+		//427 Unassigned,
+		428 => 'Precondition Required',
+		429 => 'Too Many Requests',
+		//430 Unassigned,
+		431 => 'Request Header Fields Too Large',
+		//432-450,Unassigned,
+		451 => 'Unavailable For Legal Reasons',
+		//452-499,Unassigned,
+
 
 		// Server Error 5xx
 		500 => 'Internal Server Error',
@@ -84,7 +109,13 @@ class Kohana_Response implements HTTP_Response {
 		503 => 'Service Unavailable',
 		504 => 'Gateway Timeout',
 		505 => 'HTTP Version Not Supported',
-		509 => 'Bandwidth Limit Exceeded'
+		506 => 'Variant Also Negotiates',
+		507 => 'Insufficient Storage',
+		508 => 'Loop Detected',
+		509 => 'Bandwidth Limit Exceeded', // Not in official IANA list but in older Kohana, retain for BC
+		510 => 'Not Extended',
+		511 => 'Network Authentication Required',
+		// 512-599 Unassigned,
 	);
 
 	/**

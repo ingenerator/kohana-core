@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Update list of Response status codes to IANA list as at 2018-09-01
+  https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
+
 ## v4.3.1 (2019-11-07)
 
 * Fix some errors in migrating unit test mocking to PHPUnit 7
