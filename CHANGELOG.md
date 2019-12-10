@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.3.2 (2019-12-10)
+
 * Update list of Response status codes to IANA list as at 2018-09-01
   https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 
