@@ -112,7 +112,42 @@ class Kohana_UploadTest extends Unittest_TestCase
 		Upload::size($_FILES['unit_test'], '1DooDah');
 	}
 
-	/**
+    public function provider_not_empty()
+    {
+        return [
+            [
+                NULL,
+                FALSE
+            ],
+            [
+                '',
+                FALSE
+            ],
+            [
+                [],
+                FALSE
+            ],
+            [
+                ['error' => UPLOAD_ERR_CANT_WRITE, 'tmp_name' => uniqid(sys_get_temp_dir())],
+                FALSE
+            ],
+//            [
+//                // Can't test in reality for the passing case as it calls is_uploaded_file
+//                ['error' => UPLOAD_ERR_OK, 'tmp_name' => uniqid(sys_get_temp_dir())],
+//                TRUE
+//            ]
+        ];
+    }
+
+    /**
+     * @dataProvider provider_not_empty
+     */
+    public function test_not_empty($to_validate, $expect)
+    {
+        $this->assertSame($expect, Upload::not_empty($to_validate));
+    }
+
+    /**
 	 * Provides test data for test_valid()
 	 *
      * Not clear if this is actually testing anything as well as being a data provider
@@ -180,7 +215,7 @@ class Kohana_UploadTest extends Unittest_TestCase
 					'tmp_name' => Kohana::find_file('tests', 'test_data/github', 'png'),
 				)
 			),
-			
+
 		);
 	}
 
