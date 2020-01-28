@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Handle potentially empty (null) file argument for Kohana_Upload::not_empty (fixes 
+  TypeError from the explicit array typehint on that method.
+
 ## v4.3.2 (2019-12-10)
 
 * Update list of Response status codes to IANA list as at 2018-09-01

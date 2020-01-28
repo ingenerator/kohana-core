@@ -126,9 +126,10 @@ class Kohana_Upload {
 	 * @param   array   $file   $_FILES item
 	 * @return  bool
 	 */
-	public static function not_empty(array $file)
+	public static function not_empty($file)
 	{
-		return (isset($file['error'])
+		return is_array($file)
+			AND (isset($file['error'])
 			AND isset($file['tmp_name'])
 			AND $file['error'] === UPLOAD_ERR_OK
 			AND \is_uploaded_file($file['tmp_name']));
