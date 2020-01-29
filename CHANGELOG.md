@@ -2,6 +2,15 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* [NB] Do not throw any exception on requests containing a ? in the URL, treat it as literal.
+  If a user-agent has sent a request containing an encoded `?` character, this is correctly
+  treated by the webserver as an escaped literal character that forms part of the URL path /
+  filename, not a querystring separator. In this case the `?` appears in PATH_INFO and the
+  app should likewise treat it as a valid URL containing a `?`. This, of course, may not
+  match any defined route but that is for the routing layer to handle and 404 as required.
+  The exception was primarily added by us to catch legacy behaviour e.g. unit tests that
+  were creating a request object with a `?a=b` in the URL and relying on that being parsed
+  as a querystring in the returned object. This warning/failure is no longer available.
 * Handle potentially empty (null) file argument for Kohana_Upload::not_empty (fixes 
   TypeError from the explicit array typehint on that method.
 

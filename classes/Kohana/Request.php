@@ -556,11 +556,6 @@ class Kohana_Request implements HTTP_Request {
 		// Initialise the header
 		$this->_header = new HTTP_Header(array());
 
-		if (\strpos($uri, '?') !== FALSE) {
-			// This shouldn't be happening, the arguments should be pre-parsed to the base url and the $_GET array
-			throw new \UnexpectedValueException('Cannot accept querystring arguments in \Request::$uri');
-		}
-
 		// Fail if they're trying to do old-school external request execution
 		if (\strpos($uri, '://') === FALSE)
 		{

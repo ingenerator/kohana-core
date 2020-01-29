@@ -550,12 +550,11 @@ class Kohana_RequestTest extends Unittest_TestCase
 		$this->assertSame($expect, \Request::fromGlobals()->query($key));
 	}
 
-	/**
-	 * @expectedException \UnexpectedValueException
-	 */
-	public function test_throws_if_creating_with_query_string_in_url()
+	public function test_creating_with_questionmark_in_url_creates_with_literal_url_and_no_query()
 	{
-		\Request::with(['uri' => 'some/url?with=a&query=string']);
+		$rq = \Request::with(['uri' => 'some/url?with=a&query=string']);
+		$this->assertSame('some/url?with=a&query=string', $rq->uri());
+		$this->assertSame([], $rq->query());
 	}
 
 	public function test_it_trims_basic_string_value()
