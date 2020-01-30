@@ -2,6 +2,7 @@ sudo: false
 language: php
 php:
  - '7.2'
+ - '7.3'
 
 env:
  - KOHARNESS_ALL_MODULES=1
