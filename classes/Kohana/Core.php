@@ -170,6 +170,7 @@ class Kohana_Core {
 	 * `string`  | cache_dir  | Kohana's cache directory.  Used by [Kohana::cache] for simple internal caching, like [Fragments](kohana/fragments) and **\[caching database queries](this should link somewhere)**.  This has nothing to do with the [Cache module](cache). | `APPPATH."cache"`
 	 * `integer` | cache_life | Lifetime, in seconds, of items cached by [Kohana::cache]         | `60`
 	 * `boolean` | errors     | Should Kohana catch PHP errors and uncaught Exceptions and show the `error_view`. See [Error Handling](kohana/errors) for more info. <br /> <br /> Recommended setting: `TRUE` while developing, `FALSE` on production servers. | `TRUE`
+	 * `string`  | error_view | The error view to render for exceptions                                                                                                                                                                                         | Varies between text/html based on PHP_SAPI const
 	 * `boolean` | profile    | Whether to enable the [Profiler](kohana/profiling). <br /> <br />Recommended setting: `TRUE` while developing, `FALSE` on production servers. | `TRUE`
 	 * `boolean` | caching    | Cache file locations to speed up [Kohana::find_file].  This has nothing to do with [Kohana::cache], [Fragments](kohana/fragments) or the [Cache module](cache).  <br /> <br />  Recommended setting: `FALSE` while developing, `TRUE` on production servers. | `FALSE`
 	 * `boolean` | expose     | Set the X-Powered-By header
@@ -215,6 +216,14 @@ class Kohana_Core {
 
 			// Enable Kohana error handling, converts all PHP errors to exceptions.
 			\set_error_handler(array('Kohana', 'error_handler'));
+		}
+
+		// Set the error view if specified, otherwise default to the CLI error view in cli and the
+		// upstream cli error view otherwise
+		if (isset($settings['error_view'])) {
+			\Kohana_Exception::$error_view = $settings['error_view'];
+		} elseif (PHP_SAPI === 'cli') {
+			\Kohana_Exception::$error_view = 'kohana/cli_error';
 		}
 
 		/**

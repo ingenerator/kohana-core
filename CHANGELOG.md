@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* [NB] Now defines a default cli_error view if the PHP_SAPI==='cli', rather than the default
+  html view that comes with kohana. You can override this by passing 
+  `[error_view => 'name_of_view']` to Kohana::init().
 * [*BREAKING*] Cookies now default to secure and http-only.
 * Allow setting custom options (path, domain, secure etc) for an individual cookie.
 * Deprecate Cookie::$salt, ::$secure, etc in favour of a combined Cookie::configure() method
