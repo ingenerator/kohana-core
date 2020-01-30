@@ -159,6 +159,55 @@ class Kohana_CookieTest extends Unittest_TestCase
 		$this->assertSetCookieWith(array('expire' => $expect_expiry));
 	}
 
+	public function test_set_can_take_custom_cookie_options()
+	{
+		Cookie::configure(
+			[
+				'salt'       => 'foo',
+				'expiration' => 10,
+				'path'       => '/subdir',
+				'domain'     => 'foo.domain',
+				'secure'     => TRUE,
+				'httponly'   => TRUE
+			]
+		);
+		Kohana_CookieTest_TestableCookie::set(
+			'bespoke',
+			'any-val',
+			0,
+			[
+				'path'     => '/my-path',
+				'domain'   => '*',
+				'secure'   => FALSE,
+				'httponly' => FALSE
+			]
+		);
+		$this->assertSetCookieWith(
+			[
+				'expire'   => 0,
+				'path'     => '/my-path',
+				'domain'   => '*',
+				'secure'   => FALSE,
+				'httponly' => FALSE
+			]
+		);
+	}
+
+	/**
+	 * @testWith ["salt"]
+	 *           ["expiration"]
+	 */
+	public function test_set_throws_on_unsupported_cookie_options($opt)
+	{
+		$this->expectException(\InvalidArgumentException::class);
+		Kohana_CookieTest_TestableCookie::set(
+			'any',
+			'thing',
+			0,
+			[$opt => 'anything']
+		);
+	}
+
 	/**
 	 * @covers Cookie::get
 	 */

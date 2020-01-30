@@ -129,8 +129,10 @@ class Kohana_Cookie {
 	 * @return  boolean
 	 * @uses    Cookie::salt
 	 */
-	public static function set($name, $value, $lifetime = NULL)
+	public static function set($name, $value, $lifetime = NULL, array $options = [])
 	{
+	        $options = static::mergeCookieOptions($options);
+
 		if ($lifetime === NULL)
 		{
 			// Use the default expiration
@@ -146,7 +148,33 @@ class Kohana_Cookie {
 		// Add the salt to the cookie value
 		$value = Cookie::salt($name, $value).'~'.$value;
 
-		return static::_setcookie($name, $value, $lifetime, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
+	        return static::_setcookie(
+			$name,
+			$value,
+			$lifetime,
+			$options['path'],
+			$options['domain'],
+			$options['secure'],
+			$options['httponly']
+		);
+	}
+
+	protected static function mergeCookieOptions(array $options):array
+	{
+		$defaults = [
+			'path'       => Cookie::$path,
+			'domain'     => Cookie::$domain,
+			'secure'     => Cookie::$secure,
+			'httponly'   => Cookie::$httponly
+		];
+
+		if ($extras = array_diff_key($options, $defaults)) {
+			throw new \InvalidArgumentException(
+				'Cannot customise '.implode(', ', array_keys($extras)).' for individual cookies'
+			);
+		}
+
+		return array_merge($defaults, $options);
 	}
 
 	/**
