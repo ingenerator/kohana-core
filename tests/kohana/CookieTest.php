@@ -36,6 +36,77 @@ class Kohana_CookieTest extends Unittest_TestCase
 		));
 	}
 
+
+	public function provider_configure()
+	{
+		return [
+			[
+				[],
+				[
+					'salt'       => 'foo',
+					'expiration' => 10,
+					'path'       => '/subdir',
+					'domain'     => 'foo.domain',
+					'secure'     => TRUE,
+					'httponly'   => TRUE
+				],
+				[
+					'salt' => 'foo',
+					'expiration' => 10,
+					'path'       => '/subdir',
+					'domain'     => 'foo.domain',
+					'secure'     => TRUE,
+					'httponly'   => TRUE
+				],
+			],
+			[
+				[
+					'Cookie::$salt'     => 'anything',
+					'Cookie::$path'     => '/path',
+					'Cookie::$domain'   => 'my.domain',
+					'Cookie::$secure'   => TRUE,
+					'Cookie::$httponly' => FALSE,
+				],
+				[
+					'expiration' => 30,
+					'secure'     => FALSE,
+					'httponly'   => TRUE
+				],
+				[
+					'salt' => 'anything',
+					'expiration' => 30,
+					'path'       => '/path',
+					'domain'     => 'my.domain',
+					'secure'     => FALSE,
+					'httponly'   => TRUE
+				],
+			]
+		];
+	}
+
+	/**
+	 * @dataProvider provider_configure
+	 */
+	public function test_configure_updates_options_merging_defaults(
+		$env,
+		$config,
+		$expect
+	) {
+		$this->setEnvironment($env);
+		Cookie::configure($config);
+		$this->assertSame(
+			$expect,
+			[
+				'salt'       => Cookie::$salt,
+				'expiration' => Cookie::$expiration,
+				'path'       => Cookie::$path,
+				'domain'     => Cookie::$domain,
+				'secure'     => Cookie::$secure,
+				'httponly'   => Cookie::$httponly
+			]
+		);
+	}
+
 	/**
 	 * Tests that cookies are set with the global path, domain, etc options.
 	 *

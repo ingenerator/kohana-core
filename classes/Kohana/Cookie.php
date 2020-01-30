@@ -12,33 +12,60 @@ class Kohana_Cookie {
 
 	/**
 	 * @var  string  Magic salt to add to the cookie
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $salt = NULL;
 
 	/**
 	 * @var  integer  Number of seconds before the cookie expires
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $expiration = 0;
 
 	/**
 	 * @var  string  Restrict the path that the cookie is available to
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $path = '/';
 
 	/**
 	 * @var  string  Restrict the domain that the cookie is available to
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $domain = NULL;
 
 	/**
 	 * @var  boolean  Only transmit cookies over secure connections
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $secure = FALSE;
 
 	/**
 	 * @var  boolean  Only transmit cookies over HTTP, disabling Javascript access
+	 * @deprecated see Cookie::configure()
 	 */
 	public static $httponly = FALSE;
+
+	public static function configure(array $options)
+	{
+		$values             = array_merge(
+			[
+				'salt'       => Cookie::$salt,
+				'expiration' => Cookie::$expiration,
+				'path'       => Cookie::$path,
+				'domain'     => Cookie::$domain,
+				'secure'     => Cookie::$secure,
+				'httponly'   => Cookie::$httponly
+			],
+			$options
+		);
+		Cookie::$salt       = $values['salt'];
+		Cookie::$expiration = $values['expiration'];
+		Cookie::$path       = $values['path'];
+		Cookie::$domain     = $values['domain'];
+		Cookie::$secure     = $values['secure'];
+		Cookie::$httponly   = $values['httponly'];
+	}
 
 	/**
 	 * Gets the value of a signed cookie. Cookies without signatures will not
