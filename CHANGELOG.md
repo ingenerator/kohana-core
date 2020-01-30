@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.3.3 (2020-01-30)
+
 * [NB] Do not throw any exception on requests containing a ? in the URL, treat it as literal.
   If a user-agent has sent a request containing an encoded `?` character, this is correctly
   treated by the webserver as an escaped literal character that forms part of the URL path /
