@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* [*BREAKING*] Cookies now default to secure and http-only.
+* Allow setting custom options (path, domain, secure etc) for an individual cookie.
+* Deprecate Cookie::$salt, ::$secure, etc in favour of a combined Cookie::configure() method
+  to set multiple options all at once e.g. from bootstrap. 
+
 ## v4.3.3 (2020-01-30)
 
 * [NB] Do not throw any exception on requests containing a ? in the URL, treat it as literal.

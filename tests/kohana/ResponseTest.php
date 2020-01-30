@@ -96,7 +96,8 @@ class Kohana_ResponseTest extends Unittest_TestCase
 				array(
 					'test1' => array(
 						'value' => 'foo',
-						'expiration' => Cookie::$expiration
+						// Cookies default to the Cookie::$expiration which is set to 900 in our test
+						'expiration' => 900
 					),
 				)
 			),
@@ -112,7 +113,8 @@ class Kohana_ResponseTest extends Unittest_TestCase
 				array(
 					'test2' => array(
 						'value' => 'stfu',
-						'expiration' => Cookie::$expiration
+						// Cookies default to the Cookie::$expiration which is set to 900 in our test
+						'expiration' => 900
 					),
 					'test3' => array(
 						'value' => 'snafu',
@@ -136,6 +138,7 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 */
 	public function test_cookie_set($key, $value, $expected)
 	{
+		Cookie::$expiration = 900;
 		// Setup the Response and apply cookie
 		$response = new Response;
 		$response->cookie($key, $value);
