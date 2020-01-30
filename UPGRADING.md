@@ -3,6 +3,24 @@
 If you use Kohana how we do, most of this will be a drop-in replacement that just 
 removes features / options that aren't in use. There are a few breaking changes
 
+## 4.4.x series
+
+### Customise Cookie::$secure and/or Cookie::$httponly if you need insecure cookies
+
+All cookies (including session cookies, if using Session_Native) are now secure and httponly
+out of the box. If you need to access their values from javascript, or serve them over 
+insecure connections, you will need to change these defaults back - either for individual
+cookies in the new options argument to `Cookie::set()` (preferred) or globally with 
+`Cookie::configure()`. One common case would be in a development environment so your 
+bootstrap might include:
+
+```php
+Cookie::configure([
+    'salt'   => 'whatever',
+    'secure' => $in_production
+]);
+``` 
+
 ## 4.2.x series
 
 ### Update your unittest module path if required

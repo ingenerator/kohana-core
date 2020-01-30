@@ -38,13 +38,13 @@ class Kohana_Cookie {
 	 * @var  boolean  Only transmit cookies over secure connections
 	 * @deprecated see Cookie::configure()
 	 */
-	public static $secure = FALSE;
+	public static $secure = TRUE;
 
 	/**
 	 * @var  boolean  Only transmit cookies over HTTP, disabling Javascript access
 	 * @deprecated see Cookie::configure()
 	 */
-	public static $httponly = FALSE;
+	public static $httponly = TRUE;
 
 	public static function configure(array $options)
 	{
