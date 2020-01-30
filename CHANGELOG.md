@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.4.0 (2020-01-30)
+
 * [NB] Now defines a default cli_error view if the PHP_SAPI==='cli', rather than the default
   html view that comes with kohana. You can override this by passing 
   `[error_view => 'name_of_view']` to Kohana::init().
