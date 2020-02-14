@@ -2,6 +2,14 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* [NB] Changes the default HTML error view to one that does not render environment, method
+  call params and other internal details. The stack trace is still shown to aid debugging,
+  and it's possible that exception messages will show sensitive information, but this
+  significantly reduces the default exposure when custom error handling goes wrong or has
+  not yet been initialised. The old kohana error dump view is enabled in the
+  `Kohana::DEVELOPMENT` environment for local debugging. As with the cli error you can
+   customise the template by passing `[error_view => 'name_of_view']` to Kohana::init().
+
 ## v4.4.0 (2020-01-30)
 
 * [NB] Now defines a default cli_error view if the PHP_SAPI==='cli', rather than the default
