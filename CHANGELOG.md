@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.5.0 (2020-02-14)
+
 * Include previous exception in Session_Exception when reading the session fails:
   can be retrieved for logging / debugging with
   `} catch (SessionException $e) { $cause = $e->getPrevious(); }`
