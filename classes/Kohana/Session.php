@@ -294,7 +294,13 @@ abstract class Kohana_Session {
 		catch (Exception $e)
 		{
 			// Error reading the session, usually a corrupt session.
-			throw new Session_Exception('Error reading session data.', NULL, Session_Exception::SESSION_CORRUPT);
+			// Can identify the cause in a catch block with $e->getPrevious()
+			throw new Session_Exception(
+				'Error reading session data.',
+				NULL,
+				Session_Exception::SESSION_CORRUPT,
+				$e
+			);
 		}
 
 		if (\is_array($data))
