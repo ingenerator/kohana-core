@@ -224,7 +224,9 @@ class Kohana_Core {
 			\Kohana_Exception::$error_view = $settings['error_view'];
 		} elseif (PHP_SAPI === 'cli') {
 			\Kohana_Exception::$error_view = 'kohana/cli_error';
-		}
+		} elseif (\Kohana::$environment === \Kohana::DEVELOPMENT) {
+		    \Kohana_Exception::$error_view = 'kohana/dev_html_error';
+        }
 
 		/**
 		 * Enable xdebug parameter collection in development mode to improve fatal stack traces.
