@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Include previous exception in Session_Exception when reading the session fails:
+  can be retrieved for logging / debugging with
+  `} catch (SessionException $e) { $cause = $e->getPrevious(); }`
 * [NB] Changes the default HTML error view to one that does not render environment, method
   call params and other internal details. The stack trace is still shown to aid debugging,
   and it's possible that exception messages will show sensitive information, but this
