@@ -49,7 +49,14 @@ function koggle(elem)
 }
 </script>
 <div id="kohana_error">
-	<h1><span class="type"><?php echo $class ?> [ <?php echo $code ?> ]:</span> <span class="message"><?php echo \htmlspecialchars( (string) $message, ENT_QUOTES | ENT_IGNORE, Kohana::$charset, TRUE); ?></span></h1>
+	<h1><span class="type"><?php echo $class ?> [ <?php echo $code ?> ]:</span> <span class="message"><?php echo \htmlspecialchars( (string) $message, ENT_QUOTES | ENT_IGNORE, Kohana::$charset, TRUE); ?>
+            <?php
+            $previous = $e;
+                while ($previous = $previous->getPrevious()) :
+                    echo '<br>Caused by: ['.get_class($previous).'] '.\htmlspecialchars($previous->getMessage(), ENT_QUOTES | ENT_IGNORE, Kohana::$charset, TRUE);
+                endwhile;
+            ?>
+        </span></h1>
 	<div id="<?php echo $error_id ?>" class="content">
 		<p><span class="file"><?php echo Debug::path($file) ?> [ <?php echo $line ?> ]</span></p>
 		<?php echo Debug::source($file, $line) ?>

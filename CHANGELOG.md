@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Show the parent chain of exceptions in the dev_html_error page template.
+  Assist with debugging by summarising any exceptions that have been linked as
+  the parents of the exception that was finally caught. 
 * Handle Throwable as well as Exception when reading session data. PHP handles
   problems in custom handlers inconsistently - some methods bubble exceptions,
   others are caught and converted to an `Error` with a distinct method of its
