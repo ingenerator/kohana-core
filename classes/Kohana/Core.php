@@ -268,7 +268,7 @@ class Kohana_Core {
 					// Set permissions (must be manually set to fix umask issues)
 					\chmod($settings['cache_dir'], 0755);
 				}
-				catch (Exception $e)
+				catch (Throwable $e)
 				{
 					throw new Kohana_Exception('Could not create cache directory :dir',
 						array(':dir' => Debug::path($settings['cache_dir'])));

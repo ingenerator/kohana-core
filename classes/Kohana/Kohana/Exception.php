@@ -274,7 +274,7 @@ class Kohana_Kohana_Exception extends Exception {
 			// Set the response body
 			$response->body($view->render());
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
 			/**
 			 * Things are going badly for us, Lets try to keep things under control by
