@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Remove legacy BC handler for Exception/Throwable type hints in exception 
+  classes. Now that we're PHP7 only we can just hint Throwable everywhere
+  and drop the custom type-checking.
 * Show the parent chain of exceptions in the dev_html_error page template.
   Assist with debugging by summarising any exceptions that have been linked as
   the parents of the exception that was finally caught. 
