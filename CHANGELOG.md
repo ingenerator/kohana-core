@@ -2,6 +2,22 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.6.0 (2020-02-18)
+
+* Expand existing catch blocks to catch Throwable where appropriate.
+* Remove legacy BC handler for Exception/Throwable type hints in exception 
+  classes. Now that we're PHP7 only we can just hint Throwable everywhere
+  and drop the custom type-checking.
+* Show the parent chain of exceptions in the dev_html_error page template.
+  Assist with debugging by summarising any exceptions that have been linked as
+  the parents of the exception that was finally caught. 
+* Handle Throwable as well as Exception when reading session data. PHP handles
+  problems in custom handlers inconsistently - some methods bubble exceptions,
+  others are caught and converted to an `Error` with a distinct method of its
+  own and the original exception in the `$previous` property. With this update
+  all session read errors / exceptions are converted to a Session_Exception.
+* Accept any Throwable as `$previous` for all Kohana exceptions
+
 ## v4.5.0 (2020-02-14)
 
 * Include previous exception in Session_Exception when reading the session fails:

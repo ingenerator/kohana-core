@@ -61,7 +61,7 @@ class Kohana_View {
 			// Load the view within the current scope
 			include $kohana_view_filename;
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
 			// Delete the output buffer
 			\ob_end_clean();

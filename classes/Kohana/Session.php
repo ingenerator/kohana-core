@@ -291,9 +291,11 @@ abstract class Kohana_Session {
 				// Ignore these, session is valid, likely no data though.
 			}
 		}
-		catch (Exception $e)
+		catch (Throwable $e)
 		{
-			// Error reading the session, usually a corrupt session.
+			// Error reading the session. This can be anything from a corrupt session to a failure
+			// in the underlying handler - for example, a database-backed session handler not being
+			// able to connect to the database.
 			// Can identify the cause in a catch block with $e->getPrevious()
 			throw new Session_Exception(
 				'Error reading session data.',
