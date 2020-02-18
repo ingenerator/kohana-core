@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.6.0 (2020-02-18)
+
 * Expand existing catch blocks to catch Throwable where appropriate.
 * Remove legacy BC handler for Exception/Throwable type hints in exception 
   classes. Now that we're PHP7 only we can just hint Throwable everywhere
