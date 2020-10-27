@@ -416,6 +416,8 @@ class Kohana_ArrTest extends Unittest_TestCase
 			'object' => new ArrayObject(array('iterator' => TRUE)), // Iterable object should work exactly the same
 		);
 
+		$array_object = new ArrayObject($array);
+
 		return array(
 			// Tests returns normal values
 			array($array['foobar'], $array, 'foobar'),
@@ -443,6 +445,10 @@ class Kohana_ArrTest extends Unittest_TestCase
 			// Path as array, issue #3260
 			array($array['users'][2]['name'], $array, array('users', 2, 'name')),
 			array($array['object']['iterator'], $array, 'object.iterator'),
+            // ArrayObject
+            array($array['kohana'], $array_object, 'kohana'),
+            array($array['foobar']['definition'], $array_object, 'foobar.definition'),
+            array($array['users'][1]['name'], $array_object, 'users.1.name'),
 		);
 	}
 
