@@ -470,6 +470,8 @@ class Kohana_ArrTest extends Unittest_TestCase
             array($array['kohana'], $array_object, 'kohana'),
             array($array['foobar']['definition'], $array_object, 'foobar.definition'),
             array($array['users'][1]['name'], $array_object, 'users.1.name'),
+            array(NULL, $array_object, 'foobar.alternatives',  NULL),
+            array(array('far', 'wide'), $array_object, 'cheese.origins',  array('far', 'wide')),
 		);
 	}
 
