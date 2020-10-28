@@ -416,8 +416,31 @@ class Kohana_ArrTest extends Unittest_TestCase
 			'object' => new ArrayObject(array('iterator' => TRUE)), // Iterable object should work exactly the same
 		);
 
-		return array(
-			// Tests returns normal values
+        $array_object = new ArrayObject(
+            [
+                'foobar' => new ArrayObject(['definition' => 'lost']),
+                'kohana' => 'awesome',
+                'users'  => [
+                    1 => new ArrayObject(['name' => 'matt']),
+                    2 => new ArrayObject(
+                        [
+                            'name'      => 'john',
+                            'interests' => new ArrayObject(
+                                [
+                                    'hocky'    => new ArrayObject(['length' => 2]),
+                                    'football' => new ArrayObject([]),
+                                ]
+                            ),
+                        ]
+                    ),
+                    3 => 'frank', // Issue #3194
+                ],
+                'object' => new ArrayObject(['iterator' => TRUE]),
+            ]
+        );
+
+        return array(
+            // Tests returns normal values
 			array($array['foobar'], $array, 'foobar'),
 			array($array['kohana'], $array, 'kohana'),
 			array($array['foobar']['definition'], $array, 'foobar.definition'),
@@ -443,6 +466,12 @@ class Kohana_ArrTest extends Unittest_TestCase
 			// Path as array, issue #3260
 			array($array['users'][2]['name'], $array, array('users', 2, 'name')),
 			array($array['object']['iterator'], $array, 'object.iterator'),
+            // ArrayObject
+            array($array['kohana'], $array_object, 'kohana'),
+            array($array['foobar']['definition'], $array_object, 'foobar.definition'),
+            array($array['users'][1]['name'], $array_object, 'users.1.name'),
+            array(NULL, $array_object, 'foobar.alternatives',  NULL),
+            array(array('far', 'wide'), $array_object, 'cheese.origins',  array('far', 'wide')),
 		);
 	}
 
