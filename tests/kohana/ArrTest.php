@@ -416,10 +416,31 @@ class Kohana_ArrTest extends Unittest_TestCase
 			'object' => new ArrayObject(array('iterator' => TRUE)), // Iterable object should work exactly the same
 		);
 
-		$array_object = new ArrayObject($array);
+        $array_object = new ArrayObject(
+            [
+                'foobar' => new ArrayObject(['definition' => 'lost']),
+                'kohana' => 'awesome',
+                'users'  => [
+                    1 => new ArrayObject(['name' => 'matt']),
+                    2 => new ArrayObject(
+                        [
+                            'name'      => 'john',
+                            'interests' => new ArrayObject(
+                                [
+                                    'hocky'    => new ArrayObject(['length' => 2]),
+                                    'football' => new ArrayObject([]),
+                                ]
+                            ),
+                        ]
+                    ),
+                    3 => 'frank', // Issue #3194
+                ],
+                'object' => new ArrayObject(['iterator' => TRUE]),
+            ]
+        );
 
-		return array(
-			// Tests returns normal values
+        return array(
+            // Tests returns normal values
 			array($array['foobar'], $array, 'foobar'),
 			array($array['kohana'], $array, 'kohana'),
 			array($array['foobar']['definition'], $array, 'foobar.definition'),
