@@ -2,6 +2,12 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## v4.7.0 (2020-10-28)
+
+* Support PHP 7.4
+* Disable check for magic quotes using get_magic_quotes_gpc - it's always going to be false
+* Fix using array_key_exists on objects 
+
 ## v4.6.0 (2020-02-18)
 
 * Expand existing catch blocks to catch Throwable where appropriate.
