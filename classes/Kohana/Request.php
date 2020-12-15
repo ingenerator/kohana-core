@@ -77,7 +77,6 @@ class Kohana_Request implements HTTP_Request {
 			'protocol'          => \strtoupper(HTTP::$protocol),
 			'method'            => \strtoupper(\Arr::get($_SERVER, 'REQUEST_METHOD', \Request::GET)),
 			'uri'               => static::detect_uri(),
-			'secure'            => static::detect_is_secure(),
 			'referrer'          => \Arr::get($_SERVER, 'HTTP_REFERER', NULL),
 			'requested_with'    => \Arr::get($_SERVER, 'HTTP_X_REQUESTED_WITH', NULL),
 			'body'              => NULL,
@@ -229,22 +228,6 @@ class Kohana_Request implements HTTP_Request {
 			// The remote IP address
 			return $_SERVER['REMOTE_ADDR'];
 		}
-	}
-
-	/**
-	 * @return bool
-	 */
-	protected static function detect_is_secure()
-	{
-		if (( ! empty($_SERVER['HTTPS']) AND \filter_var($_SERVER['HTTPS'], FILTER_VALIDATE_BOOLEAN))
-			OR (isset($_SERVER['HTTP_X_FORWARDED_PROTO'])
-				AND $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https')
-			AND \in_array($_SERVER['REMOTE_ADDR'], Request::$trusted_proxies))
-		{
-			return TRUE;
-		}
-
-		return FALSE;
 	}
 
 	/**
@@ -472,11 +455,6 @@ class Kohana_Request implements HTTP_Request {
 	 * @var  string  protocol: HTTP/1.1, FTP, CLI, etc
 	 */
 	protected $_protocol;
-
-	/**
-	 * @var  boolean
-	 */
-	protected $_secure = FALSE;
 
 	/**
 	 * @var  string  referring URL
@@ -766,11 +744,11 @@ class Kohana_Request implements HTTP_Request {
 	 */
 	public function secure()
 	{
-		if (\func_num_args() > 0) {
-			throw new BadMethodCallException(__METHOD__.' is immutable');
-		}
-
-		return $this->_secure;
+		// No longer support http/https detection because this is complex to do reliably at the app layer when used
+		// alongside external SSL termination. In most cases apps should assume they're served http/s appropriately
+		// according to the environment. If your app handles http and https from the same codebase and you really need
+		// to know, you should implement your own detection.
+		throw new \BadMethodCallException('Unexpected call to '.__METHOD__);
 	}
 
 	/**

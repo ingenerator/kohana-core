@@ -2,6 +2,21 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.0 (2020-12-15)
+
+* [BREAKING] Removed attempts to detect whether the request came in over SSL. This is challenging to implement reliably
+  in a modern architecture with offloaded SSL termination and variable loadbalancer IPs. Most apps should not care at
+  the code level (if you need http->https that should be dealt with externally). Calling `$request->secure()` will now
+  throw a `BadMethodCallException`. If you really need to handle mixed content and have conditional protocol-based
+  logic, you will need to implement your own SSL detection appropriate to your hosting setup. This change might break
+  [downloading files in Internet Explorer 5](http://web.archive.org/web/20120618173630/http://support.microsoft.com/kb/316431)
+  but you can probably tell your users to upgrade their browsers now...
+
+* [BREAKING] URLS that are built from `URL::base` or `URL::site` with `$protocol === TRUE` will now always default to
+  https unless the config value `application.ssl_active` is set to `FALSE`. They will no longer attempt to detect a
+  protocol from Request::$initial. Attempting to pass a `Request` instance as the `$protocol` for auto-detection will
+  throw an InvalidArgumentException.
+
 ## v4.7.0 (2020-10-28)
 
 * Support PHP 7.4
