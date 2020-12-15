@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.0 (2020-12-15)
+
 * [BREAKING] Removed attempts to detect whether the request came in over SSL. This is challenging to implement reliably
   in a modern architecture with offloaded SSL termination and variable loadbalancer IPs. Most apps should not care at
   the code level (if you need http->https that should be dealt with externally). Calling `$request->secure()` will now
