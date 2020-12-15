@@ -517,13 +517,6 @@ class Kohana_Response implements HTTP_Response {
 
 		if (Request::user_agent('browser') === 'Internet Explorer')
 		{
-			// Naturally, IE does not act like a real browser...
-			if (Request::$initial->secure())
-			{
-				// http://support.microsoft.com/kb/316431
-				$this->_header['pragma'] = $this->_header['cache-control'] = 'public';
-			}
-
 			if (\version_compare(Request::user_agent('version'), '8.0', '>='))
 			{
 				// http://ajaxian.com/archives/ie-8-security
