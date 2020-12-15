@@ -72,13 +72,13 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 				'/page_one',
 				302,
 				'HTTP_Exception_302',
-				'http://www.example.com/kohana/index.php/page_one'
+				'https://www.example.com/kohana/index.php/page_one'
 			),
 			array(
 				'page_two',
 				303,
 				'HTTP_Exception_303',
-				'http://www.example.com/kohana/index.php/page_two'
+				'https://www.example.com/kohana/index.php/page_two'
 			),
 		);
 	}

@@ -42,21 +42,16 @@ class Kohana_URL {
 
 		if ($protocol === TRUE)
 		{
-			// Use the initial request to get the protocol
-			$protocol = Request::$initial;
+			if (Kohana::$config->load('application.ssl_active') === FALSE) {
+				$protocol = 'http';
+			} else {
+				$protocol = 'https';
+			}
 		}
 
 		if ($protocol instanceof Request)
 		{
-			if ( ! $protocol->secure())
-			{
-				// Use the current protocol
-				list($protocol) = \explode('/', \strtolower($protocol->protocol()));
-			}
-			else
-			{
-				$protocol = 'https';
-			}
+			throw new \InvalidArgumentException('Passing a Request instance to URL::base($protocol) is no longer supported');
 		}
 
 		if ( ! $protocol)

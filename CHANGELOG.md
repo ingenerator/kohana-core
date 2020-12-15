@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* [BREAKING] URLS that are built from `URL::base` or `URL::site` with `$protocol === TRUE` will now always default to
+  https unless the config value `application.ssl_active` is set to `FALSE`. They will no longer attempt to detect a
+  protocol from Request::$initial. Attempting to pass a `Request` instance as the `$protocol` for auto-detection will
+  throw an InvalidArgumentException.
+
 ## v4.7.0 (2020-10-28)
 
 * Support PHP 7.4
