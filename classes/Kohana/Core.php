@@ -260,19 +260,7 @@ class Kohana_Core {
 		{
 			if ( ! \is_dir($settings['cache_dir']))
 			{
-				try
-				{
-					// Create the cache directory
-					\mkdir($settings['cache_dir'], 0755, TRUE);
-
-					// Set permissions (must be manually set to fix umask issues)
-					\chmod($settings['cache_dir'], 0755);
-				}
-				catch (Throwable $e)
-				{
-					throw new Kohana_Exception('Could not create cache directory :dir',
-						array(':dir' => Debug::path($settings['cache_dir'])));
-				}
+			    static::makeDirectory($settings['cache_dir'], 0755);
 			}
 
 			// Set the cache directory path
@@ -352,6 +340,29 @@ class Kohana_Core {
 			Kohana::$config = new Config;
 		}
 	}
+
+    private static function makeDirectory($path, $permissions): void
+    {
+        try {
+            try {
+                // Create the cache directory
+                \mkdir($path, $permissions, TRUE);
+            } catch (Throwable $e) {
+                // Check if created by a concurrent process
+                if (is_dir($path)) {
+                    return;
+                }
+                // OK, it hasn't been created - rethrow
+                throw $e;
+            }
+
+            // Set permissions (must be manually set to fix umask issues)
+            \chmod($path, $permissions);
+        } catch (Throwable $e) {
+            throw new Kohana_Exception('Could not create cache directory :dir',
+                array(':dir' => Debug::path($path)));
+        }
+    }
 
 	/**
 	 * Cleans up the environment:

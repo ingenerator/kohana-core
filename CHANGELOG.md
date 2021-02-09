@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.1 (2021-02-09)
+
+* Fix race-condition related exception creating cache directory during concurrent requests. 
+
 ## 4.8.0 (2020-12-15)
 
 * [BREAKING] Removed attempts to detect whether the request came in over SSL. This is challenging to implement reliably
