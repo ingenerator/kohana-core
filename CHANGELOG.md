@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.2 (2021-02-16)
+
+* Fix further directory-creation race conditions - replace all internal `mkdir` with the now-public 
+  `Kohana::ensureDirectory` method which gracefully handles concurrent create requests.
+
 ## 4.8.1 (2021-02-09)
 
 * Fix race-condition related exception creating cache directory during concurrent requests. 
