@@ -7,7 +7,7 @@ $base = [
     'syspath' => __DIR__,
 ];
 
-if (\getenv('KOHARNESS_ALL_MODULES')) {
+if (\getenv('KOHARNESS_MODULES') === 'all-modules') {
     $base['modules']['minion'] = __DIR__.'/modules/minion';
 }
 return $base;
