@@ -2,6 +2,13 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.2 (2021-02-21)
+
+* Fix invalid array access to integer array keys in \Debug::dump
+  Debug::dump looks at the first character of the array key to see if it's dumping a protected / private
+  property. This however now fails on newer PHP because it may also be looking at an indexed array with
+  integer keys and (int)[0] produces an error. Check if we have string keys first.
+
 ## 4.8.1 (2021-02-09)
 
 * Fix race-condition related exception creating cache directory during concurrent requests. 
