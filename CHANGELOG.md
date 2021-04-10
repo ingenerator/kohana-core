@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.3 (2021-04-10)
+
+* Fix further directory-creation race conditions - replace all internal `mkdir` with the now-public 
+  `Kohana::ensureDirectory` method which gracefully handles concurrent create requests.
+  
 ## 4.8.2 (2021-02-21)
 
 * Fix invalid array access to integer array keys in \Debug::dump

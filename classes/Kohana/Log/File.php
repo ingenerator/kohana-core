@@ -48,35 +48,20 @@ class Kohana_Log_File extends Log_Writer {
 	 */
 	public function write(array $messages)
 	{
-		// Set the yearly directory name
-		$directory = $this->_directory.\date('Y');
-
-		if ( ! \is_dir($directory))
-		{
-			// Create the yearly directory
-			\mkdir($directory, 02777);
-
-			// Set permissions (must be manually set to fix umask issues)
-			\chmod($directory, 02777);
-		}
-
-		// Add the month to the directory
-		$directory .= DIRECTORY_SEPARATOR.\date('m');
-
-		if ( ! \is_dir($directory))
-		{
-			// Create the monthly directory
-			\mkdir($directory, 02777);
-
-			// Set permissions (must be manually set to fix umask issues)
-			\chmod($directory, 02777);
-		}
+		// Set the year/month directory name
+		$directory = $this->_directory.\date('Y').DIRECTORY_SEPARATOR.\date('m');
+		Kohana::ensureDirectory($directory, 02777);
 
 		// Set the name of the log file
 		$filename = $directory.DIRECTORY_SEPARATOR.\date('d').EXT;
 
 		if ( ! \file_exists($filename))
 		{
+		    // CAUTION: there is still a theoretical race condition here where two processes might both create the
+            // file with the banner and their own entry, the second overwriting the first. This is tricky to solve
+            // without altering the log format (e.g. removing the banner so everyone can use FILE_APPEND). As we don't
+            // use Log_File any more this is left unchanged.
+            
 			// Create the log file
 			\file_put_contents($filename, Kohana::FILE_SECURITY.' ?>'.PHP_EOL);
 

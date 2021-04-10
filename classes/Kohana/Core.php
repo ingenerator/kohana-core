@@ -258,10 +258,7 @@ class Kohana_Core {
 
 		if (isset($settings['cache_dir']))
 		{
-			if ( ! \is_dir($settings['cache_dir']))
-			{
-			    static::makeDirectory($settings['cache_dir'], 0755);
-			}
+		    static::ensureDirectory($settings['cache_dir'], 0755);
 
 			// Set the cache directory path
 			Kohana::$cache_dir = \realpath($settings['cache_dir']);
@@ -341,11 +338,25 @@ class Kohana_Core {
 		}
 	}
 
-    private static function makeDirectory($path, $permissions): void
+    /**
+     * Ensures a directory exists, creating it (in a race-condition safe way) if it does not
+     *
+     * NB that the permissions are only used / checked at time of creation, they are not checked if the directory
+     * already exists.
+     *
+     * @param string $path
+     * @param int $permissions
+     * @throws Kohana_Exception
+     */
+    public static function ensureDirectory(string $path, int $permissions): void
     {
+        if (is_dir($path)) {
+            return;
+        }
+
         try {
             try {
-                // Create the cache directory
+                // Create the directory
                 \mkdir($path, $permissions, TRUE);
             } catch (Throwable $e) {
                 // Check if created by a concurrent process
@@ -359,8 +370,7 @@ class Kohana_Core {
             // Set permissions (must be manually set to fix umask issues)
             \chmod($path, $permissions);
         } catch (Throwable $e) {
-            throw new Kohana_Exception('Could not create cache directory :dir',
-                array(':dir' => Debug::path($path)));
+            throw new Kohana_Exception('Could not create directory :dir', array(':dir' => Debug::path($path)));
         }
     }
 
@@ -924,14 +934,7 @@ class Kohana_Core {
 			return NULL;
 		}
 
-		if ( ! \is_dir($dir))
-		{
-			// Create the cache directory
-			\mkdir($dir, 0777, TRUE);
-
-			// Set permissions (must be manually set to fix umask issues)
-			\chmod($dir, 0777);
-		}
+		static::ensureDirectory($dir, 0777);
 
 		// Force the data to be a string
 		$data = \serialize($data);
