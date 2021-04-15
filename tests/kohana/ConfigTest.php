@@ -205,7 +205,6 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @covers Config::load
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_load_throws_exception_if_there_are_no_sources()
 	{
@@ -213,6 +212,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 		// (see the @expectedException doccomment)
 		$config = new Kohana_config;
 
+		$this->expectException(Kohana_Exception::class);
 		$config->load('random');
 	}
 
@@ -240,7 +240,6 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	 * @test
 	 * @dataProvider provider_load_throws_exception_if_no_group_is_given
 	 * @covers Config::load
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_load_throws_exception_if_invalid_group($value)
 	{
@@ -250,6 +249,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 
 		$config->attach($reader);
 
+        $this->expectException(Kohana_Exception::class);
 		$config->load($value);
 	}
 
