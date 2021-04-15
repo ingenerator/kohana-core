@@ -15,6 +15,8 @@
  */
 class Kohana_Config_File_ReaderTest extends Kohana_Unittest_TestCase {
 
+    use ObjectInternalAccessTestWorkarounds;
+
 	/**
 	 * If we don't pass a directory to the reader then it should assume 
 	 * that we want to search the dir 'config' by default

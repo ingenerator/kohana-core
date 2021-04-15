@@ -19,6 +19,8 @@ include Kohana::find_file('tests', 'test_data/callback_routes');
 
 class Kohana_RouteTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
+
 	/**
 	 * Remove all caches
 	 */
@@ -67,7 +69,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function test_all_returns_all_defined_routes()
 	{
-		$defined_routes = self::readAttribute('Route', '_routes');
+		$defined_routes = self::readAttribute(new Route, '_routes');
 
 		$this->assertSame($defined_routes, Route::all());
 	}
@@ -230,11 +232,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$route = new Route('<controller>(/<action>(/<id>))', $regex);
 
 		$this->assertAttributeSame($regex, '_regex', $route);
-		$this->assertAttributeContains(
-			$regex['id'],
-			'_route_regex',
-			$route
-		);
+		$this->assertStringContainsString($regex['id'], $this->readAttribute($route,'_route_regex'));
 	}
 
 	/**

@@ -16,6 +16,8 @@
  */
 class Kohana_ValidationTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
+
 	/**
 	 * Tests Validation::factory()
 	 *
