@@ -17,6 +17,7 @@
  */
 class Kohana_ConfigTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
 
 	/**
 	 * When a config object is initially created there should be
@@ -46,7 +47,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 
 		$this->assertSame($config, $config->attach($reader));
 
-		$this->assertAttributeContains($reader, '_sources', $config);
+		$this->assertContains($reader, $this->readAttribute($config, '_sources'));
 	}
 
 	/**
@@ -122,12 +123,12 @@ class Kohana_ConfigTest extends Unittest_TestCase
 
 		$this->assertSame($config, $config->detach($reader1));
 
-		$this->assertAttributeNotContains($reader1, '_sources', $config);
-		$this->assertAttributeContains($reader2, '_sources', $config);
+		$this->assertNotContains($reader1, $this->readAttribute($config,'_sources'));
+		$this->assertContains($reader2, $this->readAttribute($config,'_sources'));
 
 		$this->assertSame($config, $config->detach($reader2));
 
-		$this->assertAttributeNotContains($reader2, '_sources', $config);
+        $this->assertNotContains($reader2, $this->readAttribute($config,'_sources'));
 	}
 
 	/**
@@ -205,7 +206,6 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @covers Config::load
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_load_throws_exception_if_there_are_no_sources()
 	{
@@ -213,6 +213,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 		// (see the @expectedException doccomment)
 		$config = new Kohana_config;
 
+		$this->expectException(Kohana_Exception::class);
 		$config->load('random');
 	}
 
@@ -240,7 +241,6 @@ class Kohana_ConfigTest extends Unittest_TestCase
 	 * @test
 	 * @dataProvider provider_load_throws_exception_if_no_group_is_given
 	 * @covers Config::load
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_load_throws_exception_if_invalid_group($value)
 	{
@@ -250,6 +250,7 @@ class Kohana_ConfigTest extends Unittest_TestCase
 
 		$config->attach($reader);
 
+        $this->expectException(Kohana_Exception::class);
 		$config->load($value);
 	}
 

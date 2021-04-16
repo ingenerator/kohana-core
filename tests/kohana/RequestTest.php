@@ -33,11 +33,9 @@ class Kohana_RequestTest extends Unittest_TestCase
 		parent::tearDown();
 	}
 
-	/**
-	 * @expectedException \BadMethodCallException
-	 */
 	public function test_its_factory_just_throws()
 	{
+        $this->expectException(\BadMethodCallException::class);
 		\Request::factory();
 	}
 

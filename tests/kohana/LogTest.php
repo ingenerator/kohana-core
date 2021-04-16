@@ -16,6 +16,7 @@
  */
 class Kohana_LogTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
 
 	/**
 	 * Tests that when a new logger is created the list of messages is initially

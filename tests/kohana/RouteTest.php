@@ -19,6 +19,8 @@ include Kohana::find_file('tests', 'test_data/callback_routes');
 
 class Kohana_RouteTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
+
 	/**
 	 * Remove all caches
 	 */
@@ -49,14 +51,12 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * If Route::get() is asked for a route that does not exist then
 	 * it should throw a Kohana_Exception
 	 *
-	 * Note use of @expectedException
-	 *
 	 * @test
 	 * @covers Route::get
-	 * @expectedException Kohana_Exception
 	 */
 	public function test_get_throws_exception_if_route_dnx()
 	{
+        $this->expectException(Kohana_Exception::class);
 		Route::get('HAHAHAHAHAHAHAHAHA');
 	}
 
@@ -69,7 +69,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function test_all_returns_all_defined_routes()
 	{
-		$defined_routes = self::readAttribute('Route', '_routes');
+		$defined_routes = self::readAttribute(new Route, '_routes');
 
 		$this->assertSame($defined_routes, Route::all());
 	}
@@ -232,11 +232,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$route = new Route('<controller>(/<action>(/<id>))', $regex);
 
 		$this->assertAttributeSame($regex, '_regex', $route);
-		$this->assertAttributeContains(
-			$regex['id'],
-			'_route_regex',
-			$route
-		);
+		$this->assertStringContainsString($regex['id'], $this->readAttribute($route,'_route_regex'));
 	}
 
 	/**
@@ -304,7 +300,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 		$matches = $route->matches($request);
 
-		$this->assertInternalType('array', $matches);
+		$this->assertIsArray($matches);
 		$this->assertArrayHasKey('controller', $matches);
 		$this->assertArrayHasKey('action', $matches);
 		$this->assertArrayNotHasKey('id', $matches);
@@ -373,7 +369,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 		$matches = $route->matches($request);
 
-		$this->assertInternalType('array', $matches);
+        $this->assertIsArray($matches);
 		$this->assertArrayHasKey('controller', $matches);
 		$this->assertArrayHasKey('action', $matches);
 		$this->assertArrayNotHasKey('id', $matches);
@@ -563,14 +559,14 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 		$matches = $route->matches($request);
 
-		$this->assertInternalType('array', $matches);
+        $this->assertIsArray($matches);
 
 		// Mock a request class that will return route2 uri
 		$request = $this->get_request_mock($matches_route2);
 
 		$matches = $route->matches($request);
 
-		$this->assertInternalType('array', $matches);
+        $this->assertIsArray($matches);
 		// $this->assertSame(5, count($matches));
 		$this->assertArrayHasKey('controller', $matches);
 		$this->assertArrayHasKey('action', $matches);

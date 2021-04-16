@@ -16,6 +16,7 @@
  */
 class Kohana_SessionTest extends Unittest_TestCase
 {
+    use ObjectInternalAccessTestWorkarounds;
 
 	/**
 	 * Gets a mock of the session class
@@ -252,7 +253,7 @@ class Kohana_SessionTest extends Unittest_TestCase
 
 		$data_copy['pie'] = 'awesome';
 
-		$this->assertAttributeNotSame($data_copy, '_data', $session);
+        $this->assertNotSame($data_copy, $this->readAttribute($session, '_data'));
 	}
 
 	/**

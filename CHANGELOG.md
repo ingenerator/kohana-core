@@ -2,6 +2,12 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.4 (2021-04-16)
+
+* Test on PHP8 and advertise compatibility
+* Remove setting xdebug config in dev environments - can be configured locally if required and is irrelevant if using xdebug3 which is now stable anyway.
+* Use horrible workaround trait `ObjectInternalAccessTestWorkarounds` to quickly enable old tests relying on access to protected properties to continue as were.
+
 ## 4.8.3 (2021-04-10)
 
 * Fix further directory-creation race conditions - replace all internal `mkdir` with the now-public 

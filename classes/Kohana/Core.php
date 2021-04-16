@@ -228,14 +228,6 @@ class Kohana_Core {
 		    \Kohana_Exception::$error_view = 'kohana/dev_html_error';
         }
 
-		/**
-		 * Enable xdebug parameter collection in development mode to improve fatal stack traces.
-		 */
-		if (Kohana::$environment == Kohana::DEVELOPMENT AND \extension_loaded('xdebug'))
-		{
-		    \ini_set('xdebug.collect_params', 3);
-		}
-
 		// Enable the Kohana shutdown handler, which catches E_FATAL errors.
 		\register_shutdown_function(array('Kohana', 'shutdown_handler'));
 

@@ -7,32 +7,32 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 {
 	protected $routes = [];
 
-	/**
-	 * @expectedException \HTTP_Exception_404
-	 */
 	public function test_it_throws_404_exception_if_no_matching_route()
 	{
 		$this->routes = [new Route('foo')];
-		$this->newSubject()->execute(\Request::with(['uri' => 'bar']));
+        $subject = $this->newSubject();
+
+        $this->expectException(\HTTP_Exception_404::class);
+        $subject->execute(\Request::with(['uri' => 'bar']));
 	}
 
-	/**
-	 * @expectedException \HTTP_Exception_404
-	 */
 	public function test_it_throws_404_exception_if_controller_class_does_not_exist()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
-		$this->newSubject()->execute(\Request::with(['uri' => 'no/controller']));
+		$subject = $this->newSubject();
+
+        $this->expectException(\HTTP_Exception_404::class);
+		$subject->execute(\Request::with(['uri' => 'no/controller']));
 	}
 
-	/**
-	 * @expectedException \Kohana_Exception
-	 * @expectedExceptionMessage abstract
-	 */
 	public function test_it_throws_generic_exception_if_controller_is_abstract()
 	{
-		$this->routes = [new Route('<controller>/<action>')];
-		$this->newSubject()->execute(\Request::with(['uri' => 'template/anything']));
+        $this->routes = [new Route('<controller>/<action>')];
+        $subject      = $this->newSubject();
+
+        $this->expectException(Kohana_Exception::class);
+        $this->expectExceptionMessage('abstract');
+        $subject->execute(\Request::with(['uri' => 'template/anything']));
 	}
 
 	public function test_it_coalesces_request_into_and_bubbles_http_exception_thrown_by_controller()
@@ -52,26 +52,26 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 		}
 	}
 
-	/**
-	 * @expectedException \InvalidArgumentException
-	 */
 	public function test_it_bubbles_generic_controller_exception()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 
 		Controller_ThrowsException::$exception = new \InvalidArgumentException('I broke');
 
-		$this->newSubject()->execute(\Request::with(['uri' => 'throwsexception/anything']));
+		$subject = $this->newSubject();
+
+        $this->expectException(\InvalidArgumentException::class);
+		$subject->execute(\Request::with(['uri' => 'throwsexception/anything']));
 	}
 
-	/**
-	 * @expectedException \Kohana_Exception
-	 * @expectedExceptionMessage return a Response
-	 */
 	public function test_it_throws_if_controller_does_not_return_response()
-	{
-		$this->routes = [new Route('<controller>/<action>')];
-		$this->newSubject()->execute(\Request::with(['uri' => 'emptyreturn/anything']));
+    {
+        $this->routes = [new Route('<controller>/<action>')];
+        $subject      = $this->newSubject();
+
+        $this->expectException(Kohana_Exception::class);
+        $this->expectExceptionMessage('return a Response');
+        $subject->execute(\Request::with(['uri' => 'emptyreturn/anything']));
 	}
 
 	public function test_it_sets_response_protocol_to_request_protocol()
