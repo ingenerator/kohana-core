@@ -349,7 +349,9 @@ class Kohana_Core {
         try {
             try {
                 // Create the directory
-                \mkdir($path, $permissions, TRUE);
+                if ( ! mkdir($path, $permissions, TRUE)){
+                    throw new Kohana_Exception('Could not create directory :dir', array(':dir' => Debug::path($path)));
+                }
             } catch (Throwable $e) {
                 // Check if created by a concurrent process
                 if (is_dir($path)) {
