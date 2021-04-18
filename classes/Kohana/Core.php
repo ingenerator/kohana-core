@@ -349,7 +349,9 @@ class Kohana_Core {
         try {
             try {
                 // Create the directory
-                \mkdir($path, $permissions, TRUE);
+                if ( ! mkdir($path, $permissions, TRUE)){
+                    throw new Kohana_Exception('Could not create directory :dir', [':dir' => Debug::path($path)]);
+                }
             } catch (Throwable $e) {
                 // Check if created by a concurrent process
                 if (is_dir($path)) {
@@ -362,7 +364,7 @@ class Kohana_Core {
             // Set permissions (must be manually set to fix umask issues)
             \chmod($path, $permissions);
         } catch (Throwable $e) {
-            throw new Kohana_Exception('Could not create directory :dir', array(':dir' => Debug::path($path)));
+            throw new Kohana_Exception('Could not create directory :dir', [':dir' => Debug::path($path)], 0, $e);
         }
     }
 

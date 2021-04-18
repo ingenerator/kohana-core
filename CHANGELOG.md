@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.5 (2021-04-18)
+
+* Following on from 4.8.1 and 4.8.3, throw Kohana_Exception if mkdir does not return TRUE
+  for the occasions where mkdir doesn't succeed due to permissions but does not trigger a warning
+
 ## 4.8.4 (2021-04-16)
 
 * Test on PHP8 and advertise compatibility
