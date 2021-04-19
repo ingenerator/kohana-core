@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.6 (2021-04-19)
+
+* Tighten PHP8 requirement to ~8.0.0 
+
 ## 4.8.5 (2021-04-18)
 
 * Following on from 4.8.1 and 4.8.3, throw Kohana_Exception if mkdir does not return TRUE
