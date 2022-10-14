@@ -57,6 +57,12 @@ class Kohana_Date {
 			$local = \date_default_timezone_get();
 		}
 
+		if ($now === NULL)
+		{
+			// Use the current timestamp
+			$now = time();
+		}
+
 		if (\is_int($now))
 		{
 			// Convert the timestamp into a string
