@@ -1,41 +1,42 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the Valid class
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.valid
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.valid
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     BRMatt <matthew@sigswitch.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         BRMatt <matthew@sigswitch.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_ValidTest extends Unittest_TestCase
 {
 
 	/**
 	 * Provides test data for test_alpha()
+	 *
 	 * @return array
 	 */
 	public function provider_alpha()
 	{
-		return array(
-			array('asdavafaiwnoabwiubafpowf', TRUE),
-			array('!aidhfawiodb', FALSE),
-			array('51535oniubawdawd78', FALSE),
-			array('!"£$(G$W£(HFW£F(HQ)"n', FALSE),
+		return [
+			['asdavafaiwnoabwiubafpowf', TRUE],
+			['!aidhfawiodb', FALSE],
+			['51535oniubawdawd78', FALSE],
+			['!"£$(G$W£(HFW£F(HQ)"n', FALSE],
 			// UTF-8 tests
-			array('あいうえお', TRUE, TRUE),
-			array('¥', FALSE, TRUE),
+			['あいうえお', TRUE, TRUE],
+			['¥', FALSE, TRUE],
 			// Empty test
-			array('', FALSE, FALSE),
-			array(NULL, FALSE, FALSE),
-			array(FALSE, FALSE, FALSE),
-		);
+			['', FALSE, FALSE],
+			[NULL, FALSE, FALSE],
+			[FALSE, FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -45,6 +46,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_alpha
+	 *
 	 * @param string  $string
 	 * @param boolean $expected
 	 */
@@ -61,20 +63,20 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provide_alpha_numeric()
 	{
-		return array(
-			array('abcd1234',  TRUE),
-			array('abcd',      TRUE),
-			array('1234',      TRUE),
-			array('abc123&^/-', FALSE),
+		return [
+			['abcd1234', TRUE],
+			['abcd', TRUE],
+			['1234', TRUE],
+			['abc123&^/-', FALSE],
 			// UTF-8 tests
-			array('あいうえお', TRUE, TRUE),
-			array('零一二三四五', TRUE, TRUE),
-			array('あい四五£^£^', FALSE, TRUE),
+			['あいうえお', TRUE, TRUE],
+			['零一二三四五', TRUE, TRUE],
+			['あい四五£^£^', FALSE, TRUE],
 			// Empty test
-			array('', FALSE, FALSE),
-			array(NULL, FALSE, FALSE),
-			array(FALSE, FALSE, FALSE),
-		);
+			['', FALSE, FALSE],
+			[NULL, FALSE, FALSE],
+			[FALSE, FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -84,8 +86,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provide_alpha_numeric
-	 * @param string  $input     The string to test
-	 * @param boolean $expected  Is $input valid
+	 *
+	 * @param string  $input    The string to test
+	 * @param boolean $expected Is $input valid
 	 */
 	public function test_alpha_numeric($input, $expected, $utf8 = FALSE)
 	{
@@ -100,17 +103,17 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_alpha_dash()
 	{
-		return array(
-			array('abcdef',     TRUE),
-			array('12345',      TRUE),
-			array('abcd1234',   TRUE),
-			array('abcd1234-',  TRUE),
-			array('abc123&^/-', FALSE),
+		return [
+			['abcdef', TRUE],
+			['12345', TRUE],
+			['abcd1234', TRUE],
+			['abcd1234-', TRUE],
+			['abc123&^/-', FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -120,14 +123,14 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_alpha_dash
-	 * @param string  $input          The string to test
-	 * @param boolean $contains_utf8  Does the string contain utf8 specific characters
-	 * @param boolean $expected       Is $input valid?
+	 *
+	 * @param string  $input         The string to test
+	 * @param boolean $contains_utf8 Does the string contain utf8 specific characters
+	 * @param boolean $expected      Is $input valid?
 	 */
 	public function test_alpha_dash($input, $expected, $contains_utf8 = FALSE)
 	{
-		if ( ! $contains_utf8)
-		{
+		if ( ! $contains_utf8) {
 			$this->assertSame(
 				$expected,
 				Valid::alpha_dash($input)
@@ -145,23 +148,23 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_date()
 	{
-		return array(
-			array('now',TRUE),
-			array('10 September 2010',TRUE),
-			array('+1 day',TRUE),
-			array('+1 week',TRUE),
-			array('+1 week 2 days 4 hours 2 seconds',TRUE),
-			array('next Thursday',TRUE),
-			array('last Monday',TRUE),
+		return [
+			['now', TRUE],
+			['10 September 2010', TRUE],
+			['+1 day', TRUE],
+			['+1 week', TRUE],
+			['+1 week 2 days 4 hours 2 seconds', TRUE],
+			['next Thursday', TRUE],
+			['last Monday', TRUE],
 
-			array('blarg',FALSE),
-			array('in the year 2000',FALSE),
-			array('324824',FALSE),
+			['blarg', FALSE],
+			['in the year 2000', FALSE],
+			['324824', FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -169,7 +172,8 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_date
-	 * @param string  $date  The date to validate
+	 *
+	 * @param string  $date The date to validate
 	 * @param integer $expected
 	 */
 	public function test_date($date, $expected)
@@ -185,18 +189,18 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_decimal()
 	{
-		return array(
+		return [
 			// Empty test
-			array('', 2, NULL, FALSE),
-			array(NULL, 2, NULL, FALSE),
-			array(FALSE, 2, NULL, FALSE),
-			array('45.1664', 3, NULL, FALSE),
-			array('45.1664', 4, NULL, TRUE),
-			array('45.1664', 4, 2, TRUE),
-			array('-45.1664', 4, NULL, TRUE),
-			array('+45.1664', 4, NULL, TRUE),
-			array('-45.1664', 3, NULL, FALSE),
-		);
+			['', 2, NULL, FALSE],
+			[NULL, 2, NULL, FALSE],
+			[FALSE, 2, NULL, FALSE],
+			['45.1664', 3, NULL, FALSE],
+			['45.1664', 4, NULL, TRUE],
+			['45.1664', 4, 2, TRUE],
+			['-45.1664', 4, NULL, TRUE],
+			['+45.1664', 4, NULL, TRUE],
+			['-45.1664', 3, NULL, FALSE],
+		];
 	}
 
 	/**
@@ -204,6 +208,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_decimal
+	 *
 	 * @param string  $decimal  The decimal to validate
 	 * @param integer $places   The number of places to check to
 	 * @param integer $digits   The number of digits preceding the point to check
@@ -220,22 +225,23 @@ class Kohana_ValidTest extends Unittest_TestCase
 
 	/**
 	 * Provides test data for test_digit
+	 *
 	 * @return array
 	 */
 	public function provider_digit()
 	{
-		return array(
-			array('12345',    TRUE),
-			array('10.5',     FALSE),
-			array('abcde',    FALSE),
-			array('abcd1234', FALSE),
-			array('-5',       FALSE),
-			array(-5,         FALSE),
+		return [
+			['12345', TRUE],
+			['10.5', FALSE],
+			['abcde', FALSE],
+			['abcd1234', FALSE],
+			['-5', FALSE],
+			[-5, FALSE],
 			// Empty test
-			array('',         FALSE),
-			array(NULL,       FALSE),
-			array(FALSE,      FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -243,13 +249,13 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_digit
-	 * @param mixed   $input     Input to validate
-	 * @param boolean $expected  Is $input valid
+	 *
+	 * @param mixed   $input    Input to validate
+	 * @param boolean $expected Is $input valid
 	 */
 	public function test_digit($input, $expected, $contains_utf8 = FALSE)
 	{
-		if ( ! $contains_utf8)
-		{
+		if ( ! $contains_utf8) {
 			$this->assertSame(
 				$expected,
 				Valid::digit($input)
@@ -268,23 +274,23 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_color()
 	{
-		return array(
-			array('#000000', TRUE),
-			array('#GGGGGG', FALSE),
-			array('#AbCdEf', TRUE),
-			array('#000', TRUE),
-			array('#abc', TRUE),
-			array('#DEF', TRUE),
-			array('000000', TRUE),
-			array('GGGGGG', FALSE),
-			array('AbCdEf', TRUE),
-			array('000', TRUE),
-			array('DEF', TRUE),
+		return [
+			['#000000', TRUE],
+			['#GGGGGG', FALSE],
+			['#AbCdEf', TRUE],
+			['#000', TRUE],
+			['#abc', TRUE],
+			['#DEF', TRUE],
+			['000000', TRUE],
+			['GGGGGG', FALSE],
+			['AbCdEf', TRUE],
+			['000', TRUE],
+			['DEF', TRUE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -292,8 +298,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_color
-	 * @param string  $color     The color to test
-	 * @param boolean $expected  Is $color valid
+	 *
+	 * @param string  $color    The color to test
+	 * @param boolean $expected Is $color valid
 	 */
 	public function test_color($color, $expected)
 	{
@@ -308,31 +315,32 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_credit_card()
 	{
-		return array(
-			array('4222222222222',    'visa',       TRUE),
-			array('4012888888881881', 'visa',       TRUE),
-			array('4012888888881881', NULL,         TRUE),
-			array('4012888888881881', array('mastercard', 'visa'), TRUE),
-			array('4012888888881881', array('discover', 'mastercard'), FALSE),
-			array('4012888888881881', 'mastercard', FALSE),
-			array('5105105105105100', 'mastercard', TRUE),
-			array('6011111111111117', 'discover',   TRUE),
-			array('6011111111111117', 'visa',       FALSE),
+		return [
+			['4222222222222', 'visa', TRUE],
+			['4012888888881881', 'visa', TRUE],
+			['4012888888881881', NULL, TRUE],
+			['4012888888881881', ['mastercard', 'visa'], TRUE],
+			['4012888888881881', ['discover', 'mastercard'], FALSE],
+			['4012888888881881', 'mastercard', FALSE],
+			['5105105105105100', 'mastercard', TRUE],
+			['6011111111111117', 'discover', TRUE],
+			['6011111111111117', 'visa', FALSE],
 			// Empty test
-			array('', NULL, FALSE),
-			array(NULL, NULL, FALSE),
-			array(FALSE, NULL, FALSE),
-		);
+			['', NULL, FALSE],
+			[NULL, NULL, FALSE],
+			[FALSE, NULL, FALSE],
+		];
 	}
 
 	/**
 	 * Tests Valid::credit_card()
 	 *
 	 * @test
-	 * @covers Valid::credit_card
+	 * @covers        Valid::credit_card
 	 * @dataProvider  provider_credit_card()
-	 * @param string  $number   Credit card number
-	 * @param string  $type	    Credit card type
+	 *
+	 * @param string  $number Credit card number
+	 * @param string  $type   Credit card type
 	 * @param boolean $expected
 	 */
 	public function test_credit_card($number, $type, $expected)
@@ -348,29 +356,30 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_luhn()
 	{
-		return array(
-			array('4222222222222', TRUE),
-			array('4012888888881881', TRUE),
-			array('5105105105105100', TRUE),
-			array('6011111111111117', TRUE),
-			array('60111111111111.7', FALSE),
-			array('6011111111111117X', FALSE),
-			array('6011111111111117 ', FALSE),
-			array('WORD ', FALSE),
+		return [
+			['4222222222222', TRUE],
+			['4012888888881881', TRUE],
+			['5105105105105100', TRUE],
+			['6011111111111117', TRUE],
+			['60111111111111.7', FALSE],
+			['6011111111111117X', FALSE],
+			['6011111111111117 ', FALSE],
+			['WORD ', FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
 	 * Tests Valid::luhn()
 	 *
 	 * @test
-	 * @covers Valid::luhn
+	 * @covers        Valid::luhn
 	 * @dataProvider  provider_luhn()
-	 * @param string  $number   Credit card number
+	 *
+	 * @param string  $number Credit card number
 	 * @param boolean $expected
 	 */
 	public function test_luhn($number, $expected)
@@ -388,26 +397,26 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_email()
 	{
-		return array(
-			array('foo', TRUE,  FALSE),
-			array('foo', FALSE, FALSE),
+		return [
+			['foo', TRUE, FALSE],
+			['foo', FALSE, FALSE],
 
-			array('foo@bar', TRUE, TRUE),
+			['foo@bar', TRUE, TRUE],
 			// RFC is less strict than the normal regex, presumably to allow
 			//  admin@localhost, therefore we IGNORE IT!!!
-			array('foo@bar', FALSE, FALSE),
-			array('foo@bar.com', FALSE, TRUE),
-			array('foo@barcom:80', FALSE, FALSE),
-			array('foo@bar.sub.com', FALSE, TRUE),
-			array('foo+asd@bar.sub.com', FALSE, TRUE),
-			array('foo.asd@bar.sub.com', FALSE, TRUE),
+			['foo@bar', FALSE, FALSE],
+			['foo@bar.com', FALSE, TRUE],
+			['foo@barcom:80', FALSE, FALSE],
+			['foo@bar.sub.com', FALSE, TRUE],
+			['foo+asd@bar.sub.com', FALSE, TRUE],
+			['foo.asd@bar.sub.com', FALSE, TRUE],
 			// RFC says 254 length max #4011
-			array(Text::random(NULL, 200).'@'.Text::random(NULL, 50).'.com', FALSE, FALSE),
+			[Text::random(NULL, 200).'@'.Text::random(NULL, 50).'.com', FALSE, FALSE],
 			// Empty test
-			array('', TRUE, FALSE),
-			array(NULL, TRUE, FALSE),
-			array(FALSE, TRUE, FALSE),
-		);
+			['', TRUE, FALSE],
+			[NULL, TRUE, FALSE],
+			[FALSE, TRUE, FALSE],
+		];
 	}
 
 	/**
@@ -417,6 +426,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_email
+	 *
 	 * @param string  $email   Address to check
 	 * @param boolean $strict  Use strict settings
 	 * @param boolean $correct Is $email address valid?
@@ -436,15 +446,15 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_email_domain()
 	{
-		return array(
-			array('google.com', TRUE),
+		return [
+			['google.com', TRUE],
 			// Don't anybody dare register this...
-			array('DAWOMAWIDAIWNDAIWNHDAWIHDAIWHDAIWOHDAIOHDAIWHD.com', FALSE),
+			['DAWOMAWIDAIWNDAIWNHDAWIHDAIWHDAIWOHDAIOHDAIWHD.com', FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -457,25 +467,22 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_email_domain
+	 *
 	 * @param string  $email   Email domain to check
 	 * @param boolean $correct Is it correct?
 	 */
 	public function test_email_domain($email, $correct)
 	{
-		if ( ! $this->hasInternet())
-		{
+		if ( ! $this->hasInternet()) {
 			$this->markTestSkipped('An internet connection is required for this test');
 		}
 
-		if ( ! Kohana::$is_windows OR \version_compare(PHP_VERSION, '5.3.0', '>='))
-		{
+		if ( ! Kohana::$is_windows or version_compare(PHP_VERSION, '5.3.0', '>=')) {
 			$this->assertSame(
 				$correct,
 				Valid::email_domain($email)
 			);
-		}
-		else
-		{
+		} else {
 			$this->markTestSkipped('checkdnsrr() was not added on windows until PHP 5.3');
 		}
 	}
@@ -487,18 +494,18 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_exact_length()
 	{
-		return array(
-			array('somestring', 10, TRUE),
-			array('somestring', 11, FALSE),
-			array('anotherstring', 13, TRUE),
+		return [
+			['somestring', 10, TRUE],
+			['somestring', 11, FALSE],
+			['anotherstring', 13, TRUE],
 			// Empty test
-			array('', 10, FALSE),
-			array(NULL, 10, FALSE),
-			array(FALSE, 10, FALSE),
+			['', 10, FALSE],
+			[NULL, 10, FALSE],
+			[FALSE, 10, FALSE],
 			// Test array of allowed lengths
-			array('somestring', array(1, 3, 5, 7, 9, 10), TRUE),
-			array('somestring', array(1, 3, 5, 7, 9), FALSE),
-		);
+			['somestring', [1, 3, 5, 7, 9, 10], TRUE],
+			['somestring', [1, 3, 5, 7, 9], FALSE],
+		];
 	}
 
 	/**
@@ -509,9 +516,11 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_exact_length
+	 *
 	 * @param string  $string  The string to length check
 	 * @param integer $length  The length of the string
 	 * @param boolean $correct Is $length the actual length of the string?
+	 *
 	 * @return bool
 	 */
 	public function test_exact_length($string, $length, $correct)
@@ -530,16 +539,16 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_equals()
 	{
-		return array(
-			array('foo', 'foo', TRUE),
-			array('1', '1', TRUE),
-			array(1, '1', FALSE),
-			array('011', 011, FALSE),
+		return [
+			['foo', 'foo', TRUE],
+			['1', '1', TRUE],
+			[1, '1', FALSE],
+			['011', 011, FALSE],
 			// Empty test
-			array('', 123, FALSE),
-			array(NULL, 123, FALSE),
-			array(FALSE, 123, FALSE),
-		);
+			['', 123, FALSE],
+			[NULL, 123, FALSE],
+			[FALSE, 123, FALSE],
+		];
 	}
 
 	/**
@@ -547,9 +556,11 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_equals
-	 * @param   string   $string    value to check
-	 * @param   integer  $required  required value
-	 * @param   boolean  $correct   is $string the same as $required?
+	 *
+	 * @param string  $string   value to check
+	 * @param integer $required required value
+	 * @param boolean $correct  is $string the same as $required?
+	 *
 	 * @return  boolean
 	 */
 	public function test_equals($string, $required, $correct)
@@ -563,23 +574,24 @@ class Kohana_ValidTest extends Unittest_TestCase
 
 	/**
 	 * DataProvider for the valid::ip() test
+	 *
 	 * @return array
 	 */
 	public function provider_ip()
 	{
-		return array(
-			array('75.125.175.50',   FALSE, TRUE),
+		return [
+			['75.125.175.50', FALSE, TRUE],
 			// PHP 5.3.6 fixed a bug that allowed 127.0.0.1 as a public ip: http://bugs.php.net/53150
-			array('127.0.0.1',       FALSE, \version_compare(PHP_VERSION, '5.3.6', '<')),
-			array('256.257.258.259', FALSE, FALSE),
-			array('255.255.255.255', FALSE, FALSE),
-			array('192.168.0.1',     FALSE, FALSE),
-			array('192.168.0.1',     TRUE,  TRUE),
+			['127.0.0.1', FALSE, version_compare(PHP_VERSION, '5.3.6', '<')],
+			['256.257.258.259', FALSE, FALSE],
+			['255.255.255.255', FALSE, FALSE],
+			['192.168.0.1', FALSE, FALSE],
+			['192.168.0.1', TRUE, TRUE],
 			// Empty test
-			array('', TRUE, FALSE),
-			array(NULL, TRUE, FALSE),
-			array(FALSE, TRUE, FALSE),
-		);
+			['', TRUE, FALSE],
+			[NULL, TRUE, FALSE],
+			[FALSE, TRUE, FALSE],
+		];
 	}
 
 	/**
@@ -587,6 +599,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider  provider_ip
+	 *
 	 * @param string  $input_ip
 	 * @param boolean $allow_private
 	 * @param boolean $expected_result
@@ -606,18 +619,18 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_max_length()
 	{
-		return array(
+		return [
 			// Border line
-			array('some', 4, TRUE),
+			['some', 4, TRUE],
 			// Exceeds
-			array('KOHANARULLLES', 2, FALSE),
+			['KOHANARULLLES', 2, FALSE],
 			// Under
-			array('CakeSucks', 10, TRUE),
+			['CakeSucks', 10, TRUE],
 			// Empty test
-			array('', -10, FALSE),
-			array(NULL, -10, FALSE),
-			array(FALSE, -10, FALSE),
-		);
+			['', -10, FALSE],
+			[NULL, -10, FALSE],
+			[FALSE, -10, FALSE],
+		];
 	}
 
 	/**
@@ -627,13 +640,14 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_max_length
+	 *
 	 * @param string  $string    String to test
 	 * @param integer $maxlength Max length for this string
 	 * @param boolean $correct   Is $string <= $maxlength
 	 */
 	public function test_max_length($string, $maxlength, $correct)
 	{
-		 $this->assertSame(
+		$this->assertSame(
 			$correct,
 			Valid::max_length($string, $maxlength)
 		);
@@ -646,15 +660,15 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_min_length()
 	{
-		return array(
-			array('This is obviously long enough', 10, TRUE),
-			array('This is not', 101, FALSE),
-			array('This is on the borderline', 25, TRUE),
+		return [
+			['This is obviously long enough', 10, TRUE],
+			['This is not', 101, FALSE],
+			['This is on the borderline', 25, TRUE],
 			// Empty test
-			array('', 10, FALSE),
-			array(NULL, 10, FALSE),
-			array(FALSE, 10, FALSE),
-		);
+			['', 10, FALSE],
+			[NULL, 10, FALSE],
+			[FALSE, 10, FALSE],
+		];
 	}
 
 	/**
@@ -664,9 +678,10 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_min_length
-	 * @param string  $string     String to compare
-	 * @param integer $minlength  The minimum allowed length
-	 * @param boolean $correct    Is $string 's length >= $minlength
+	 *
+	 * @param string  $string    String to compare
+	 * @param integer $minlength The minimum allowed length
+	 * @param boolean $correct   Is $string 's length >= $minlength
 	 */
 	public function test_min_length($string, $minlength, $correct)
 	{
@@ -687,20 +702,20 @@ class Kohana_ValidTest extends Unittest_TestCase
 		$ao = new ArrayObject;
 
 		// arrayObject with value
-		$ao1 = new ArrayObject;
+		$ao1         = new ArrayObject;
 		$ao1['test'] = 'value';
 
-		return array(
-			array(array(),      FALSE),
-			array(NULL,         FALSE),
-			array('',           FALSE),
-			array($ao,          FALSE),
-			array($ao1,         TRUE),
-			array(array(NULL),  TRUE),
-			array(0,            TRUE),
-			array('0',          TRUE),
-			array('Something',  TRUE),
-		);
+		return [
+			[[], FALSE],
+			[NULL, FALSE],
+			['', FALSE],
+			[$ao, FALSE],
+			[$ao1, TRUE],
+			[[NULL], TRUE],
+			[0, TRUE],
+			['0', TRUE],
+			['Something', TRUE],
+		];
 	}
 
 	/**
@@ -710,8 +725,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_not_empty
-	 * @param mixed   $value  Value to check
-	 * @param boolean $empty  Is the value really empty?
+	 *
+	 * @param mixed   $value Value to check
+	 * @param boolean $empty Is the value really empty?
 	 */
 	public function test_not_empty($value, $empty)
 	{
@@ -726,29 +742,29 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_numeric()
 	{
-		return array(
-			array(12345,   TRUE),
-			array(123.45,  TRUE),
-			array('12345', TRUE),
-			array('10.5',  TRUE),
-			array('-10.5', TRUE),
-			array('10.5a', FALSE),
+		return [
+			[12345, TRUE],
+			[123.45, TRUE],
+			['12345', TRUE],
+			['10.5', TRUE],
+			['-10.5', TRUE],
+			['10.5a', FALSE],
 			// @issue 3240
-			array(.4,      TRUE),
-			array(-.4,     TRUE),
-			array(4.,      TRUE),
-			array(-4.,     TRUE),
-			array('.5',    TRUE),
-			array('-.5',   TRUE),
-			array('5.',    TRUE),
-			array('-5.',   TRUE),
-			array('.',     FALSE),
-			array('1.2.3', FALSE),
+			[.4, TRUE],
+			[-.4, TRUE],
+			[4., TRUE],
+			[-4., TRUE],
+			['.5', TRUE],
+			['-.5', TRUE],
+			['5.', TRUE],
+			['-5.', TRUE],
+			['.', FALSE],
+			['1.2.3', FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 	}
 
 	/**
@@ -756,8 +772,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_numeric
-	 * @param string  $input     Input to test
-	 * @param boolean $expected  Whether or not $input is numeric
+	 *
+	 * @param string  $input    Input to test
+	 * @param boolean $expected Whether or not $input is numeric
 	 */
 	public function test_numeric($input, $expected)
 	{
@@ -769,26 +786,27 @@ class Kohana_ValidTest extends Unittest_TestCase
 
 	/**
 	 * Provides test data for test_phone()
+	 *
 	 * @return array
 	 */
 	public function provider_phone()
 	{
-		return array(
-			array('0163634840',       NULL, TRUE),
-			array('+27173634840',     NULL, TRUE),
-			array('123578',           NULL, FALSE),
+		return [
+			['0163634840', NULL, TRUE],
+			['+27173634840', NULL, TRUE],
+			['123578', NULL, FALSE],
 			// Some uk numbers
-			array('01234456778',      NULL, TRUE),
-			array('+0441234456778',   NULL, FALSE),
+			['01234456778', NULL, TRUE],
+			['+0441234456778', NULL, FALSE],
 			// Google UK case you're interested
-			array('+44 20-7031-3000', array(12), TRUE),
+			['+44 20-7031-3000', [12], TRUE],
 			// BT Corporate
-			array('020 7356 5000',	  NULL, TRUE),
+			['020 7356 5000', NULL, TRUE],
 			// Empty test
-			array('', NULL, FALSE),
-			array(NULL, NULL, FALSE),
-			array(FALSE, NULL, FALSE),
-		);
+			['', NULL, FALSE],
+			[NULL, NULL, FALSE],
+			[FALSE, NULL, FALSE],
+		];
 	}
 
 	/**
@@ -796,8 +814,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider  provider_phone
-	 * @param string  $phone     Phone number to test
-	 * @param boolean $expected  Is $phone valid
+	 *
+	 * @param string  $phone    Phone number to test
+	 * @param boolean $expected Is $phone valid
 	 */
 	public function test_phone($phone, $lengths, $expected)
 	{
@@ -812,16 +831,16 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_regex()
 	{
-		return array(
-			array('hello world', '/[a-zA-Z\s]++/', TRUE),
-			array('123456789', '/[0-9]++/', TRUE),
-			array('£$%£%', '/[abc]/', FALSE),
-			array('Good evening',  '/hello/',  FALSE),
+		return [
+			['hello world', '/[a-zA-Z\s]++/', TRUE],
+			['123456789', '/[0-9]++/', TRUE],
+			['£$%£%', '/[abc]/', FALSE],
+			['Good evening', '/hello/', FALSE],
 			// Empty test
-			array('', '/hello/', FALSE),
-			array(NULL, '/hello/', FALSE),
-			array(FALSE, '/hello/', FALSE),
-		);
+			['', '/hello/', FALSE],
+			[NULL, '/hello/', FALSE],
+			[FALSE, '/hello/', FALSE],
+		];
 	}
 
 	/**
@@ -831,9 +850,10 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_regex
-	 * @param string $value Value to test against
-	 * @param string $regex Valid pcre regular expression
-	 * @param bool $expected Does the value match the expression?
+	 *
+	 * @param string $value    Value to test against
+	 * @param string $regex    Valid pcre regular expression
+	 * @param bool   $expected Does the value match the expression?
 	 */
 	public function test_regex($value, $regex, $expected)
 	{
@@ -848,30 +868,30 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_range()
 	{
-		return array(
-			array(1,  0,  2, NULL, TRUE),
-			array(-1, -5, 0, NULL, TRUE),
-			array(-1, 0,  1, NULL, FALSE),
-			array(1,  0,  0, NULL, FALSE),
-			array(2147483647, 0, 200000000000000, NULL, TRUE),
-			array(-2147483647, -2147483655, 2147483645, NULL, TRUE),
+		return [
+			[1, 0, 2, NULL, TRUE],
+			[-1, -5, 0, NULL, TRUE],
+			[-1, 0, 1, NULL, FALSE],
+			[1, 0, 0, NULL, FALSE],
+			[2147483647, 0, 200000000000000, NULL, TRUE],
+			[-2147483647, -2147483655, 2147483645, NULL, TRUE],
 			// #4043
-			array(2, 0, 10, 2, TRUE),
-			array(3, 0, 10, 2, FALSE),
+			[2, 0, 10, 2, TRUE],
+			[3, 0, 10, 2, FALSE],
 			// #4672
-			array(0, 0, 10, NULL, TRUE),
-			array(10, 0, 10, NULL, TRUE),
-			array(-10, -10, 10, NULL, TRUE),
-			array(-10, -1, 1, NULL, FALSE),
-			array(0, 0, 10, 2, TRUE), // with $step
-			array(10, 0, 10, 2, TRUE),
-			array(10, 0, 10, 3, FALSE), // max outside $step
-			array(12, 0, 12, 3, TRUE),
+			[0, 0, 10, NULL, TRUE],
+			[10, 0, 10, NULL, TRUE],
+			[-10, -10, 10, NULL, TRUE],
+			[-10, -1, 1, NULL, FALSE],
+			[0, 0, 10, 2, TRUE], // with $step
+			[10, 0, 10, 2, TRUE],
+			[10, 0, 10, 3, FALSE], // max outside $step
+			[12, 0, 12, 3, TRUE],
 			// Empty test
-			array('', 5, 10, NULL, FALSE),
-			array(NULL, 5, 10, NULL, FALSE),
-			array(FALSE, 5, 10, NULL, FALSE),
-		);
+			['', 5, 10, NULL, FALSE],
+			[NULL, 5, 10, NULL, FALSE],
+			[FALSE, 5, 10, NULL, FALSE],
+		];
 	}
 
 	/**
@@ -881,10 +901,11 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_range
-	 * @param integer $number    Number to test
-	 * @param integer $min       Lower bound
-	 * @param integer $max       Upper bound
-	 * @param boolean $expected  Is Number within the bounds of $min && $max
+	 *
+	 * @param integer $number   Number to test
+	 * @param integer $min      Lower bound
+	 * @param integer $max      Upper bound
+	 * @param boolean $expected Is Number within the bounds of $min && $max
 	 */
 	public function test_range($number, $min, $max, $step, $expected)
 	{
@@ -901,41 +922,41 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_url()
 	{
-		$data = array(
-			array('http://google.com', TRUE),
-			array('http://google.com/', TRUE),
-			array('http://google.com/?q=abc', TRUE),
-			array('http://google.com/#hash', TRUE),
-			array('http://localhost', TRUE),
-			array('http://hello-world.pl', TRUE),
-			array('http://hello--world.pl', TRUE),
-			array('http://h.e.l.l.0.pl', TRUE),
-			array('http://server.tld/get/info', TRUE),
-			array('http://127.0.0.1', TRUE),
-			array('http://127.0.0.1:80', TRUE),
-			array('http://user@127.0.0.1', TRUE),
-			array('http://user:pass@127.0.0.1', TRUE),
-			array('ftp://my.server.com', TRUE),
-			array('rss+xml://rss.example.com', TRUE),
+		$data = [
+			['http://google.com', TRUE],
+			['http://google.com/', TRUE],
+			['http://google.com/?q=abc', TRUE],
+			['http://google.com/#hash', TRUE],
+			['http://localhost', TRUE],
+			['http://hello-world.pl', TRUE],
+			['http://hello--world.pl', TRUE],
+			['http://h.e.l.l.0.pl', TRUE],
+			['http://server.tld/get/info', TRUE],
+			['http://127.0.0.1', TRUE],
+			['http://127.0.0.1:80', TRUE],
+			['http://user@127.0.0.1', TRUE],
+			['http://user:pass@127.0.0.1', TRUE],
+			['ftp://my.server.com', TRUE],
+			['rss+xml://rss.example.com', TRUE],
 
-			array('http://google.2com', FALSE),
-			array('http://google.com?q=abc', FALSE),
-			array('http://google.com#hash', FALSE),
-			array('http://hello-.pl', FALSE),
-			array('http://hel.-lo.world.pl', FALSE),
-			array('http://ww£.google.com', FALSE),
-			array('http://127.0.0.1234', FALSE),
-			array('http://127.0.0.1.1', FALSE),
-			array('http://user:@127.0.0.1', FALSE),
-			array("http://finalnewline.com\n", FALSE),
+			['http://google.2com', FALSE],
+			['http://google.com?q=abc', FALSE],
+			['http://google.com#hash', FALSE],
+			['http://hello-.pl', FALSE],
+			['http://hel.-lo.world.pl', FALSE],
+			['http://ww£.google.com', FALSE],
+			['http://127.0.0.1234', FALSE],
+			['http://127.0.0.1.1', FALSE],
+			['http://user:@127.0.0.1', FALSE],
+			["http://finalnewline.com\n", FALSE],
 			// Empty test
-			array('', FALSE),
-			array(NULL, FALSE),
-			array(FALSE, FALSE),
-		);
+			['', FALSE],
+			[NULL, FALSE],
+			[FALSE, FALSE],
+		];
 
-		$data[] = array('http://'.\str_repeat('123456789.', 25).'com/', TRUE); // 253 chars
-		$data[] = array('http://'.\str_repeat('123456789.', 25).'info/', FALSE); // 254 chars
+		$data[] = ['http://'.str_repeat('123456789.', 25).'com/', TRUE]; // 253 chars
+		$data[] = ['http://'.str_repeat('123456789.', 25).'info/', FALSE]; // 254 chars
 
 		return $data;
 	}
@@ -945,8 +966,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_url
-	 * @param string  $url       The url to test
-	 * @param boolean $expected  Is it valid?
+	 *
+	 * @param string  $url      The url to test
+	 * @param boolean $expected Is it valid?
 	 */
 	public function test_url($url, $expected)
 	{
@@ -961,15 +983,15 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 */
 	public function provider_matches()
 	{
-		return array(
-			array(array('a' => 'hello', 'b' => 'hello'), 'a', 'b', TRUE),
-			array(array('a' => 'hello', 'b' => 'hello '), 'a', 'b', FALSE),
-			array(array('a' => '1', 'b' => 1), 'a', 'b', FALSE),
+		return [
+			[['a' => 'hello', 'b' => 'hello'], 'a', 'b', TRUE],
+			[['a' => 'hello', 'b' => 'hello '], 'a', 'b', FALSE],
+			[['a' => '1', 'b' => 1], 'a', 'b', FALSE],
 			// Empty test
-			array(array('a' => '', 'b' => 'hello'), 'a', 'b', FALSE),
-			array(array('a' => NULL, 'b' => 'hello'), 'a', 'b', FALSE),
-			array(array('a' => FALSE, 'b' => 'hello'), 'a', 'b', FALSE),
-		);
+			[['a' => '', 'b' => 'hello'], 'a', 'b', FALSE],
+			[['a' => NULL, 'b' => 'hello'], 'a', 'b', FALSE],
+			[['a' => FALSE, 'b' => 'hello'], 'a', 'b', FALSE],
+		];
 	}
 
 	/**
@@ -979,10 +1001,11 @@ class Kohana_ValidTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_matches
-	 * @param array   $data      Array of fields
-	 * @param integer $field     First field name
-	 * @param integer $match     Field name that must match $field in $data
-	 * @param boolean $expected  Do the two fields match?
+	 *
+	 * @param array   $data     Array of fields
+	 * @param integer $field    First field name
+	 * @param integer $match    Field name that must match $field in $data
+	 * @param boolean $expected Do the two fields match?
 	 */
 	public function test_matches($data, $field, $match, $expected)
 	{

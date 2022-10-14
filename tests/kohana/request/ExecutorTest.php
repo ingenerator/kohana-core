@@ -1,38 +1,40 @@
 <?php
+
+use PHPUnit\Framework\TestCase;
+
 /**
  * @author    Andrew Coulton <andrew@ingenerator.com>
  */
-
-class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
+class Kohana_Request_ExecutorTest extends TestCase
 {
 	protected $routes = [];
 
 	public function test_it_throws_404_exception_if_no_matching_route()
 	{
 		$this->routes = [new Route('foo')];
-        $subject = $this->newSubject();
+		$subject      = $this->newSubject();
 
-        $this->expectException(\HTTP_Exception_404::class);
-        $subject->execute(\Request::with(['uri' => 'bar']));
+		$this->expectException(HTTP_Exception_404::class);
+		$subject->execute(Request::with(['uri' => 'bar']));
 	}
 
 	public function test_it_throws_404_exception_if_controller_class_does_not_exist()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
-		$subject = $this->newSubject();
+		$subject      = $this->newSubject();
 
-        $this->expectException(\HTTP_Exception_404::class);
-		$subject->execute(\Request::with(['uri' => 'no/controller']));
+		$this->expectException(HTTP_Exception_404::class);
+		$subject->execute(Request::with(['uri' => 'no/controller']));
 	}
 
 	public function test_it_throws_generic_exception_if_controller_is_abstract()
 	{
-        $this->routes = [new Route('<controller>/<action>')];
-        $subject      = $this->newSubject();
+		$this->routes = [new Route('<controller>/<action>')];
+		$subject      = $this->newSubject();
 
-        $this->expectException(Kohana_Exception::class);
-        $this->expectExceptionMessage('abstract');
-        $subject->execute(\Request::with(['uri' => 'template/anything']));
+		$this->expectException(Kohana_Exception::class);
+		$this->expectExceptionMessage('abstract');
+		$subject->execute(Request::with(['uri' => 'template/anything']));
 	}
 
 	public function test_it_coalesces_request_into_and_bubbles_http_exception_thrown_by_controller()
@@ -42,11 +44,11 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 		Controller_ThrowsException::$exception = HTTP_Exception::factory(302);
 		Controller_ThrowsException::$exception->location('http://anywhere');
 
-		$rq = \Request::with(['uri' => 'throwsexception/anything']);
+		$rq = Request::with(['uri' => 'throwsexception/anything']);
 		try {
-		    $this->newSubject()->execute($rq);
-		    $this->fail('Expected exception, none got');
-		} catch (\HTTP_Exception_302 $e) {
+			$this->newSubject()->execute($rq);
+			$this->fail('Expected exception, none got');
+		} catch (HTTP_Exception_302 $e) {
 			$this->assertSame(Controller_ThrowsException::$exception, $e);
 			$this->assertSame($e->request(), $rq);
 		}
@@ -56,29 +58,29 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 
-		Controller_ThrowsException::$exception = new \InvalidArgumentException('I broke');
+		Controller_ThrowsException::$exception = new InvalidArgumentException('I broke');
 
 		$subject = $this->newSubject();
 
-        $this->expectException(\InvalidArgumentException::class);
-		$subject->execute(\Request::with(['uri' => 'throwsexception/anything']));
+		$this->expectException(InvalidArgumentException::class);
+		$subject->execute(Request::with(['uri' => 'throwsexception/anything']));
 	}
 
 	public function test_it_throws_if_controller_does_not_return_response()
-    {
-        $this->routes = [new Route('<controller>/<action>')];
-        $subject      = $this->newSubject();
+	{
+		$this->routes = [new Route('<controller>/<action>')];
+		$subject      = $this->newSubject();
 
-        $this->expectException(Kohana_Exception::class);
-        $this->expectExceptionMessage('return a Response');
-        $subject->execute(\Request::with(['uri' => 'emptyreturn/anything']));
+		$this->expectException(Kohana_Exception::class);
+		$this->expectExceptionMessage('return a Response');
+		$subject->execute(Request::with(['uri' => 'emptyreturn/anything']));
 	}
 
 	public function test_it_sets_response_protocol_to_request_protocol()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 		$response     = $this->newSubject()->execute(
-			\Request::with(['uri' => 'welcome/index', 'protocol' => 'HTTP/12.5'])
+			Request::with(['uri' => 'welcome/index', 'protocol' => 'HTTP/12.5'])
 		);
 		$this->assertSame('HTTP/12.5', $response->protocol());
 	}
@@ -92,8 +94,8 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 					'directory'  => NULL,
 					'controller' => 'Requestcapture',
 					'action'     => 'index',
-					'params'     => []
-				]
+					'params'     => [],
+				],
 			],
 			[
 				'requestcapture/whatever',
@@ -101,8 +103,8 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 					'directory'  => NULL,
 					'controller' => 'Requestcapture',
 					'action'     => 'whatever',
-					'params'     => []
-				]
+					'params'     => [],
+				],
 			],
 			[
 				'foo/anything/12',
@@ -110,8 +112,8 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 					'directory'  => NULL,
 					'controller' => 'Requestcapture',
 					'action'     => 'anything',
-					'params'     => ['id' => 12]
-				]
+					'params'     => ['id' => 12],
+				],
 			],
 
 		];
@@ -132,10 +134,10 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 			),
 		];
 
-		$response = $this->newSubject()->execute(\Request::with(['uri' => $url]));
+		$response = $this->newSubject()->execute(Request::with(['uri' => $url]));
 
 		$this->assertSame(200, $response->status());
-		$this->assertEquals($expect, \json_decode($response, TRUE));
+		$this->assertEquals($expect, json_decode($response, TRUE));
 	}
 
 	public function provider_controller_class()
@@ -144,26 +146,26 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 			[
 				['directory' => NULL, 'controller' => 'Test', 'action' => 'anything'],
 				'Controller_Test',
-				'Controller_Test::anything'
+				'Controller_Test::anything',
 			],
 			[
 				['directory' => 'Subdir', 'controller' => 'Test', 'action' => 'anything'],
 				'Controller_Subdir_Test',
-				'Controller_Subdir_Test::anything'
+				'Controller_Subdir_Test::anything',
 			],
 			[
 				['directory' => NULL, 'controller' => '\My\Test\Test', 'action' => 'things'],
 				'\My\Test\Test',
-				'My\Test\Test::things'
+				'My\Test\Test::things',
 			],
 			[
 				[
 					'directory'  => NULL,
 					'controller' => '\My\Test\TestController',
-					'action'     => 'things'
+					'action'     => 'things',
 				],
 				'\My\Test\TestController',
-				'My\Test\TestController::things'
+				'My\Test\TestController::things',
 			],
 
 		];
@@ -177,19 +179,19 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 		$controller_class,
 		$expect
 	) {
-		if ( ! \class_exists($controller_class)) {
+		if ( ! class_exists($controller_class)) {
 			$this->defineExtensionClass($controller_class, ClassReturningController::class);
 		}
 		$this->routes = [$this->givenRouteWithDefaults('', $route_defaults)];
-		$response     = $this->newSubject()->execute(\Request::with(['uri' => '/']));
+		$response     = $this->newSubject()->execute(Request::with(['uri' => '/']));
 		$this->assertEquals($expect, $response->body());
 	}
 
 	protected function defineExtensionClass($fqcn, $base_class)
 	{
-		$parts = \array_filter(\explode('\\', $fqcn));
-		$class = \array_pop($parts);
-		$ns    = \implode('\\', $parts);
+		$parts = array_filter(explode('\\', $fqcn));
+		$class = array_pop($parts);
+		$ns    = implode('\\', $parts);
 		if ($ns) {
 			$ns = 'namespace '.$ns.';';
 		}
@@ -197,7 +199,7 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 	}
 
 	/**
-	 * @return \Request_Executor
+	 * @return Request_Executor
 	 */
 	protected function newSubject()
 	{
@@ -211,7 +213,7 @@ class Kohana_Request_ExecutorTest extends \PHPUnit\Framework\TestCase
 	 * @param $route_defaults
 	 * @param $regex
 	 *
-	 * @return \Route
+	 * @return Route
 	 */
 	protected function givenRouteWithDefaults($uri, array $route_defaults, $regex = NULL)
 	{
@@ -228,7 +230,7 @@ class ClassReturningController extends Controller
 
 	public function execute()
 	{
-		$this->response->body(\get_class($this).'::'.$this->request->action());
+		$this->response->body(get_class($this).'::'.$this->request->action());
 
 		return $this->response;
 	}
@@ -257,12 +259,12 @@ class Controller_RequestCapture extends Controller
 	public function execute()
 	{
 		$this->response->body(
-			\json_encode(
+			json_encode(
 				[
 					'directory'  => $this->request->directory(),
 					'controller' => $this->request->controller(),
 					'action'     => $this->request->action(),
-					'params'     => $this->request->param()
+					'params'     => $this->request->param(),
 				]
 			)
 		);

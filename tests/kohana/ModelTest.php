@@ -1,18 +1,18 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * This test only really exists for code coverage.
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.model
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.model
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     BRMatt <matthew@sigswitch.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         BRMatt <matthew@sigswitch.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_ModelTest extends Unittest_TestCase
 {

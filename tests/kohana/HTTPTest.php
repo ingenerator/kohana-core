@@ -1,19 +1,20 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests HTTP
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.http
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.http
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
-class Kohana_HTTPTest extends Unittest_TestCase {
+class Kohana_HTTPTest extends Unittest_TestCase
+{
 
 	protected $_inital_request;
 
@@ -22,12 +23,12 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 */
 	// @codingStandardsIgnoreStart
 	public function setUp(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		parent::setUp();
-		Kohana::$config->load('url')->set('trusted_hosts', array('www\.example\.com'));
+		Kohana::$config->load('url')->set('trusted_hosts', ['www\.example\.com']);
 		$this->_initial_request = Request::$initial;
-		Request::$initial = Request::with(['uri' => '/']);
+		Request::$initial       = Request::with(['uri' => '/']);
 	}
 
 	/**
@@ -35,7 +36,7 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 */
 	// @codingStandardsIgnoreStart
 	public function tearDown(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		Request::$initial = $this->_initial_request;
 		parent::tearDown();
@@ -44,14 +45,15 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 
 	/**
 	 * Defaults for this test
+	 *
 	 * @var array
 	 */
 	// @codingStandardsIgnoreStart
-	protected $environmentDefault = array(
-		'Kohana::$base_url'    => '/kohana/',
-		'Kohana::$index_file'  => 'index.php',
-		'HTTP_HOST'	           => 'www.example.com',
-	);
+	protected $environmentDefault = [
+		'Kohana::$base_url'   => '/kohana/',
+		'Kohana::$index_file' => 'index.php',
+		'HTTP_HOST'           => 'www.example.com',
+	];
 	// @codingStandardsIgnoreEnd
 
 	/**
@@ -61,26 +63,26 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 */
 	public function provider_redirect()
 	{
-		return array(
-			array(
+		return [
+			[
 				'http://www.example.org/',
 				301,
 				'HTTP_Exception_301',
-				'http://www.example.org/'
-			),
-			array(
+				'http://www.example.org/',
+			],
+			[
 				'/page_one',
 				302,
 				'HTTP_Exception_302',
-				'https://www.example.com/kohana/index.php/page_one'
-			),
-			array(
+				'https://www.example.com/kohana/index.php/page_one',
+			],
+			[
 				'page_two',
 				303,
 				'HTTP_Exception_303',
-				'https://www.example.com/kohana/index.php/page_two'
-			),
-		);
+				'https://www.example.com/kohana/index.php/page_two',
+			],
+		];
 	}
 
 	/**
@@ -88,24 +90,22 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 *
 	 * @test
 	 * @dataProvider provider_redirect
-	 * @param array  $location            Location to redirect to
-	 * @param array  $code                HTTP Code to use for the redirect
-	 * @param string $expected_exception  Expected exception
-	 * @param string $expected_location   Expected exception
+	 *
+	 * @param array  $location           Location to redirect to
+	 * @param array  $code               HTTP Code to use for the redirect
+	 * @param string $expected_exception Expected exception
+	 * @param string $expected_location  Expected exception
 	 */
 	public function test_redirect($location, $code, $expected_exception, $expected_location)
 	{
-		try
-		{
+		try {
 			HTTP::redirect($location, $code);
-		}
-		catch (HTTP_Exception_Redirect $e)
-		{
+		} catch (HTTP_Exception_Redirect $e) {
 			$response = $e->get_response();
 
 			$this->assertInstanceOf($expected_exception, $e);
 			$this->assertEquals($expected_location, $response->headers('Location'));
-			
+
 			return;
 		}
 
@@ -119,32 +119,32 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 */
 	public function provider_request_headers()
 	{
-		return array(
-			array(
-				array(
-					'CONTENT_TYPE' => 'text/html; charset=utf-8',
-					'CONTENT_LENGTH' => '3547',
-					'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+		return [
+			[
+				[
+					'CONTENT_TYPE'         => 'text/html; charset=utf-8',
+					'CONTENT_LENGTH'       => '3547',
+					'HTTP_ACCEPT'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
 					'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch',
 					'HTTP_ACCEPT_LANGUAGE' => 'en-US,en;q=0.8,fr;q=0.6,hy;q=0.4',
-				),
-				array(
-					'content-type' => 'text/html; charset=utf-8',
-					'content-length' => '3547',
-					'accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-					'accept-encoding'=>'gzip, deflate, sdch',
-					'accept-language'=>'en-US,en;q=0.8,fr;q=0.6,hy;q=0.4',
-				)
-			),
-			array(
-				array(
+				],
+				[
+					'content-type'    => 'text/html; charset=utf-8',
+					'content-length'  => '3547',
+					'accept'          => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+					'accept-encoding' => 'gzip, deflate, sdch',
+					'accept-language' => 'en-US,en;q=0.8,fr;q=0.6,hy;q=0.4',
+				],
+			],
+			[
+				[
 					'HTTP_WEIRD_HTTP_HEADER' => 'A weird value for a weird header',
-				),
-				array(
+				],
+				[
 					'weird-http-header' => 'A weird value for a weird header',
-				)
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
@@ -159,18 +159,19 @@ class Kohana_HTTPTest extends Unittest_TestCase {
 	 *
 	 * @test
 	 * @dataProvider provider_request_headers
-	 * @param array  $server_globals      globals to feed $_SERVER
-	 * @param array  $expected_headers    Expected, cleaned HTTP headers
+	 *
+	 * @param array $server_globals   globals to feed $_SERVER
+	 * @param array $expected_headers Expected, cleaned HTTP headers
 	 */
 	public function test_request_headers(array $server_globals, array $expected_headers)
 	{
 		// save the $_SERVER super-global into temporary local var
 		$tmp_server = $_SERVER;
 
-		$_SERVER = \array_replace_recursive($_SERVER, $server_globals);
+		$_SERVER = array_replace_recursive($_SERVER, $server_globals);
 		$headers = HTTP::request_headers();
 
-		$actual_headers = \array_intersect_key($headers->getArrayCopy(), $expected_headers);
+		$actual_headers = array_intersect_key($headers->getArrayCopy(), $expected_headers);
 
 		$this->assertSame($expected_headers, $actual_headers);
 

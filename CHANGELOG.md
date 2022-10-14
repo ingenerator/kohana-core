@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.8.6.1 (2022-10-14)
+
+* Reformat test code
+
 ## 4.8.6 (2021-04-19)
 
 * Tighten PHP8 requirement to ~8.0.0 

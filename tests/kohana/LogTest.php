@@ -1,22 +1,22 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Logging API
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.logging
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.logging
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     Matt Button <matthew@sigswitch.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         Matt Button <matthew@sigswitch.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_LogTest extends Unittest_TestCase
 {
-    use ObjectInternalAccessTestWorkarounds;
+	use ObjectInternalAccessTestWorkarounds;
 
 	/**
 	 * Tests that when a new logger is created the list of messages is initially
@@ -29,7 +29,7 @@ class Kohana_LogTest extends Unittest_TestCase
 	{
 		$logger = new Log;
 
-		$this->assertAttributeSame(array(), '_messages', $logger);
+		$this->assertAttributeSame([], '_messages', $logger);
 	}
 
 	/**
@@ -43,13 +43,13 @@ class Kohana_LogTest extends Unittest_TestCase
 	{
 		$logger = new Log;
 
-		$this->assertAttributeSame(array(), '_writers', $logger);
+		$this->assertAttributeSame([], '_writers', $logger);
 	}
 
 	/**
 	 * Test that attaching a log writer using an array of levels adds it to the array of log writers
 	 *
-	 * @TODO Is this test too specific?
+	 * @TODO   Is this test too specific?
 	 *
 	 * @test
 	 * @covers Log::attach
@@ -62,7 +62,7 @@ class Kohana_LogTest extends Unittest_TestCase
 		$this->assertSame($logger, $logger->attach($writer));
 
 		$this->assertAttributeSame(
-			array(\spl_object_hash($writer) => array('object' => $writer, 'levels' => array())),
+			[spl_object_hash($writer) => ['object' => $writer, 'levels' => []]],
 			'_writers',
 			$logger
 		);
@@ -71,7 +71,7 @@ class Kohana_LogTest extends Unittest_TestCase
 	/**
 	 * Test that attaching a log writer using a min/max level adds it to the array of log writers
 	 *
-	 * @TODO Is this test too specific?
+	 * @TODO   Is this test too specific?
 	 *
 	 * @test
 	 * @covers Log::attach
@@ -84,7 +84,12 @@ class Kohana_LogTest extends Unittest_TestCase
 		$this->assertSame($logger, $logger->attach($writer, Log::NOTICE, Log::CRITICAL));
 
 		$this->assertAttributeSame(
-			array(\spl_object_hash($writer) => array('object' => $writer, 'levels' => array(Log::CRITICAL, Log::ERROR, Log::WARNING, Log::NOTICE))),
+			[
+				spl_object_hash($writer) => [
+					'object' => $writer,
+					'levels' => [Log::CRITICAL, Log::ERROR, Log::WARNING, Log::NOTICE],
+				],
+			],
 			'_writers',
 			$logger
 		);
@@ -105,7 +110,7 @@ class Kohana_LogTest extends Unittest_TestCase
 
 		$this->assertSame($logger, $logger->detach($writer));
 
-		$this->assertAttributeSame(array(), '_writers', $logger);
+		$this->assertAttributeSame([], '_writers', $logger);
 	}
 
 
