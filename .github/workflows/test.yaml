@@ -71,4 +71,4 @@ jobs:
         run: |
           set -o errexit
           cd /tmp/koharness
-          ./vendor/bin/phpunit --bootstrap=modules/unittest/bootstrap.php modules/unittest/tests.php
+          ./vendor/bin/phpunit --configuration=modules/unittest/phpunit.xml modules/unittest/tests.php
