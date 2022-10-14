@@ -16,7 +16,7 @@
 class Kohana_HTTPTest extends Unittest_TestCase
 {
 
-	protected $_inital_request;
+	protected ?Request $_initial_request;
 
 	/**
 	 * Sets up the environment

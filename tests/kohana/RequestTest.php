@@ -300,14 +300,7 @@ class Kohana_RequestTest extends Unittest_TestCase
 			'Kohana::$index_file' => FALSE,
 		]);
 
-		// issue #3967: inject the route so that we don't conflict with the application's default route
-		$route = new Route('(<controller>(/<action>))');
-		$route->defaults([
-			'controller' => 'welcome',
-			'action'     => 'index',
-		]);
-
-		$request = Request::with(['uri' => $uri, 'routes' => [$route]]);
+		$request = Request::with(['uri' => $uri]);
 
 		$this->assertEquals($expected, $request->url($protocol));
 	}
