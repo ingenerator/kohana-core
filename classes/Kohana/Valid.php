@@ -415,6 +415,10 @@ class Kohana_Valid {
 	 */
 	public static function alpha_numeric($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
 		if ( ! is_string($str)){
 			return FALSE;
 		}
@@ -438,6 +442,10 @@ class Kohana_Valid {
 	 */
 	public static function alpha_dash($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
 		if ( ! is_string($str)){
 			return FALSE;
 		}
@@ -463,6 +471,10 @@ class Kohana_Valid {
 	 */
 	public static function digit($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
 		if ( ! is_string($str)){
 			return FALSE;
 		}
@@ -533,6 +545,10 @@ class Kohana_Valid {
 	 */
 	public static function decimal($str, $places = 2, $digits = NULL)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
 		if ( ! is_string($str)){
 			return FALSE;
 		}
