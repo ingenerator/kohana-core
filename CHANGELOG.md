@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Date::months() only returns months in English where was previously locale aware.
+
 ## 4.8.6.1 (2022-10-14)
 
 * Reformat test code

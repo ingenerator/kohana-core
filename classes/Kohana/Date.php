@@ -273,23 +273,39 @@ class Kohana_Date {
 	 * @param   string  $format The format to use for months
 	 * @return  array   An array of months based on the specified format
 	 */
-	public static function months($format = NULL)
+	public static function months($format = NULL): array
 	{
-		$months = array();
-
-		if ($format === Date::MONTHS_LONG OR $format === Date::MONTHS_SHORT)
-		{
-			for ($i = 1; $i <= 12; ++$i)
-			{
-				$months[$i] = \strftime($format, \mktime(0, 0, 0, $i, 1));
-			}
-		}
-		else
-		{
-			$months = Date::hours();
-		}
-
-		return $months;
+		return match ($format) {
+			Date::MONTHS_LONG => [
+				1  => 'January',
+				2  => 'February',
+				3  => 'March',
+				4  => 'April',
+				5  => 'May',
+				6  => 'June',
+				7  => 'July',
+				8  => 'August',
+				9  => 'September',
+				10 => 'October',
+				11 => 'November',
+				12 => 'December',
+			],
+			Date::MONTHS_SHORT => [
+				1  => 'Jan',
+				2  => 'Feb',
+				3  => 'Mar',
+				4  => 'Apr',
+				5  => 'May',
+				6  => 'Jun',
+				7  => 'Jul',
+				8  => 'Aug',
+				9  => 'Sep',
+				10 => 'Oct',
+				11 => 'Nov',
+				12 => 'Dec',
+			],
+			default => Date::hours(),
+		};
 	}
 
 	/**
