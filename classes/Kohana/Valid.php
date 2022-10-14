@@ -164,6 +164,10 @@ class Kohana_Valid {
 	 */
 	public static function url($url)
 	{
+		if ( ! is_string($url)){
+			return FALSE;
+		}
+
 		// Based on http://www.apps.ietf.org/rfc/rfc1738.html#sec-5
 		if ( ! \preg_match(
 			'~^
@@ -197,7 +201,7 @@ class Kohana_Valid {
 			# path (optional)
 			(?:/.*)?
 
-			$~iDx', $url, $matches))
+			$~iDx', (string) $url, $matches))
 			return FALSE;
 
 		// We matched an IP address
@@ -246,6 +250,10 @@ class Kohana_Valid {
 	 */
 	public static function credit_card($number, $type = NULL)
 	{
+		if ( ! is_string($number)){
+			return FALSE;
+		}
+
 		// Remove all non-digit characters from the number
 		if (($number = \preg_replace('/\D+/', '', $number)) === '')
 			return FALSE;
@@ -279,11 +287,11 @@ class Kohana_Valid {
 		$length = \strlen($number);
 
 		// Validate the card length by the card type
-		if ( ! \in_array($length, \preg_split('/\D+/', $cards[$type]['length'])))
+		if ( ! \in_array($length, \preg_split('/\D+/', (string) $cards[$type]['length'])))
 			return FALSE;
 
 		// Check card number prefix
-		if ( ! \preg_match('/^'.$cards[$type]['prefix'].'/', $number))
+		if ( ! \preg_match('/^'.$cards[$type]['prefix'].'/', (string) $number))
 			return FALSE;
 
 		// No Luhn check required
@@ -346,13 +354,17 @@ class Kohana_Valid {
 	 */
 	public static function phone($number, $lengths = NULL)
 	{
+		if ( ! is_string($number)){
+			return FALSE;
+		}
+
 		if ( ! \is_array($lengths))
 		{
 			$lengths = array(7,10,11);
 		}
 
 		// Remove all non-digit characters from the number
-		$number = \preg_replace('/\D+/', '', $number);
+		$number = \preg_replace('/\D+/', '', (string) $number);
 
 		// Check if the number is within range
 		return \in_array(\strlen($number), $lengths);
@@ -366,7 +378,11 @@ class Kohana_Valid {
 	 */
 	public static function date($str)
 	{
-		return (\strtotime($str) !== FALSE);
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
+		return (\strtotime((string) $str) !== FALSE);
 	}
 
 	/**
@@ -399,9 +415,17 @@ class Kohana_Valid {
 	 */
 	public static function alpha_numeric($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
 		if ($utf8 === TRUE)
 		{
-			return (bool) \preg_match('/^[\pL\pN]++$/uD', $str);
+			return (bool) \preg_match('/^[\pL\pN]++$/uD', (string) $str);
 		}
 		else
 		{
@@ -418,6 +442,14 @@ class Kohana_Valid {
 	 */
 	public static function alpha_dash($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
 		if ($utf8 === TRUE)
 		{
 			$regex = '/^[-\pL\pN_]++$/uD';
@@ -427,7 +459,7 @@ class Kohana_Valid {
 			$regex = '/^[-a-z0-9_]++$/iD';
 		}
 
-		return (bool) \preg_match($regex, $str);
+		return (bool) \preg_match($regex, (string) $str);
 	}
 
 	/**
@@ -439,9 +471,17 @@ class Kohana_Valid {
 	 */
 	public static function digit($str, $utf8 = FALSE)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
 		if ($utf8 === TRUE)
 		{
-			return (bool) \preg_match('/^\pN++$/uD', $str);
+			return (bool) \preg_match('/^\pN++$/uD', (string) $str);
 		}
 		else
 		{
@@ -505,6 +545,14 @@ class Kohana_Valid {
 	 */
 	public static function decimal($str, $places = 2, $digits = NULL)
 	{
+		if (is_int($str) || is_float($str)) {
+			$str = (string) $str;
+		}
+
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
 		if ($digits > 0)
 		{
 			// Specific number of digits
@@ -519,7 +567,7 @@ class Kohana_Valid {
 		// Get the decimal point for the current locale
 		list($decimal) = \array_values(\localeconv());
 
-		return (bool) \preg_match('/^[+-]?[0-9]'.$digits.\preg_quote($decimal).'[0-9]{'.( (int) $places).'}$/D', $str);
+		return (bool) \preg_match('/^[+-]?[0-9]'.$digits.\preg_quote($decimal).'[0-9]{'.( (int) $places).'}$/D', (string) $str);
 	}
 
 	/**
@@ -532,7 +580,11 @@ class Kohana_Valid {
 	 */
 	public static function color($str)
 	{
-		return (bool) \preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', $str);
+		if ( ! is_string($str)){
+			return FALSE;
+		}
+
+		return (bool) \preg_match('/^#?+[0-9a-f]{3}(?:[0-9a-f]{3})?$/iD', (string) $str);
 	}
 
 	/**

@@ -17,11 +17,13 @@
 		}
 	],
 	"require": {
-		"php":        "^7.4 || ~8.0.0"
+		"php": "~8.0.0 || ~8.1.0 || ~8.2.0",
+		"ext-mbstring": "*",
+		"ext-ctype": "*"
 	},
 	"require-dev": {
-		"kohana/koharness":    "*@dev",
-		"phpunit/phpunit": "^8.5"
+		"kohana/koharness": "*@dev",
+		"phpunit/phpunit": "^9.5.22"
 	},
 	"replace": {
 		"kohana/core": "3.3.*",

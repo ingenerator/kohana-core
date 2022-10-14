@@ -67,6 +67,7 @@ class Kohana_ValidTest extends Unittest_TestCase
 			['abcd1234', TRUE],
 			['abcd', TRUE],
 			['1234', TRUE],
+			[1234, TRUE],
 			['abc123&^/-', FALSE],
 			// UTF-8 tests
 			['あいうえお', TRUE, TRUE],
@@ -106,6 +107,8 @@ class Kohana_ValidTest extends Unittest_TestCase
 		return [
 			['abcdef', TRUE],
 			['12345', TRUE],
+			[1234, TRUE],
+			[-5678, TRUE],
 			['abcd1234', TRUE],
 			['abcd1234-', TRUE],
 			['abc123&^/-', FALSE],
@@ -200,6 +203,12 @@ class Kohana_ValidTest extends Unittest_TestCase
 			['-45.1664', 4, NULL, TRUE],
 			['+45.1664', 4, NULL, TRUE],
 			['-45.1664', 3, NULL, FALSE],
+			[45.1664, 3, NULL, FALSE],
+			[45.1664, 4, NULL, TRUE],
+			[45.1664, 4, 2, TRUE],
+			[-45.1664, 4, NULL, TRUE],
+			[+45.1664, 4, NULL, TRUE],
+			[-45.1664, 3, NULL, FALSE],
 		];
 	}
 
@@ -241,6 +250,9 @@ class Kohana_ValidTest extends Unittest_TestCase
 			['', FALSE],
 			[NULL, FALSE],
 			[FALSE, FALSE],
+			[12345, TRUE],
+			[10.5, FALSE],
+			[-5, FALSE],
 		];
 	}
 

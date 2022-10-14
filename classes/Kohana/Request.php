@@ -106,7 +106,7 @@ class Kohana_Request implements HTTP_Request {
 
 	public static function with(array $properties)
 	{
-		$request = new \Request(\Arr::get($properties, 'uri', NULL));
+		$request = new \Request(\Arr::get($properties, 'uri', ""));
 		// NB: `uri` still has special status because it gets trimmed, need to leave it to the constructor
 		unset($properties['uri']);
 		// @todo: safety check properties match expected
@@ -529,13 +529,13 @@ class Kohana_Request implements HTTP_Request {
 	 * @return  void
 	 * @throws  Request_Exception
 	 */
-	protected function __construct($uri)
+	protected function __construct(string $uri)
 	{
 		// Initialise the header
 		$this->_header = new HTTP_Header(array());
 
 		// Fail if they're trying to do old-school external request execution
-		if (\strpos($uri, '://') === FALSE)
+		if ( ! str_contains($uri, '://'))
 		{
 			// Remove leading and trailing slashes from the URI
 			$this->_uri = \trim($uri, '/');

@@ -2,6 +2,13 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.9.0 (2022-10-14)
+
+* Support PHP 8.1 + PHP 8.2 and drop support for PHP 7.4
+* Date::months() only returns months in English where was previously locale aware.
+* Guide and associated media no longer included in package releases
+* UTF8::strcasecmp now returns -1 / 0 /1 to match underlying stdlib version
+
 ## 4.8.6.1 (2022-10-14)
 
 * Reformat test code
