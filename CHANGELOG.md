@@ -3,6 +3,7 @@ You're really going to want to read this.
 ## Unreleased
 
 * Date::months() only returns months in English where was previously locale aware.
+* Guide and associated media no longer included in package releases
 
 ## 4.8.6.1 (2022-10-14)
 
