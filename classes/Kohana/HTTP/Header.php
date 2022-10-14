@@ -342,14 +342,15 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @return  void
 	 * @since   3.2.0
 	 */
-	public function offsetSet($index, $newval, $replace = TRUE)
+	public function offsetSet($index, $newval, $replace = TRUE): void
 	{
 		// Ensure the index is lowercase
 		$index = \strtolower($index);
 
 		if ($replace OR ! $this->offsetExists($index))
 		{
-			return parent::offsetSet($index, $newval);
+			parent::offsetSet($index, $newval);
+			return;
 		}
 
 		$current_value = $this->offsetGet($index);
@@ -363,7 +364,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 			$current_value = array($current_value, $newval);
 		}
 
-		return parent::offsetSet($index, $current_value);
+		parent::offsetSet($index, $current_value);
 	}
 
 	/**
@@ -374,7 +375,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @return  boolean
 	 * @since   3.2.0
 	 */
-	public function offsetExists($index)
+	public function offsetExists($index): bool
 	{
 		return parent::offsetExists(\strtolower($index));
 	}
@@ -387,9 +388,9 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @return  void
 	 * @since   3.2.0
 	 */
-	public function offsetUnset($index)
+	public function offsetUnset($index): void
 	{
-		return parent::offsetUnset(\strtolower($index));
+		parent::offsetUnset(\strtolower($index));
 	}
 
 	/**
@@ -400,7 +401,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @return  mixed
 	 * @since   3.2.0
 	 */
-	public function offsetGet($index)
+	public function offsetGet($index): mixed
 	{
 		return parent::offsetGet(\strtolower($index));
 	}
@@ -413,7 +414,7 @@ class Kohana_HTTP_Header extends ArrayObject {
 	 * @return  array
 	 * @since   3.2.0
 	 */
-	public function exchangeArray($input)
+	public function exchangeArray($input): array
 	{
 		/**
 		 * @link http://www.w3.org/Protocols/rfc2616/rfc2616.html
