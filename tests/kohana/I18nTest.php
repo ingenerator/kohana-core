@@ -1,29 +1,31 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana i18n class
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.i18n
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.i18n
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     Jeremy Bush <contractfrombelow@gmail.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         Jeremy Bush <contractfrombelow@gmail.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
-class Kohana_I18nTest extends Unittest_TestCase {
+class Kohana_I18nTest extends Unittest_TestCase
+{
 
 	/**
 	 * Default values for the environment, see setEnvironment
+	 *
 	 * @var array
 	 */
 	// @codingStandardsIgnoreStart
-	protected $environmentDefault =	array(
+	protected $environmentDefault = [
 		'I18n::$lang' => 'en-us',
-	);
+	];
 	// @codingStandardsIgnoreEnd
 
 	/**
@@ -33,11 +35,11 @@ class Kohana_I18nTest extends Unittest_TestCase {
 	 */
 	public function provider_lang()
 	{
-		return array(
+		return [
 			// $input, $expected_result
-			array(NULL, 'en-us'),
-			array('es-es', 'es-es'),
-		);
+			[NULL, 'en-us'],
+			['es-es', 'es-es'],
+		];
 	}
 
 	/**
@@ -45,8 +47,9 @@ class Kohana_I18nTest extends Unittest_TestCase {
 	 *
 	 * @test
 	 * @dataProvider provider_lang
-	 * @param  boolean  $input     Input for I18n::lang
-	 * @param  boolean  $expected  Output for I18n::lang
+	 *
+	 * @param boolean $input    Input for I18n::lang
+	 * @param boolean $expected Output for I18n::lang
 	 */
 	public function test_lang($input, $expected_result)
 	{
@@ -56,17 +59,17 @@ class Kohana_I18nTest extends Unittest_TestCase {
 
 	/**
 	 * Provides test data for test_get()
-	 * 
+	 *
 	 * @return array
 	 */
 	public function provider_get()
 	{
-		return array(
+		return [
 			// $value, $result
-			array('en-us', 'Hello, world!', 'Hello, world!'),
-			array('es-es', 'Hello, world!', '¡Hola, mundo!'),
-			array('fr-fr', 'Hello, world!', 'Bonjour, monde!'),
-		);
+			['en-us', 'Hello, world!', 'Hello, world!'],
+			['es-es', 'Hello, world!', '¡Hola, mundo!'],
+			['fr-fr', 'Hello, world!', 'Bonjour, monde!'],
+		];
 	}
 
 	/**
@@ -74,7 +77,8 @@ class Kohana_I18nTest extends Unittest_TestCase {
 	 *
 	 * @test
 	 * @dataProvider provider_get
-	 * @param boolean $input  Input for File::mime
+	 *
+	 * @param boolean $input    Input for File::mime
 	 * @param boolean $expected Output for File::mime
 	 */
 	public function test_get($lang, $input, $expected)

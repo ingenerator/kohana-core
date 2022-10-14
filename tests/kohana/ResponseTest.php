@@ -1,17 +1,17 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Unit tests for response class
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.response
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.response
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_ResponseTest extends Unittest_TestCase
 {
@@ -27,15 +27,15 @@ class Kohana_ResponseTest extends Unittest_TestCase
 			->method('__toString')
 			->will($this->returnValue('foo'));
 
-		return array(
-			array('unit test', 'unit test'),
-			array($view, 'foo'),
-		);
+		return [
+			['unit test', 'unit test'],
+			[$view, 'foo'],
+		];
 	}
 
 	/**
 	 * Tests that we can set and read a body of a response
-	 * 
+	 *
 	 * @test
 	 * @dataProvider provider_body
 	 *
@@ -58,11 +58,11 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 */
 	public function provider_body_string_zero()
 	{
-		return array(
-			array('0', '0'),
-			array("0", '0'),
-			array(0, '0')
-		);
+		return [
+			['0', '0'],
+			["0", '0'],
+			[0, '0'],
+		];
 	}
 
 	/**
@@ -70,8 +70,10 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_body_string_zero
-	 * @param string $string 
-	 * @param string $expected 
+	 *
+	 * @param string $string
+	 * @param string $expected
+	 *
 	 * @return void
 	 */
 	public function test_body_string_zero($string, $expected)
@@ -89,40 +91,40 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 */
 	public function provider_cookie_set()
 	{
-		return array(
-			array(
+		return [
+			[
 				'test1',
 				'foo',
-				array(
-					'test1' => array(
-						'value' => 'foo',
+				[
+					'test1' => [
+						'value'      => 'foo',
 						// Cookies default to the Cookie::$expiration which is set to 900 in our test
-						'expiration' => 900
-					),
-				)
-			),
-			array(
-				array(
+						'expiration' => 900,
+					],
+				],
+			],
+			[
+				[
 					'test2' => 'stfu',
-					'test3' => array(
-						'value' => 'snafu',
-						'expiration' => 123456789
-					)
-				),
+					'test3' => [
+						'value'      => 'snafu',
+						'expiration' => 123456789,
+					],
+				],
 				NULL,
-				array(
-					'test2' => array(
-						'value' => 'stfu',
+				[
+					'test2' => [
+						'value'      => 'stfu',
 						// Cookies default to the Cookie::$expiration which is set to 900 in our test
-						'expiration' => 900
-					),
-					'test3' => array(
-						'value' => 'snafu',
-						'expiration' => 123456789
-					)
-				)
-			)
-		);
+						'expiration' => 900,
+					],
+					'test3' => [
+						'value'      => 'snafu',
+						'expiration' => 123456789,
+					],
+				],
+			],
+		];
 	}
 
 	/**
@@ -131,9 +133,11 @@ class Kohana_ResponseTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_cookie_set
-	 * @param string $key 
-	 * @param string $value 
-	 * @param array $expected
+	 *
+	 * @param string $key
+	 * @param string $value
+	 * @param array  $expected
+	 *
 	 * @return void
 	 */
 	public function test_cookie_set($key, $value, $expected)
@@ -143,8 +147,7 @@ class Kohana_ResponseTest extends Unittest_TestCase
 		$response = new Response;
 		$response->cookie($key, $value);
 
-		foreach ($expected as $_key => $_value)
-		{
+		foreach ($expected as $_key => $_value) {
 			$cookie = $response->cookie($_key);
 
 			$this->assertSame($_value['value'], $cookie['value']);
@@ -162,7 +165,7 @@ class Kohana_ResponseTest extends Unittest_TestCase
 		$response = new Response;
 
 		// Test for empty cookies
-		$this->assertSame(array(), $response->cookie());
+		$this->assertSame([], $response->cookie());
 
 		// Test for no specific cookie
 		$this->assertNull($response->cookie('foobar'));
@@ -176,15 +179,15 @@ class Kohana_ResponseTest extends Unittest_TestCase
 
 	/**
 	 * Test the content type is sent when set
-	 * 
+	 *
 	 * @test
 	 */
 	public function test_content_type_when_set()
 	{
 		$content_type = 'application/json';
-		$response = new Response;
+		$response     = new Response;
 		$response->headers('content-type', $content_type);
-		$headers  = $response->send_headers()->headers();
+		$headers = $response->send_headers()->headers();
 		$this->assertSame($content_type, (string) $headers['content-type']);
 	}
 }

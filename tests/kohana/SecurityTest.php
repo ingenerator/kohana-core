@@ -1,11 +1,11 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana_Security
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.security
+ * @group      kohana
+ * @group      kohana.core
+ * @group      kohana.core.security
  *
  * @package    Kohana
  * @category   Tests
@@ -19,9 +19,9 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 */
 	public function provider_encode_php_tags()
 	{
-		return array(
-			array("&lt;?php echo 'helloo'; ?&gt;", "<?php echo 'helloo'; ?>"),
-		);
+		return [
+			["&lt;?php echo 'helloo'; ?&gt;", "<?php echo 'helloo'; ?>"],
+		];
 	}
 
 	/**
@@ -29,7 +29,7 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_encode_php_tags
-	 * @covers Security::encode_php_tags
+	 * @covers       Security::encode_php_tags
 	 */
 	public function test_encode_php_tags($expected, $input)
 	{
@@ -43,9 +43,9 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 */
 	public function provider_strip_image_tags()
 	{
-		return array(
-			array('foo', '<img src="foo" />'),
-		);
+		return [
+			['foo', '<img src="foo" />'],
+		];
 	}
 
 	/**
@@ -53,7 +53,7 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_strip_image_tags
-	 * @covers Security::strip_image_tags
+	 * @covers       Security::strip_image_tags
 	 */
 	public function test_strip_image_tags($expected, $input)
 	{
@@ -67,12 +67,12 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 */
 	public function provider_csrf_token()
 	{
-		$array = array();
-		for ($i = 0; $i <= 4; $i++)
-		{
+		$array = [];
+		for ($i = 0; $i <= 4; $i++) {
 			Security::$token_name = 'token_'.$i;
-			$array[] = array(Security::token(TRUE), Security::check(Security::token(FALSE)), $i);
+			$array[]              = [Security::token(TRUE), Security::check(Security::token(FALSE)), $i];
 		}
+
 		return $array;
 	}
 
@@ -81,7 +81,7 @@ class Kohana_SecurityTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_csrf_token
-	 * @covers Security::token
+	 * @covers       Security::token
 	 */
 	public function test_csrf_token($expected, $input, $iteration)
 	{

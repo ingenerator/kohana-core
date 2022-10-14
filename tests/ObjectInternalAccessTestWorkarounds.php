@@ -11,29 +11,29 @@ use PHPUnit\Framework\Assert;
  */
 trait ObjectInternalAccessTestWorkarounds
 {
-    public static function assertAttributeNotSame(
-        $expected,
-        string $actualAttributeName,
-        $actualClassOrObject,
-        string $message = ''
-    ): void {
-        Assert::assertNotSame($expected, self::readAttribute($actualClassOrObject, $actualAttributeName), $message);
-    }
+	public static function assertAttributeNotSame(
+		$expected,
+		string $actualAttributeName,
+		$actualClassOrObject,
+		string $message = ''
+	): void {
+		Assert::assertNotSame($expected, self::readAttribute($actualClassOrObject, $actualAttributeName), $message);
+	}
 
-    static function assertAttributeSame(
-        $expected,
-        string $actualAttributeName,
-        $actualClassOrObject,
-        string $message = ''
-    ): void {
-        Assert::assertSame($expected, self::readAttribute($actualClassOrObject, $actualAttributeName), $message);
-    }
+	static function assertAttributeSame(
+		$expected,
+		string $actualAttributeName,
+		$actualClassOrObject,
+		string $message = ''
+	): void {
+		Assert::assertSame($expected, self::readAttribute($actualClassOrObject, $actualAttributeName), $message);
+	}
 
-    public static function readAttribute($classOrObject, string $attributeName)
-    {
-        $reflectionProperty = new \ReflectionProperty($classOrObject, $attributeName);
-        $reflectionProperty->setAccessible(TRUE);
+	public static function readAttribute($classOrObject, string $attributeName)
+	{
+		$reflectionProperty = new ReflectionProperty($classOrObject, $attributeName);
+		$reflectionProperty->setAccessible(TRUE);
 
-        return $reflectionProperty->getValue($classOrObject);
-    }
+		return $reflectionProperty->getValue($classOrObject);
+	}
 }

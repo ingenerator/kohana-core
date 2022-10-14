@@ -1,18 +1,18 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana File helper
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.file
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.file
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     Jeremy Bush <contractfrombelow@gmail.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         Jeremy Bush <contractfrombelow@gmail.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_FileTest extends Unittest_TestCase
 {
@@ -23,10 +23,10 @@ class Kohana_FileTest extends Unittest_TestCase
 	 */
 	public function provider_mime()
 	{
-		return array(
+		return [
 			// $value, $result
-			array(Kohana::find_file('tests', 'test_data/github', 'png'), 'image/png'),
-		);
+			[Kohana::find_file('tests', 'test_data/github', 'png'), 'image/png'],
+		];
 	}
 
 	/**
@@ -34,7 +34,8 @@ class Kohana_FileTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_mime
-	 * @param boolean $input  Input for File::mime
+	 *
+	 * @param boolean $input    Input for File::mime
 	 * @param boolean $expected Output for File::mime
 	 */
 	public function test_mime($input, $expected)
@@ -50,10 +51,10 @@ class Kohana_FileTest extends Unittest_TestCase
 	 */
 	public function provider_split_join()
 	{
-		return array(
+		return [
 			// $value, $result
-			array(Kohana::find_file('tests', 'test_data/github', 'png'), .01, 1),
-		);
+			[Kohana::find_file('tests', 'test_data/github', 'png'), .01, 1],
+		];
 	}
 
 	/**
@@ -61,6 +62,7 @@ class Kohana_FileTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_split_join
+	 *
 	 * @param boolean $input    Input for File::split
 	 * @param boolean $peices   Input for File::split
 	 * @param boolean $expected Output for File::splut
@@ -70,9 +72,8 @@ class Kohana_FileTest extends Unittest_TestCase
 		$this->assertSame($expected, File::split($input, $peices));
 		$this->assertSame($expected, File::join($input));
 
-		foreach (\glob(Kohana::find_file('tests', 'test_data/github', 'png').'.*') as $file)
-		{
-			\unlink($file);
+		foreach (glob(Kohana::find_file('tests', 'test_data/github', 'png').'.*') as $file) {
+			unlink($file);
 		}
 	}
 }

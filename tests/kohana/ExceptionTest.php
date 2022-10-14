@@ -1,17 +1,17 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Exception Class
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.exception
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.exception
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_ExceptionTest extends Unittest_TestCase
 {
@@ -22,25 +22,25 @@ class Kohana_ExceptionTest extends Unittest_TestCase
 	 */
 	public function provider_constructor()
 	{
-		return array(
-			array(array(''), '', 0),
-			array(array(':a'), ':a', 0),
+		return [
+			[[''], '', 0],
+			[[':a'], ':a', 0],
 
-			array(array(':a', NULL), ':a', 0),
-			array(array(':a', array()), ':a', 0),
-			array(array(':a', array(':a' => 'b')), 'b', 0),
-			array(array(':a :b', array(':a' => 'c', ':b' => 'd')), 'c d', 0),
+			[[':a', NULL], ':a', 0],
+			[[':a', []], ':a', 0],
+			[[':a', [':a' => 'b']], 'b', 0],
+			[[':a :b', [':a' => 'c', ':b' => 'd']], 'c d', 0],
 
-			array(array(':a', NULL, 5), ':a', 5),
+			[[':a', NULL, 5], ':a', 5],
 			// #3358
-			array(array(':a', NULL, '3F000'), ':a', '3F000'),
+			[[':a', NULL, '3F000'], ':a', '3F000'],
 			// #3404
-			array(array(':a', NULL, '42S22'), ':a', '42S22'),
+			[[':a', NULL, '42S22'], ':a', '42S22'],
 			// #3927
-			array(array(':a', NULL, 'b'), ':a', 'b'),
+			[[':a', NULL, 'b'], ':a', 'b'],
 			// #4039
-			array(array(':a', NULL, '25P01'), ':a', '25P01'),
-		);
+			[[':a', NULL, '25P01'], ':a', '25P01'],
+		];
 	}
 
 	/**
@@ -48,23 +48,23 @@ class Kohana_ExceptionTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_constructor
-	 * @covers Kohana_Kohana_Exception::__construct
-	 * @param array             $arguments          Arguments
-	 * @param string            $expected_message   Value from getMessage()
-	 * @param integer|string    $expected_code      Value from getCode()
+	 * @covers       Kohana_Kohana_Exception::__construct
+	 *
+	 * @param array          $arguments        Arguments
+	 * @param string         $expected_message Value from getMessage()
+	 * @param integer|string $expected_code    Value from getCode()
 	 */
 	public function test_constructor($arguments, $expected_message, $expected_code)
 	{
-		switch (\count($arguments))
-		{
+		switch (count($arguments)) {
 			case 1:
-				$exception = new Kohana_Exception(\reset($arguments));
-			break;
+				$exception = new Kohana_Exception(reset($arguments));
+				break;
 			case 2:
-				$exception = new Kohana_Exception(\reset($arguments), \next($arguments));
-			break;
+				$exception = new Kohana_Exception(reset($arguments), next($arguments));
+				break;
 			default:
-				$exception = new Kohana_Exception(\reset($arguments), \next($arguments), \next($arguments));
+				$exception = new Kohana_Exception(reset($arguments), next($arguments), next($arguments));
 		}
 
 		$this->assertSame($expected_code, $exception->getCode());
@@ -78,9 +78,16 @@ class Kohana_ExceptionTest extends Unittest_TestCase
 	 */
 	public function provider_text()
 	{
-		return array(
-			array(new Kohana_Exception('foobar'), $this->dirSeparator('Kohana_Exception [ 0 ]: foobar ~ SYSPATH/tests/kohana/ExceptionTest.php [ '.__LINE__.' ]')),
-		);
+		$exception = new Kohana_Exception('foobar');
+		$exception_line = __LINE__ - 1;
+		return [
+			[
+				$exception,
+				$this->dirSeparator(
+					"Kohana_Exception [ 0 ]: foobar ~ SYSPATH/tests/kohana/ExceptionTest.php [ $exception_line ]"
+				),
+			],
+		];
 	}
 
 	/**
@@ -88,7 +95,8 @@ class Kohana_ExceptionTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_text
-	 * @covers Kohana_Exception::text
+	 * @covers       Kohana_Exception::text
+	 *
 	 * @param object $exception exception to test
 	 * @param string $expected  expected output
 	 */

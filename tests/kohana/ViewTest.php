@@ -1,21 +1,21 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the View class
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.view
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.view
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_ViewTest extends Unittest_TestCase
 {
-	protected static $old_modules = array();
+	protected static $old_modules = [];
 
 	/**
 	 * Setups the filesystem for test view files
@@ -24,13 +24,13 @@ class Kohana_ViewTest extends Unittest_TestCase
 	 */
 	// @codingStandardsIgnoreStart
 	public static function setupBeforeClass(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		self::$old_modules = Kohana::modules();
 
-		$new_modules = self::$old_modules+array(
-			'test_views' => \realpath(\dirname(__FILE__).'/../test_data/')
-		);
+		$new_modules = self::$old_modules + [
+				'test_views' => realpath(dirname(__FILE__).'/../test_data/'),
+			];
 		Kohana::modules($new_modules);
 	}
 
@@ -41,7 +41,7 @@ class Kohana_ViewTest extends Unittest_TestCase
 	 */
 	// @codingStandardsIgnoreStart
 	public static function teardownAfterClass(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		Kohana::modules(self::$old_modules);
 	}
@@ -53,11 +53,11 @@ class Kohana_ViewTest extends Unittest_TestCase
 	 */
 	public function provider_instantiate()
 	{
-		return array(
-			array('kohana/error', FALSE),
-			array('test.css', FALSE),
-			array('doesnt_exist', TRUE),
-		);
+		return [
+			['kohana/error', FALSE],
+			['test.css', FALSE],
+			['doesnt_exist', TRUE],
+		];
 	}
 
 	/**
@@ -67,11 +67,11 @@ class Kohana_ViewTest extends Unittest_TestCase
 	 */
 	public function provider_set()
 	{
-		return array(
-			array('foo', 'bar', 'foo', 'bar'),
-			array(array('foo' => 'bar'), NULL, 'foo', 'bar'),
-			array(new ArrayIterator(array('foo' => 'bar')), NULL, 'foo', 'bar'),
-		);
+		return [
+			['foo', 'bar', 'foo', 'bar'],
+			[['foo' => 'bar'], NULL, 'foo', 'bar'],
+			[new ArrayIterator(['foo' => 'bar']), NULL, 'foo', 'bar'],
+		];
 	}
 
 	/**
@@ -84,13 +84,10 @@ class Kohana_ViewTest extends Unittest_TestCase
 	 */
 	public function test_instantiate($path, $expects_exception)
 	{
-		try
-		{
+		try {
 			$view = new View($path);
 			$this->assertSame(FALSE, $expects_exception);
-		}
-		catch(View_Exception $e)
-		{
+		} catch (View_Exception $e) {
 			$this->assertSame(TRUE, $expects_exception);
 		}
 	}

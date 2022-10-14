@@ -1,20 +1,20 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Core
  *
- * @TODO Use a virtual filesystem (see phpunit doc on mocking fs) for find_file etc.
+ * @TODO           Use a virtual filesystem (see phpunit doc on mocking fs) for find_file etc.
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.debug
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.debug
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     Jeremy Bush <contractfrombelow@gmail.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         Jeremy Bush <contractfrombelow@gmail.com>
  * @copyright  (c) 2008-2014 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Kohana_DebugTest extends Unittest_TestCase
 {
@@ -26,10 +26,13 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 */
 	public function provider_vars()
 	{
-		return array(
+		return [
 			// $thing, $expected
-			array(array('foobar'), "<pre class=\"debug\"><small>array</small><span>(1)</span> <span>(\n    0 => <small>string</small><span>(6)</span> \"foobar\"\n)</span></pre>"),
-		);
+			[
+				['foobar'],
+				"<pre class=\"debug\"><small>array</small><span>(1)</span> <span>(\n    0 => <small>string</small><span>(6)</span> \"foobar\"\n)</span></pre>",
+			],
+		];
 	}
 
 	/**
@@ -37,7 +40,8 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_vars
-	 * @covers Debug::vars
+	 * @covers       Debug::vars
+	 *
 	 * @param boolean $thing    The thing to debug
 	 * @param boolean $expected Output for Debug::vars
 	 */
@@ -53,16 +57,16 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 */
 	public function provider_debug_path()
 	{
-		return array(
-			array(
+		return [
+			[
 				SYSPATH.'classes'.DIRECTORY_SEPARATOR.'kohana'.EXT,
-				'SYSPATH'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'kohana.php'
-			),
-			array(
+				'SYSPATH'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'kohana.php',
+			],
+			[
 				MODPATH.$this->dirSeparator('unittest/classes/kohana/unittest/runner').EXT,
-				$this->dirSeparator('MODPATH/unittest/classes/kohana/unittest/runner').EXT
-			),
-		);
+				$this->dirSeparator('MODPATH/unittest/classes/kohana/unittest/runner').EXT,
+			],
+		];
 	}
 
 	/**
@@ -70,7 +74,8 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_debug_path
-	 * @covers Debug::path
+	 * @covers       Debug::path
+	 *
 	 * @param boolean $path     Input for Debug::path
 	 * @param boolean $expected Output for Debug::path
 	 */
@@ -86,16 +91,24 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 */
 	public function provider_dump()
 	{
-		return array(
-			array('foobar', 128, 10, '<small>string</small><span>(6)</span> "foobar"'),
-			array('foobar', 2, 10, '<small>string</small><span>(6)</span> "fo&nbsp;&hellip;"'),
-			array(NULL, 128, 10, '<small>NULL</small>'),
-			array(TRUE, 128, 10, '<small>bool</small> TRUE'),
-			array(array('foobar'), 128, 10, "<small>array</small><span>(1)</span> <span>(\n    0 => <small>string</small><span>(6)</span> \"foobar\"\n)</span>"),
-			array(new StdClass, 128, 10, "<small>object</small> <span>stdClass(0)</span> <code>{\n}</code>"),
-			array("fo\x6F\xFF\x00bar\x8F\xC2\xB110", 128, 10, '<small>string</small><span>(10)</span> "foobar±10"'),
-			array(array('level1' => array('level2' => array('level3' => array('level4' => array('value' => 'something'))))), 128, 4,
-'<small>array</small><span>(1)</span> <span>(
+		return [
+			['foobar', 128, 10, '<small>string</small><span>(6)</span> "foobar"'],
+			['foobar', 2, 10, '<small>string</small><span>(6)</span> "fo&nbsp;&hellip;"'],
+			[NULL, 128, 10, '<small>NULL</small>'],
+			[TRUE, 128, 10, '<small>bool</small> TRUE'],
+			[
+				['foobar'],
+				128,
+				10,
+				"<small>array</small><span>(1)</span> <span>(\n    0 => <small>string</small><span>(6)</span> \"foobar\"\n)</span>",
+			],
+			[new StdClass, 128, 10, "<small>object</small> <span>stdClass(0)</span> <code>{\n}</code>"],
+			["fo\x6F\xFF\x00bar\x8F\xC2\xB110", 128, 10, '<small>string</small><span>(10)</span> "foobar±10"'],
+			[
+				['level1' => ['level2' => ['level3' => ['level4' => ['value' => 'something']]]]],
+				128,
+				4,
+				'<small>array</small><span>(1)</span> <span>(
     "level1" => <small>array</small><span>(1)</span> <span>(
         "level2" => <small>array</small><span>(1)</span> <span>(
             "level3" => <small>array</small><span>(1)</span> <span>(
@@ -105,8 +118,9 @@ class Kohana_DebugTest extends Unittest_TestCase
             )</span>
         )</span>
     )</span>
-)</span>'),
-		);
+)</span>',
+			],
+		];
 	}
 
 	/**
@@ -114,8 +128,9 @@ class Kohana_DebugTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_dump
-	 * @covers Debug::dump
-	 * @covers Debug::_dump
+	 * @covers       Debug::dump
+	 * @covers       Debug::_dump
+	 *
 	 * @param object $exception exception to test
 	 * @param string $expected  expected output
 	 */

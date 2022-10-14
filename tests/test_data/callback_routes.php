@@ -1,13 +1,14 @@
 <?php
+
 /**
  * A holding class for route callback tests
  *
- * @group kohana
+ * @group          kohana
  *
- * @package    Unittest
- * @author     Kohana Team
+ * @package        Unittest
+ * @author         Kohana Team
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 class Route_Holder
 {
@@ -26,9 +27,9 @@ class Route_Holder
 	 */
 	public static function default_return_callback($uri)
 	{
-		return array(
+		return [
 
-		);
+		];
 	}
 
 	/**
@@ -38,10 +39,10 @@ class Route_Holder
 	 */
 	public static function matches_returns_array_of_parameters_on_successful_match($uri)
 	{
-		return array(
+		return [
 			'controller' => 'welcome',
-			'action' => 'index',
-		);
+			'action'     => 'index',
+		];
 	}
 
 	/**
@@ -51,12 +52,11 @@ class Route_Holder
 	 */
 	public static function required_parameters_are_needed($uri)
 	{
-		if (\substr($uri, 0, 5) == 'admin')
-		{
-			return array(
+		if (substr($uri, 0, 5) == 'admin') {
+			return [
 				'controller' => 'foo',
-				'action' => 'bar',
-			);
+				'action'     => 'bar',
+			];
 		}
 	}
 
@@ -67,11 +67,10 @@ class Route_Holder
 	 */
 	public static function reverse_routing_returns_routes_uri_if_route_is_static($uri)
 	{
-		if ($uri == 'info/about_us')
-		{
-			return array(
+		if ($uri == 'info/about_us') {
+			return [
 
-			);
+			];
 		}
 	}
 

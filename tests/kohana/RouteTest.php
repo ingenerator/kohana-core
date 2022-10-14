@@ -1,36 +1,36 @@
-<?php \defined('SYSPATH') OR die('Kohana bootstrap needs to be included before tests run');
+<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Description of RouteTest
  *
- * @group kohana
- * @group kohana.core
- * @group kohana.core.route
+ * @group          kohana
+ * @group          kohana.core
+ * @group          kohana.core.route
  *
- * @package    Kohana
- * @category   Tests
- * @author     Kohana Team
- * @author     BRMatt <matthew@sigswitch.com>
+ * @package        Kohana
+ * @category       Tests
+ * @author         Kohana Team
+ * @author         BRMatt <matthew@sigswitch.com>
  * @copyright  (c) 2008-2012 Kohana Team
- * @license    http://kohanaframework.org/license
+ * @license        http://kohanaframework.org/license
  */
 
 include Kohana::find_file('tests', 'test_data/callback_routes');
 
 class Kohana_RouteTest extends Unittest_TestCase
 {
-    use ObjectInternalAccessTestWorkarounds;
+	use ObjectInternalAccessTestWorkarounds;
 
 	/**
 	 * Remove all caches
 	 */
 	// @codingStandardsIgnoreStart
 	public function setUp(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		parent::setUp();
 
-		Kohana::$config->load('url')->set('trusted_hosts', array('kohanaframework\.org'));
+		Kohana::$config->load('url')->set('trusted_hosts', ['kohanaframework\.org']);
 
 		$this->cleanCacheDir();
 	}
@@ -40,7 +40,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	// @codingStandardsIgnoreStart
 	public function tearDown(): void
-	// @codingStandardsIgnoreEnd
+		// @codingStandardsIgnoreEnd
 	{
 		parent::tearDown();
 
@@ -56,7 +56,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function test_get_throws_exception_if_route_dnx()
 	{
-        $this->expectException(Kohana_Exception::class);
+		$this->expectException(Kohana_Exception::class);
 		Route::get('HAHAHAHAHAHAHAHAHA');
 	}
 
@@ -78,7 +78,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * Route::name() should fetch the name of a passed route
 	 * If route is not found then it should return FALSE
 	 *
-	 * @TODO: This test needs to segregate the Route::$_routes singleton
+	 * @TODO   : This test needs to segregate the Route::$_routes singleton
 	 * @test
 	 * @covers Route::name
 	 */
@@ -178,8 +178,8 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$route = new MockRoute(NULL, NULL);
 
 		$this->assertAttributeSame('', '_uri', $route);
-		$this->assertAttributeSame(array(), '_regex', $route);
-		$this->assertAttributeSame(array('action' => 'index'), '_defaults', $route);
+		$this->assertAttributeSame([], '_regex', $route);
+		$this->assertAttributeSame(['action' => 'index'], '_defaults', $route);
 		$this->assertAttributeSame(NULL, '_route_regex', $route);
 	}
 
@@ -190,9 +190,9 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_constructor_only_changes_custom_regex_if_passed()
 	{
-		return array(
-			array('<controller>/<action>', '<controller>/<action>'),
-		);
+		return [
+			['<controller>/<action>', '<controller>/<action>'],
+		];
 	}
 
 	/**
@@ -204,17 +204,17 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_constructor_only_changes_custom_regex_if_passed
 	 *
 	 * @test
-	 * @covers Route::__construct
+	 * @covers       Route::__construct
 	 */
 	public function test_constructor_only_changes_custom_regex_if_passed($uri, $uri2)
 	{
-		$route = new Route($uri, array());
+		$route = new Route($uri, []);
 
-		$this->assertAttributeSame(array(), '_regex', $route);
+		$this->assertAttributeSame([], '_regex', $route);
 
 		$route = new Route($uri2, NULL);
 
-		$this->assertAttributeSame(array(), '_regex', $route);
+		$this->assertAttributeSame([], '_regex', $route);
 	}
 
 	/**
@@ -227,12 +227,12 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function test_route_uses_custom_regex_passed_to_constructor()
 	{
-		$regex = array('id' => '[0-9]{1,2}');
+		$regex = ['id' => '[0-9]{1,2}'];
 
 		$route = new Route('<controller>(/<action>(/<id>))', $regex);
 
 		$this->assertAttributeSame($regex, '_regex', $route);
-		$this->assertStringContainsString($regex['id'], $this->readAttribute($route,'_route_regex'));
+		$this->assertStringContainsString($regex['id'], $this->readAttribute($route, '_route_regex'));
 	}
 
 	/**
@@ -242,9 +242,9 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_matches_returns_false_on_failure()
 	{
-		return array(
-			array('projects/(<project_id>/(<controller>(/<action>(/<id>))))', 'apple/pie'),
-		);
+		return [
+			['projects/(<project_id>/(<controller>(/<action>(/<id>))))', 'apple/pie'],
+		];
 	}
 
 	/**
@@ -253,7 +253,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_matches_returns_false_on_failure
 	 *
 	 * @test
-	 * @covers Route::matches
+	 * @covers       Route::matches
 	 */
 	public function test_matches_returns_false_on_failure($uri, $match)
 	{
@@ -272,14 +272,14 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_matches_returns_array_of_parameters_on_successful_match()
 	{
-		return array(
-			array(
+		return [
+			[
 				'(<controller>(/<action>(/<id>)))',
 				'welcome/index',
 				'Welcome',
 				'index',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -289,7 +289,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_matches_returns_array_of_parameters_on_successful_match
 	 *
 	 * @test
-	 * @covers Route::matches
+	 * @covers       Route::matches
 	 */
 	public function test_matches_returns_array_of_parameters_on_successful_match($uri, $m, $c, $a)
 	{
@@ -316,36 +316,36 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_defaults_are_used_if_params_arent_specified()
 	{
-		return array(
-			array(
+		return [
+			[
 				'<controller>(/<action>(/<id>))',
 				NULL,
-				array('controller' => 'Welcome', 'action' => 'index'),
+				['controller' => 'Welcome', 'action' => 'index'],
 				'Welcome',
 				'index',
 				'unit/test/1',
-				array(
+				[
 					'controller' => 'unit',
-					'action' => 'test',
-					'id' => '1'
-				),
+					'action'     => 'test',
+					'id'         => '1',
+				],
 				'Welcome',
-			),
-			array(
+			],
+			[
 				'(<controller>(/<action>(/<id>)))',
 				NULL,
-				array('controller' => 'welcome', 'action' => 'index'),
+				['controller' => 'welcome', 'action' => 'index'],
 				'Welcome',
 				'index',
 				'unit/test/1',
-				array(
+				[
 					'controller' => 'unit',
-					'action' => 'test',
-					'id' => '1'
-				),
+					'action'     => 'test',
+					'id'         => '1',
+				],
 				'',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -355,10 +355,18 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_defaults_are_used_if_params_arent_specified
 	 *
 	 * @test
-	 * @covers Route::matches
+	 * @covers       Route::matches
 	 */
-	public function test_defaults_are_used_if_params_arent_specified($uri, $regex, $defaults, $c, $a, $test_uri, $test_uri_array, $default_uri)
-	{
+	public function test_defaults_are_used_if_params_arent_specified(
+		$uri,
+		$regex,
+		$defaults,
+		$c,
+		$a,
+		$test_uri,
+		$test_uri_array,
+		$default_uri
+	) {
 		$route = new Route($uri, $regex);
 		$route->defaults($defaults);
 
@@ -369,7 +377,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 		$matches = $route->matches($request);
 
-        $this->assertIsArray($matches);
+		$this->assertIsArray($matches);
 		$this->assertArrayHasKey('controller', $matches);
 		$this->assertArrayHasKey('action', $matches);
 		$this->assertArrayNotHasKey('id', $matches);
@@ -387,81 +395,81 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_optional_groups_containing_specified_params()
 	{
-		return array(
+		return [
 			/**
 			 * Specifying this should cause controller and action to show up
 			 * refs #4113
 			 */
-			array(
+			[
 				'(<controller>(/<action>(/<id>)))',
-				array('controller' => 'welcome', 'action' => 'index'),
-				array('id' => '1'),
+				['controller' => 'welcome', 'action' => 'index'],
+				['id' => '1'],
 				'welcome/index/1',
-			),
-			array(
+			],
+			[
 				'<controller>(/<action>(/<id>))',
-				array('controller' => 'welcome', 'action' => 'index'),
-				array('action' => 'foo'),
+				['controller' => 'welcome', 'action' => 'index'],
+				['action' => 'foo'],
 				'welcome/foo',
-			),
-			array(
+			],
+			[
 				'<controller>(/<action>(/<id>))',
-				array('controller' => 'welcome', 'action' => 'index'),
-				array('action' => 'index'),
+				['controller' => 'welcome', 'action' => 'index'],
+				['action' => 'index'],
 				'welcome',
-			),
+			],
 			/**
 			 * refs #4630
 			 */
-			array(
+			[
 				'api(/<version>)/const(/<id>)(/<custom>)',
-				array('version' => 1),
+				['version' => 1],
 				NULL,
 				'api/const',
-			),
-			array(
+			],
+			[
 				'api(/<version>)/const(/<id>)(/<custom>)',
-				array('version' => 1),
-				array('version' => 9),
+				['version' => 1],
+				['version' => 9],
 				'api/9/const',
-			),
-			array(
+			],
+			[
 				'api(/<version>)/const(/<id>)(/<custom>)',
-				array('version' => 1),
-				array('id' => 2),
+				['version' => 1],
+				['id' => 2],
 				'api/const/2',
-			),
-			array(
+			],
+			[
 				'api(/<version>)/const(/<id>)(/<custom>)',
-				array('version' => 1),
-				array('custom' => 'x'),
+				['version' => 1],
+				['custom' => 'x'],
 				'api/const/x',
-			),
-			array(
+			],
+			[
 				'(<controller>(/<action>(/<id>)(/<type>)))',
-				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
-				array('type' => 'json'),
+				['controller' => 'test', 'action' => 'index', 'type' => 'html'],
+				['type' => 'json'],
 				'test/index/json',
-			),
-			array(
+			],
+			[
 				'(<controller>(/<action>(/<id>)(/<type>)))',
-				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
-				array('id' => 123),
+				['controller' => 'test', 'action' => 'index', 'type' => 'html'],
+				['id' => 123],
 				'test/index/123',
-			),
-			array(
+			],
+			[
 				'(<controller>(/<action>(/<id>)(/<type>)))',
-				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
-				array('id' => 123, 'type' => 'html'),
+				['controller' => 'test', 'action' => 'index', 'type' => 'html'],
+				['id' => 123, 'type' => 'html'],
 				'test/index/123',
-			),
-			array(
+			],
+			[
 				'(<controller>(/<action>(/<id>)(/<type>)))',
-				array('controller' => 'test', 'action' => 'index', 'type' => 'html'),
-				array('id' => 123, 'type' => 'json'),
+				['controller' => 'test', 'action' => 'index', 'type' => 'html'],
+				['id' => 123, 'type' => 'json'],
 				'test/index/123/json',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -470,8 +478,8 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 *
 	 * @dataProvider provider_optional_groups_containing_specified_params
 	 *
-	 * @ticket 4113
-	 * @ticket 4630
+	 * @ticket       4113
+	 * @ticket       4630
 	 */
 	public function test_optional_groups_containing_specified_params($uri, $defaults, $params, $expected)
 	{
@@ -493,13 +501,13 @@ class Kohana_RouteTest extends Unittest_TestCase
 	public function test_defaults_are_not_used_if_param_is_identical()
 	{
 		$route = new Route('(<controller>(/<action>(/<id>)))');
-		$route->defaults(array(
+		$route->defaults([
 			'controller' => 'welcome',
-			'action'     => 'index'
-		));
+			'action'     => 'index',
+		]);
 
-		$this->assertSame('', $route->uri(array('controller' => 'welcome')));
-		$this->assertSame('welcome2', $route->uri(array('controller' => 'welcome2')));
+		$this->assertSame('', $route->uri(['controller' => 'welcome']));
+		$this->assertSame('welcome2', $route->uri(['controller' => 'welcome2']));
 	}
 
 
@@ -514,11 +522,11 @@ class Kohana_RouteTest extends Unittest_TestCase
 		$this->expectException('Kohana_Exception', 'Route directory should not be set when the controller is a FQCN.');
 
 		$route = new Route('(<controller>(/<action>(/<id>)))');
-		$route->defaults(array(
+		$route->defaults([
 			'directory'  => 'directory/path',
 			'controller' => '\FQCN\Class\Name',
-			'action'     => 'index'
-		));
+			'action'     => 'index',
+		]);
 	}
 
 	/**
@@ -528,13 +536,13 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_required_parameters_are_needed()
 	{
-		return array(
-			array(
+		return [
+			[
 				'admin(/<controller>(/<action>(/<id>)))',
 				'admin',
 				'admin/users/add',
-			),
-		);
+			],
+		];
 	}
 
 	/**
@@ -543,7 +551,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_required_parameters_are_needed
 	 *
 	 * @test
-	 * @covers Route::matches
+	 * @covers       Route::matches
 	 */
 	public function test_required_parameters_are_needed($uri, $matches_route1, $matches_route2)
 	{
@@ -559,14 +567,14 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 		$matches = $route->matches($request);
 
-        $this->assertIsArray($matches);
+		$this->assertIsArray($matches);
 
 		// Mock a request class that will return route2 uri
 		$request = $this->get_request_mock($matches_route2);
 
 		$matches = $route->matches($request);
 
-        $this->assertIsArray($matches);
+		$this->assertIsArray($matches);
 		// $this->assertSame(5, count($matches));
 		$this->assertArrayHasKey('controller', $matches);
 		$this->assertArrayHasKey('action', $matches);
@@ -579,14 +587,14 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_reverse_routing_returns_routes_uri_if_route_is_static()
 	{
-		return array(
-			array(
+		return [
+			[
 				'info/about_us',
 				NULL,
 				'info/about_us',
-				array('some' => 'random', 'params' => 'to confuse'),
-			),
-		);
+				['some' => 'random', 'params' => 'to confuse'],
+			],
+		];
 	}
 
 	/**
@@ -598,7 +606,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_reverse_routing_returns_routes_uri_if_route_is_static
 	 *
 	 * @test
-	 * @covers Route::uri
+	 * @covers       Route::uri
 	 */
 	public function test_reverse_routing_returns_routes_uri_if_route_is_static($uri, $regex, $target_uri, $uri_params)
 	{
@@ -614,22 +622,22 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_uri_throws_exception_if_required_params_are_missing()
 	{
-		return array(
-			array(
+		return [
+			[
 				'<controller>(/<action)',
 				NULL,
-				array('action' => 'awesome-action'),
-			),
+				['action' => 'awesome-action'],
+			],
 			/**
 			 * Optional params are required when they lead to a specified param
 			 * refs #4113
 			 */
-			array(
+			[
 				'(<controller>(/<action>))',
 				NULL,
-				array('action' => 'awesome-action'),
-			),
-		);
+				['action' => 'awesome-action'],
+			],
+		];
 	}
 
 	/**
@@ -640,7 +648,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_uri_throws_exception_if_required_params_are_missing
 	 *
 	 * @test
-	 * @covers Route::uri
+	 * @covers       Route::uri
 	 */
 	public function test_uri_throws_exception_if_required_params_are_missing($uri, $regex, $uri_array)
 	{
@@ -657,23 +665,23 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_uri_fills_required_uri_segments_from_params()
 	{
-		return array(
-			array(
+		return [
+			[
 				'<controller>/<action>(/<id>)',
 				NULL,
 				'users/edit',
-				array(
+				[
 					'controller' => 'users',
 					'action'     => 'edit',
-				),
+				],
 				'users/edit/god',
-				array(
+				[
 					'controller' => 'users',
 					'action'     => 'edit',
 					'id'         => 'god',
-				),
-			),
-		);
+				],
+			],
+		];
 	}
 
 	/**
@@ -686,10 +694,16 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * @dataProvider provider_uri_fills_required_uri_segments_from_params
 	 *
 	 * @test
-	 * @covers Route::uri
+	 * @covers       Route::uri
 	 */
-	public function test_uri_fills_required_uri_segments_from_params($uri, $regex, $uri_string1, $uri_array1, $uri_string2, $uri_array2)
-	{
+	public function test_uri_fills_required_uri_segments_from_params(
+		$uri,
+		$regex,
+		$uri_string1,
+		$uri_array1,
+		$uri_string2,
+		$uri_array2
+	) {
 		$route = new Route($uri, $regex);
 
 		$this->assertSame(
@@ -705,15 +719,16 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 	/**
 	 * Provides test data for test_composing_url_from_route()
+	 *
 	 * @return array
 	 */
 	public function provider_composing_url_from_route()
 	{
-		return array(
-			array('/'),
-			array('/news/view/42', array('controller' => 'news', 'action' => 'view', 'id' => 42)),
-			array('http://kohanaframework.org/news', array('controller' => 'news'), 'http')
-		);
+		return [
+			['/'],
+			['/news/view/42', ['controller' => 'news', 'action' => 'view', 'id' => 42]],
+			['http://kohanaframework.org/news', ['controller' => 'news'], 'http'],
+		];
 	}
 
 	/**
@@ -723,23 +738,24 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 *
 	 * @test
 	 * @dataProvider provider_composing_url_from_route
-	 * @param string $expected
-	 * @param array $params
+	 *
+	 * @param string  $expected
+	 * @param array   $params
 	 * @param boolean $protocol
 	 */
 	public function test_composing_url_from_route($expected, $params = NULL, $protocol = NULL)
 	{
 		Route::set('foobar', '(<controller>(/<action>(/<id>)))')
-			->defaults(array(
-				'controller' => 'welcome',
-			)
-		);
+			->defaults([
+					'controller' => 'welcome',
+				]
+			);
 
-		$this->setEnvironment(array(
-			'_SERVER' => array('HTTP_HOST' => 'kohanaframework.org'),
-			'Kohana::$base_url' => '/',
+		$this->setEnvironment([
+			'_SERVER'             => ['HTTP_HOST' => 'kohanaframework.org'],
+			'Kohana::$base_url'   => '/',
 			'Kohana::$index_file' => '',
-		));
+		]);
 
 		$this->assertSame($expected, Route::url('foobar', $params, $protocol));
 	}
@@ -756,10 +772,10 @@ class Kohana_RouteTest extends Unittest_TestCase
 	{
 		$compiled = Route::compile(
 			'<controller>(/<action>(/<id>))',
-			array(
+			[
 				'controller' => '[a-z]+',
-				'id' => '\d+',
-			)
+				'id'         => '\d+',
+			]
 		);
 
 		$this->assertSame('#^(?P<controller>[a-z]+)(?:/(?P<action>[^/.,;?\n]++)(?:/(?P<id>\d+))?)?$#uD', $compiled);
@@ -772,37 +788,37 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_route_filter_modify_params()
 	{
-		return array(
-			array(
+		return [
+			[
 				'<controller>/<action>',
-				array(
-					'controller'  => 'Test',
-					'action'      => 'same',
-				),
-				array('Route_Holder', 'route_filter_modify_params_array'),
+				[
+					'controller' => 'Test',
+					'action'     => 'same',
+				],
+				['Route_Holder', 'route_filter_modify_params_array'],
 				'test/different',
-				array(
-					'controller'  => 'Test',
-					'action'      => 'modified',
-				),
-			),
-			array(
+				[
+					'controller' => 'Test',
+					'action'     => 'modified',
+				],
+			],
+			[
 				'<controller>/<action>',
-				array(
-					'controller'  => 'test',
-					'action'      => 'same',
-				),
-				array('Route_Holder', 'route_filter_modify_params_false'),
+				[
+					'controller' => 'test',
+					'action'     => 'same',
+				],
+				['Route_Holder', 'route_filter_modify_params_false'],
 				'test/fail',
 				FALSE,
-			),
-		);
+			],
+		];
 	}
 
 	/**
 	 * Tests that route filters can modify parameters
 	 *
-	 * @covers Route::filter
+	 * @covers       Route::filter
 	 * @dataProvider provider_route_filter_modify_params
 	 */
 	public function test_route_filter_modify_params($route, $defaults, $filter, $uri, $expected_params)
@@ -824,34 +840,34 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 */
 	public function provider_route_uri_encode_parameters()
 	{
-		return array(
-			array(
+		return [
+			[
 				'article',
 				'blog/article/<article_name>',
-				array(
+				[
 					'controller' => 'home',
-					'action' => 'index'
-				),
+					'action'     => 'index',
+				],
 				'article_name',
 				'Article name with special chars \\ ##',
-				'blog/article/Article%20name%20with%20special%20chars%20\\%20%23%23'
-			)
-		);
+				'blog/article/Article%20name%20with%20special%20chars%20\\%20%23%23',
+			],
+		];
 	}
 
 	/**
 	 * http://dev.kohanaframework.org/issues/4079
 	 *
 	 * @test
-	 * @covers Route::get
-	 * @ticket 4079
+	 * @covers       Route::get
+	 * @ticket       4079
 	 * @dataProvider provider_route_uri_encode_parameters
 	 */
 	public function test_route_uri_encode_parameters($name, $uri_callback, $defaults, $uri_key, $uri_value, $expected)
 	{
 		Route::set($name, $uri_callback)->defaults($defaults);
 
-		$get_route_uri = Route::get($name)->uri(array($uri_key => $uri_value));
+		$get_route_uri = Route::get($name)->uri([$uri_key => $uri_value]);
 
 		$this->assertSame($expected, $get_route_uri);
 	}
@@ -863,20 +879,21 @@ class Kohana_RouteTest extends Unittest_TestCase
 	 * in order to avoid the fatal errors
 	 *
 	 * @param string $uri
+	 *
 	 * @return type
 	 */
 	public function get_request_mock($uri)
 	{
-	    return \Request::with(['uri' => $uri, 'method' => \Request::GET]);
+		return Request::with(['uri' => $uri, 'method' => Request::GET]);
 	}
 
 }
 
 class MockRoute extends Route
 {
-    public static function compile($uri, array $regex = NULL)
-    {
-        throw new \BadMethodCallException('This should not be being called');
-    }
+	public static function compile($uri, array $regex = NULL)
+	{
+		throw new BadMethodCallException('This should not be being called');
+	}
 
 }
