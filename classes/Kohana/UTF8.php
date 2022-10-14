@@ -346,7 +346,15 @@ class Kohana_UTF8 {
 			UTF8::$called[__FUNCTION__] = TRUE;
 		}
 
-		return _strcasecmp($str1, $str2);
+		$comp = _strcasecmp($str1, $str2);
+
+		if ($comp > 0) {
+			return 1;
+		} elseif ($comp < 0) {
+			return -1;
+		}
+
+		return 0;
 	}
 
 	/**
