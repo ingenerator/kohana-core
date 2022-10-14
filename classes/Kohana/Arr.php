@@ -127,12 +127,6 @@ class Kohana_Arr {
 		{
 			$key = \array_shift($keys);
 
-			if (\ctype_digit((string) $key))
-			{
-				// Make the key an integer
-				$key = (int) $key;
-			}
-
 			if (isset($array[$key]))
 			{
 				if ($keys)
