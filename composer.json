@@ -39,5 +39,10 @@
 		"installer-paths": {
 			"vendor/{$vendor}/{$name}": ["type:kohana-module"]
 		}
+	},
+	"config": {
+		"allow-plugins": {
+			"composer/installers": true
+		}
 	}
 }
