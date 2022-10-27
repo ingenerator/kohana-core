@@ -53,7 +53,7 @@ class Kohana_Kohana_Exception extends Exception {
 		$message = __($message, $variables);
 
 		// Pass the message and integer code to the parent
-		parent::__construct($message, (int) $code, $previous);
+		parent::__construct((string) $message, (int) $code, $previous);
 
 		// Save the unmodified code
 		// @link http://bugs.php.net/39615
