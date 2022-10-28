@@ -37,7 +37,7 @@ abstract class Kohana_HTTP_Exception extends Kohana_Exception {
 	 * @param   array   $variables  translation variables
 	 * @return  void
 	 */
-	public function __construct($message = NULL, array $variables = NULL, Throwable $previous = NULL)
+	public function __construct($message = "", array $variables = NULL, Throwable $previous = NULL)
 	{
 		parent::__construct($message, $variables, $this->_code, $previous);
 	}

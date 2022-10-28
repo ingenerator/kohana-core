@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.9.1 (2022-10-28)
+
+* Fix deprecation warnings when passing NULL to string handling functions
+
 ## 4.9.0 (2022-10-14)
 
 * Support PHP 8.1 + PHP 8.2 and drop support for PHP 7.4
