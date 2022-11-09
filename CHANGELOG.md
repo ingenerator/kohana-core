@@ -2,6 +2,16 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.10.0 (2022-11-09)
+
+* [BEHAVIOUR CHANGE] Kohana no longer overrides the PHP default session_cache_limiter option
+  when starting a session. If you have referenced the session at all during the request, PHP
+  will by default now set response headers of `Expires: Thu, 19 Nov 1981 08:52:00 GMT`,
+  `Cache-Control: no-store, no-cache, must-revalidate, post-check=0, pre-check=0` and
+  `Pragma: no-cache`. You can override these at controller level if required, or restore the
+  previous behaviour by either configuring `session.cache_limiter` in php.ini or calling
+  `session_cache_limiter()` before you open the session.
+
 ## 4.9.1 (2022-10-28)
 
 * Fix deprecation warnings when passing NULL to string handling functions
