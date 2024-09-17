@@ -605,4 +605,218 @@ class Kohana_RequestTest extends Unittest_TestCase
 		);
 	}
 
+	public function test_can_return_decoded_json_body()
+	{
+		$request = Request::with([
+			'body' => '"I am JSON"',
+			'header' => new Http_Header([
+				'content-type' => 'application/json',
+				'content-length' => '11',
+			]),
+		]);
+
+		$this->assertSame('I am JSON', $request->jsonBody());
+	}
+
+	public static function provider_json_body_array(): array
+	{
+		return [
+			'JSON object' => [
+				'{"foo":"bar"}',
+				['foo' => 'bar'],
+			],
+			'JSON array' => [
+				'["foo","bar"]',
+				['foo', 'bar'],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider provider_json_body_array
+	 */
+	public function test_can_return_decoded_json_body_array_or_object(string $body, array $expect)
+	{
+		$request = Request::with([
+			'body' => $body,
+			'header' => new Http_Header([
+				'content-type' => 'application/json',
+				'content-length' => strlen($body),
+			])
+		]);
+
+		$this->assertSame($expect, $request->jsonBodyArray());
+	}
+
+	public function test_accepts_json_with_charset_in_content_type()
+	{
+		// strictly speaking, charset should not be included in the header but occasionally client
+		// libraries include it.
+		$request = Request::with([
+			'body' => '"foo"',
+			'header' => new Http_Header([
+				'content-type' => 'application/json; charset=utf8',
+				'content-length' => '5',
+			]),
+		]);
+		$this->assertSame('foo', $request->jsonBody());
+	}
+
+	public static function provider_invalid_json_request(): array
+	{
+		return [
+			'missing content-type' => [
+				[
+					'body' => '{"foo": "bar"}',
+					'header' => [
+						'content-length' => '14',
+					],
+				],
+				'No content-type specified'
+			],
+			'unexpected content-type' => [
+				[
+					'body' => '{"foo":"bar"}',
+					'header' => [
+						'Content-Type' => 'application/x-www-formdata',
+						'Content-Length' => '14',
+					],
+				],
+				'Unexpected content type (got application/x-www-formdata)',
+			],
+			'invalid JSON' => [
+				[
+					'body' => '{unquoted: "bar"}',
+					'header' => [
+						'Content-Type' => 'application/json',
+						'Content-Length' => '17',
+					],
+				],
+				'Invalid JSON: Syntax error'
+			],
+			'not an array (for jsonBodyArray)' => [
+				[
+					'body' => '"I am a valid JSON string"',
+					'header' => [
+						'Content-Type' => 'application/json',
+						'Content-Length' => '26',
+					],
+				],
+				'JSON body not an array or object (got string)',
+			],
+		];
+	}
+
+
+	/**
+	 * @dataProvider provider_invalid_json_request
+	 */
+	public function test_throws_on_invalid_or_unexpected_json_request(array $request, string $expect_msg)
+	{
+		$request['header'] = new HTTP_Header($request['header'] ?? []);
+		$request = Request::with($request);
+		$this->expectException(Request_InvalidJSONRequestException::class);
+		$this->expectExceptionMessage($expect_msg);
+		$request->jsonBodyArray();
+	}
+
+	public static function provider_invalid_json_too_large()
+	{
+		return [
+			'within expected size' => [
+				'{"foo": "bar"}',
+				['max_json_bytes' => 14],
+				['result' => ['foo' => 'bar']],
+			],
+			'bigger than expected size' => [
+				'{"foo": "bar"}',
+				['max_json_bytes' => 13],
+				['exception' => 'Content larger than max_json_bytes (got 14.0B)'],
+			],
+			'up to 1kB default is OK' => [
+				'{"fo": "'.str_repeat('a', 990).'"}',
+				[],
+				['result' => ['fo' => str_repeat('a', 990)]],
+			],
+			'bigger than 1kB default fails' => [
+				'{"fo": "'.str_repeat('a', 991).'"}',
+				[],
+				['exception' => 'Content larger than max_json_bytes (got 1.0kB)'],
+			],
+			'within default max depth' => [
+				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":"ok"}}}}}}}}}}}}}}}}}}}',
+				[],
+				['result' => [1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>'ok']]]]]]]]]]]]]]]]]]]],
+			],
+			'beyond default max depth' => [
+				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":{"20":"bad"}}}}}}}}}}}}}}}}}}}}',
+                                [],
+                                ['exception' => 'Invalid JSON: Maximum stack depth exceeded'],
+			],
+			'custom max depth' => [
+				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":{"20":"bad"}}}}}}}}}}}}}}}}}}}}',
+				['max_json_depth' => 21],
+				['result' => [1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>[20=>'bad']]]]]]]]]]]]]]]]]]]]],
+			]
+		];
+	}
+
+	/**
+	 * @dataProvider provider_invalid_json_too_large
+	 */
+	public function test_json_body_methods_protect_against_large_or_abusive_payloads(string $body, array $args, array $expect_behaviour)
+	{
+		$request = Request::with([
+			'body' => $body,
+			'header' => new HTTP_Header([
+				'content-type' => 'application/json',
+				'content-length' => strlen($body),
+			])
+		]);
+
+		$actual_behaviour = [];
+
+		try {
+			$actual_behaviour['result'] = $request->jsonBodyArray(...$args);
+		} catch (Request_InvalidJSONRequestException $e) {
+			$actual_behaviour['exception'] = $e->getMessage();
+		}
+
+		$this->assertSame($expect_behaviour, $actual_behaviour);
+	}
+
+	public function test_json_body_methods_protect_against_content_length_tampering()
+	{
+		$request = Request::with([
+			'body' => '{"very_long": "'.str_repeat('a', 1_500_000).'"}',
+			'header' => new HTTP_Header([
+				'content-type' => 'application/json',
+				'content-length' => 152,
+			])
+		]);
+
+		$this->expectException(Request_InvalidJSONRequestException::class);
+		$this->expectExceptionMessage('Incorrect content-length header: stated 152.0B, got 1.5MB');
+		$request->jsonBody();
+	}
+
+	public function test_json_body_methods_cope_with_post_max_size_truncation()
+	{
+		// If the incoming body is greater than post_max_size, the body may have been cleared by the server
+		// in which case we want to go off the content-length header regardless that this is a mismatch
+		// to the body content.
+		$request = Request::with([
+			'body' => '',
+			'header' => new HTTP_Header([
+				'content-type' => 'application/json',
+				'content-length' => '20500000',
+			])
+		]);
+
+		$this->expectException(Request_InvalidJSONRequestException::class);
+                $this->expectExceptionMessage('Content larger than max_json_bytes (got 20.5MB)');
+	        $request->jsonBody();
+	}
+
+
 } // End Kohana_RequestTest
