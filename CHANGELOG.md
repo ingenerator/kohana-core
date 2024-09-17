@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Add `Response::setJSON` and `Controller::respondJSON` as helpers for sending JSON responses.
+
 ## 4.10.0 (2022-11-09)
 
 * [BEHAVIOUR CHANGE] Kohana no longer overrides the PHP default session_cache_limiter option

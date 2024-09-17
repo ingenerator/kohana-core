@@ -194,6 +194,23 @@ class Kohana_Response implements HTTP_Response {
 	}
 
 	/**
+	 * Set a JSON response with body, content-type header, and HTTP status
+	 *
+	 * @param mixed $body Anything that can be json-serialized
+	 * @param int $status
+	 *
+	 * @return void
+	 * @throws JsonException
+	 * @throws Kohana_Exception if status code is unknown
+	 */
+	public function setJSON(mixed $body, int $status = 200): void
+	{
+		$this->body(json_encode($body, JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES));
+		$this->status($status);
+		$this->headers('Content-Type', 'application/json');
+	}
+
+	/**
 	 * Gets or sets the HTTP protocol. The standard protocol to use
 	 * is `HTTP/1.1`.
 	 *
