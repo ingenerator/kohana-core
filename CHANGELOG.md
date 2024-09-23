@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.11.0 (2024-09-23)
+
 * Add `Request::jsonBody` and `Request::jsonBodyArray` for easy access to JSON request bodies.
 * Add `Response::setJSON` and `Controller::respondJSON` as helpers for sending JSON responses.
 
