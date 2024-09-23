@@ -150,4 +150,14 @@ abstract class Kohana_Controller {
 		return HTTP::check_cache($this->request, $this->response, $etag);
 	}
 
+	/**
+	 * Sugar method to reduce verbosity of sending a JSON response
+	 *
+	 * @see Response::setJSON()
+	 */
+	protected function respondJSON(mixed $body, int $status = 200): void
+	{
+		$this->response->setJSON($body, $status);
+	}
+
 }

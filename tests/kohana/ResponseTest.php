@@ -84,6 +84,64 @@ class Kohana_ResponseTest extends Unittest_TestCase
 		$this->assertSame($expected, $response->body());
 	}
 
+	public static function provider_set_json(): array
+	{
+		return [
+			'simple body with defaults' => [
+				['body' => ['some', 'thing']],
+				[
+					'body' => '["some","thing"]',
+					'status' => 200,
+					'headers' => ['content-type' => 'application/json'],
+				],
+			],
+			'custom status code' => [
+				['body' => ['some', 'thing'], 'status' => 409],
+				[
+					'body' => '["some","thing"]',
+					'status' => 409,
+					'headers' => ['content-type' => 'application/json'],
+				],
+			],
+			'json serializable' => [
+				[
+					'body' => new class implements JsonSerializable {
+						public function jsonSerialize(): array
+						{
+							return ['a' => 'value'];
+						}
+					},
+				],
+				['body' => '{"a":"value"}', 'status' => 200, 'headers' => ['content-type' => 'application/json']],
+			],
+			'unescaped slashes' => [
+				['body' => 'some/thing'],
+				['body' => '"some/thing"', 'status' => 200, 'headers' => ['content-type' => 'application/json']],
+			],
+		];
+	}
+
+	/**
+	 * @dataProvider provider_set_json
+	 */
+	public function test_set_json(array $args, array $expected)
+	{
+		$response = new Response();
+		$response->setJSON(...$args);
+		$this->assertSame(
+			$expected,
+			['body' => $response->body(), 'status' => $response->status(), 'headers' => $response->headers()->getArrayCopy()],
+		);
+	}
+
+	public function test_set_json_throws_on_json_error()
+	{
+		$response = new Response();
+		$this->expectException(JsonException::class);
+		$this->expectExceptionMessage('UTF-8');
+		$response->setJSON(['bad' => "utf8 \xD0"]);
+	}
+
 	/**
 	 * provider for test_cookie_set()
 	 *

@@ -813,6 +813,103 @@ class Kohana_Request implements HTTP_Request {
 	}
 
 	/**
+	 * Parse a JSON body (of any type, including single scalar values) from the incoming request
+	 *
+	 * Enforces basic security of the maximum body length & depth, to guard against the easiest
+	 * kinds of JSON attacks. These should be set as low as your app can handle for the specific
+	 * request(s) it is parsing. Note that there are other mechanisms for JSON DOS attacks which
+	 * are harder to guard against in userland - you should ideally only use this method for
+	 * requests from authenticated and trusted users to provide additional protection.
+	 *
+	 * Note also that the maximum JSON length is enforced separately from `post_max_size` in your
+	 * PHP config. This is because you will commonly need to accept longer POST bodies for things
+	 * like file uploads and multipart-encoded form submisssions.
+	 */
+	public function jsonBody(
+		int $max_json_bytes = 1000,
+		int $max_json_depth = 20,
+	): mixed
+	{
+		// First check the content-type - if they've randomly sent the wrong type of content that
+		// could plausibly also be too big. So we want the error message to be clear this is a
+		// content type problem.
+		$content_type = $this->headers('content-type');
+                if (explode(';', $content_type ?? '', 2)[0] !== 'application/json') {
+                        throw new Request_InvalidJSONRequestException(
+                                $content_type
+                                ? "Unexpected content type (got $content_type)"
+                                : 'No content-type specified'
+                        );
+                }
+
+		// Then verify the user-specified content-length is within the allowed max size
+		// This might be bigger than the actual received payload if e.g. it has been stripped
+		// due to the post_max_size config.
+		$content_length = (int) $this->headers('content-length');
+		if ($content_length > $max_json_bytes) {
+			throw new Request_InvalidJSONRequestException(
+				sprintf(
+					'Content larger than max_json_bytes (got %s)',
+					Text::bytes($content_length, format: '%01.1f%s')
+				)
+			);
+		}
+
+		// Then verify the user-specified content-length matches the actual content we've received
+		$actual_content_length = strlen($this->_body);
+		if ($content_length !== $actual_content_length) {
+			throw new Request_InvalidJSONRequestException(
+				sprintf(
+					'Incorrect content-length header: stated %s, got %s',
+					Text::bytes($content_length, format: '%01.1f%s'),
+					Text::bytes($actual_content_length, format: '%01.1f%s'),
+				)
+			);
+		}
+
+		// OK, it's probably as safe as it can be (the native JSON parser will enforce the max depth)
+		try {
+			return json_decode(
+				$this->_body,
+				associative: TRUE,
+				depth: $max_json_depth,
+				flags: JSON_THROW_ON_ERROR,
+			);
+		} catch (JSONException $e) {
+			throw new Request_InvalidJSONRequestException(
+				'Invalid JSON: '.$e->getMessage(),
+				previous: $e
+			);
+		}
+	}
+
+       /**
+         * Parse JSON body from the incoming request where an object / array (`{}`, `[]`) is expected
+	 *
+	 * Adds an additional sanity check over ->jsonBody() to enforce that the incoming request can
+	 * be safely treated as an array e.g. to access keys from it.
+	 *
+	 * @see Request::jsonBody() for more details on use and security implications of this method.
+         */
+	public function jsonBodyArray(
+		int $max_json_bytes = 1000,
+		int $max_json_depth = 20,
+	): array
+	{
+		// Just pass all the function args to the underlying jsonBody method for initial parse and validation
+		$decoded = $this->jsonBody(...get_defined_vars());
+
+		// Then enforce that the body was actually an object / array
+		if (is_array($decoded)) {
+			return $decoded;
+		}
+
+		throw new Request_InvalidJSONRequestException(
+			'JSON body not an array or object (got '.get_debug_type($decoded).')'
+		);
+	}
+
+	/**
 	 * Returns the length of the body for use with
 	 * content header
 	 *
