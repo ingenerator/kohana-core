@@ -17,6 +17,7 @@ jobs:
           - '8.0'
           - '8.1'
           - '8.2'
+          - '8.3'
         dependencies:
           - 'default'
         koharness_modules:
@@ -30,6 +31,9 @@ jobs:
             dependencies: 'lowest'
             koharness_modules: 'all-modules'
           - php_version: '8.2'
+            dependencies: 'lowest'
+            koharness_modules: 'all-modules'
+          - php_version: '8.3'
             dependencies: 'lowest'
             koharness_modules: 'all-modules'
     steps:
