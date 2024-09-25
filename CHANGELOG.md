@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.12.0 (2024-09-24)
+
+* Support PHP 8.3
+
 ## 4.11.0 (2024-09-23)
 
 * Add `Request::jsonBody` and `Request::jsonBodyArray` for easy access to JSON request bodies.
