@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.12.1 (2025-01-16)
+
+* Fix race condition attempting to read cache files causing error from `find_file`
+
 ## 4.12.0 (2024-09-24)
 
 * Support PHP 8.3

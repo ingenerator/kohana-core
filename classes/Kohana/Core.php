@@ -281,8 +281,8 @@ class Kohana_Core {
 
 		if (Kohana::$caching === TRUE)
 		{
-			// Load the file path cache
-			Kohana::$_files = Kohana::cache('Kohana::find_file()');
+			// Load the file path cache if present
+			Kohana::$_files = Kohana::cache('Kohana::find_file()') ?? [];
 		}
 
 		if (isset($settings['charset']))
@@ -902,7 +902,15 @@ class Kohana_Core {
 					// Return the cache
 					try
 					{
-						return \unserialize(\file_get_contents($dir.$file));
+						$content = \file_get_contents($dir.$file);
+						if ($content === FALSE)
+						{
+							// Cache has been removed since the `is_file` call above e.g. it is on the moment of expiry
+							// Treat as cache miss
+							return NULL;
+						}
+
+						return \unserialize($content);
 					}
 					catch (Exception $e)
 					{
