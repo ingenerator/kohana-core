@@ -4,6 +4,8 @@ You're really going to want to read this.
 
 ## 4.12.2 (2025-06-23)
 
+* Fix further error case in `find_file` when cache read hits a race condition
+  **NOTE** This adds a strict `array` typehint to the protected `Kohana_Core::$_files`.
 * Fix deprecation when attempting to delete a cookie by setting value to NULL
 
 ## 4.12.1 (2025-01-16)
