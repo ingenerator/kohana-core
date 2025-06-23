@@ -2,6 +2,10 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.12.2 (2025-06-23)
+
+* Fix deprecation when attempting to delete a cookie by setting value to NULL
+
 ## 4.12.1 (2025-01-16)
 
 * Fix race condition attempting to read cache files causing error from `find_file`
