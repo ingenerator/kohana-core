@@ -27,13 +27,12 @@ class Kohana_Request_ExecutorTest extends TestCase
 		$subject->execute(Request::with(['uri' => 'no/controller']));
 	}
 
-	public function test_it_throws_generic_exception_if_controller_is_abstract()
+	public function test_it_throws_404_exception_if_controller_class_is_abstract()
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 		$subject      = $this->newSubject();
 
-		$this->expectException(Kohana_Exception::class);
-		$this->expectExceptionMessage('abstract');
+		$this->expectException(HTTP_Exception_404::class);
 		$subject->execute(Request::with(['uri' => 'template/anything']));
 	}
 
