@@ -30,9 +30,6 @@
 		"kohana/minion": "3.3.*",
 		"kohana/unittest": "3.3.*"
 	},
-	"conflict": {
-		"kohana/core": "*"
-	},
 	"suggest": {
 		"ext-http":   "*",
 		"ext-curl":   "*"
