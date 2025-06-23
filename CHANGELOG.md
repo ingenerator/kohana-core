@@ -4,6 +4,8 @@ You're really going to want to read this.
 
 ## 4.12.2 (2025-06-23)
 
+* Serve a generic 404 for URLs that happen to match abstract controller classes (instead of
+  throwing / alerting an unexpected exception). 
 * Fix further error case in `find_file` when cache read hits a race condition
   **NOTE** This adds a strict `array` typehint to the protected `Kohana_Core::$_files`.
 * Fix deprecation when attempting to delete a cookie by setting value to NULL

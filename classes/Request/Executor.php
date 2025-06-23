@@ -115,10 +115,11 @@ class Request_Executor
 		$controller_refl = new ReflectionClass($class);
 
 		if ($controller_refl->isAbstract()) {
-			throw new Kohana_Exception(
-				'Cannot create instances of abstract :controller',
-				[':controller' => $class]
-			);
+			throw HTTP_Exception::factory(
+				404,
+				'The requested URL :uri was not found on this server.',
+				[':uri' => $request->uri()]
+			)->request($request);
 		}
 
 		return $controller_refl->newInstance($request, $response);
