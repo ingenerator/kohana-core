@@ -19,7 +19,7 @@ jobs:
           - '8.2'
           - '8.3'
         dependencies:
-          - 'default'
+          - 'highest'
         koharness_modules:
           - 'all-modules'
           - 'core-only'
@@ -44,30 +44,14 @@ jobs:
           tools: composer:v2
 
       - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Get composer cache directory
-        id: composer-cache
-        run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
-
-      - uses: actions/cache@v2
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.dependencies }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.dependencies }}
+        uses: actions/checkout@v4
 
       - name: Install composer dependencies
+        uses: ramsey/composer-install@v3
         env:
-          DEPENDENCIES: ${{ matrix.dependencies }}
-        run: |
-          if [ $DEPENDENCIES == 'lowest' ]
-          then
-            COMPOSER_ROOT_VERSION=3.3.x-dev composer update --prefer-lowest --no-interaction --no-progress
-          else
-            COMPOSER_ROOT_VERSION=3.3.x-dev composer install --no-interaction --no-progress
-          fi
+          COMPOSER_ROOT_VERSION: 3.3.x-dev
+        with:
+          dependency-versions: ${{ matrix.dependency-versions }}
 
       - name: Run koharness
         env:

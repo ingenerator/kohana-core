@@ -178,7 +178,7 @@ class Kohana_Cookie {
 	}
 
 	/**
-	 * Deletes a cookie by making the value NULL and expiring it.
+	 * Deletes a cookie by making the value empty and expiring it.
 	 *
 	 *     Cookie::delete('theme');
 	 *
@@ -190,8 +190,8 @@ class Kohana_Cookie {
 		// Remove the cookie
 		unset($_COOKIE[$name]);
 
-		// Nullify the cookie and make it expire
-		return static::_setcookie($name, NULL, -86400, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
+		// Empty the cookie and make it expire
+		return static::_setcookie($name, '', -86400, Cookie::$path, Cookie::$domain, Cookie::$secure, Cookie::$httponly);
 	}
 
 	/**
