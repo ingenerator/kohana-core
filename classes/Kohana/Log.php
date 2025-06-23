@@ -120,7 +120,7 @@ class Kohana_Log {
 	 * @param   array   $additional  additional custom parameters to supply to the log writer
 	 * @return  Log
 	 */
-	public function add($level, $message, array $values = NULL, array $additional = NULL)
+	public function add($level, $message, ?array $values = [], array $additional = [])
 	{
 		if ($values)
 		{
@@ -147,11 +147,6 @@ class Kohana_Log {
 			{
 				$trace = \array_slice(\debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS), 1);
 			}
-		}
-
-		if ($additional == NULL)
-		{
-			$additional = array();
 		}
 
 		// Create a new message

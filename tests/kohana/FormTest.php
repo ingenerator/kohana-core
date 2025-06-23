@@ -158,7 +158,7 @@ class Kohana_FormTest extends Unittest_TestCase
 	{
 		return [
 			// $value, $result
-			['foo', NULL, '<input type="file" name="foo" />'],
+			['foo', [], '<input type="file" name="foo" />'],
 		];
 	}
 
@@ -409,11 +409,11 @@ class Kohana_FormTest extends Unittest_TestCase
 		return [
 			// $value, $result
 			// Single for provided
-			['email', NULL, NULL, '<label for="email">Email</label>'],
-			['email_address', NULL, NULL, '<label for="email_address">Email Address</label>'],
-			['email-address', NULL, NULL, '<label for="email-address">Email Address</label>'],
+			['email', NULL, [], '<label for="email">Email</label>'],
+			['email_address', NULL, [], '<label for="email_address">Email Address</label>'],
+			['email-address', NULL, [], '<label for="email-address">Email Address</label>'],
 			// For and text values provided
-			['name', 'First name', NULL, '<label for="name">First name</label>'],
+			['name', 'First name', [], '<label for="name">First name</label>'],
 			// with attributes
 			['lastname', 'Last name', ['class' => 'text'], '<label class="text" for="lastname">Last name</label>'],
 			[
