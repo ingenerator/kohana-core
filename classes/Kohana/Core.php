@@ -144,7 +144,7 @@ class Kohana_Core {
 	/**
 	 * @var  array   File path cache, used when caching is true in [Kohana::init]
 	 */
-	protected static $_files = array();
+	protected static array $_files = array();
 
 	/**
 	 * @var  boolean  Has the file path cache changed during this execution?  Used internally when when caching is true in [Kohana::init]
@@ -282,7 +282,7 @@ class Kohana_Core {
 		if (Kohana::$caching === TRUE)
 		{
 			// Load the file path cache if present
-			Kohana::$_files = Kohana::cache('Kohana::find_file()') ?? [];
+			Kohana::$_files = Kohana::cache('Kohana::find_file()') ?: [];
 		}
 
 		if (isset($settings['charset']))
