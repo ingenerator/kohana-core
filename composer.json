@@ -22,7 +22,7 @@
 		"ext-ctype": "*"
 	},
 	"require-dev": {
-		"kohana/koharness": "*@dev",
+		"kohana/koharness": "dev-master",
 		"phpunit/phpunit": "^9.5.22"
 	},
 	"replace": {
