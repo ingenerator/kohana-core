@@ -2,6 +2,11 @@ You're really going to want to read this.
 
 ## Unreleased
 
+## 4.13.0 (2025-07-22)
+
+* Support PHP 8.4
+* Drop support for PHP 8.0 and PHP 8.1
+
 ## 4.12.2 (2025-06-23)
 
 * Serve a generic 404 for URLs that happen to match abstract controller classes (instead of

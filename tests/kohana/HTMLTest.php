@@ -151,7 +151,7 @@ class Kohana_HTMLTest extends Unittest_TestCase
 	 * @param string $protocol   Protocol to use
 	 * @param bool   $index      Should the index file be included in url?
 	 */
-	public function test_script($expected, $file, array $attributes = NULL, $protocol = NULL, $index = FALSE)
+	public function test_script($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -234,7 +234,7 @@ class Kohana_HTMLTest extends Unittest_TestCase
 	 * @param string $protocol   Protocol to use
 	 * @param bool   $index      Whether the index file should be added to the link
 	 */
-	public function test_style($expected, $file, array $attributes = NULL, $protocol = NULL, $index = FALSE)
+	public function test_style($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -345,7 +345,7 @@ class Kohana_HTMLTest extends Unittest_TestCase
 		array $options,
 		$uri,
 		$title = NULL,
-		array $attributes = NULL,
+		?array $attributes = NULL,
 		$protocol = NULL,
 		$index = TRUE
 	) {

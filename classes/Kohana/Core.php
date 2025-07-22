@@ -183,7 +183,7 @@ class Kohana_Core {
 	 * @uses    Kohana::cache
 	 * @uses    Profiler
 	 */
-	public static function init(array $settings = NULL)
+	public static function init(array $settings = [])
 	{
 		if (Kohana::$_init)
 		{
@@ -578,10 +578,10 @@ class Kohana_Core {
 	 *
 	 *     Kohana::modules(array('modules/foo', MODPATH.'bar'));
 	 *
-	 * @param   array   $modules    list of module paths
+	 * @param   ?array   $modules    list of module paths, null to return the current value
 	 * @return  array   enabled modules
 	 */
-	public static function modules(array $modules = NULL)
+	public static function modules(?array $modules = NULL)
 	{
 		if ($modules === NULL)
 		{
@@ -767,10 +767,10 @@ class Kohana_Core {
 	 *     $views = Kohana::list_files('views');
 	 *
 	 * @param   string  $directory  directory name
-	 * @param   array   $paths      list of paths to search
+	 * @param   ?array  $paths      list of paths to search, null to use defaults
 	 * @return  array
 	 */
-	public static function list_files($directory = NULL, array $paths = NULL)
+	public static function list_files($directory = NULL, ?array $paths = NULL)
 	{
 		if ($directory !== NULL)
 		{

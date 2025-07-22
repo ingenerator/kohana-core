@@ -891,7 +891,7 @@ class Kohana_RouteTest extends Unittest_TestCase
 
 class MockRoute extends Route
 {
-	public static function compile($uri, array $regex = NULL)
+	public static function compile($uri, ?array $regex = NULL)
 	{
 		throw new BadMethodCallException('This should not be being called');
 	}
