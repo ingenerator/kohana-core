@@ -10,7 +10,7 @@
  */
 function _ord($chr)
 {
-	$ord0 = \ord($chr);
+	$ord0 = \ord($chr[0]);
 
 	if ($ord0 >= 0 AND $ord0 <= 127)
 		return $ord0;
