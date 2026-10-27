@@ -2,6 +2,8 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Support PHP 8.5 and PHP 8.6
+* Drop support for PHP 8.2 and PHP 8.3
 * Remove `unittest` module, `koharness` and custom helpers - run tests as standard PHPUnit suites.
   The `unittest` module provided bootstrapping to dynamically load tests from enabled modules, by
   searching for them in the CFS. This was incompatible with newer PHPUnit, and made test setup

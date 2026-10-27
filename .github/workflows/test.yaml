@@ -14,22 +14,22 @@ jobs:
       fail-fast: false
       matrix:
         php_version:
-          - '8.2'
-          - '8.3'
           - '8.4'
+          - '8.5'
+          - '8.6'
         dependencies:
           - 'highest'
         kohana_modules:
           - 'Core,Minion'
           - 'Core'
         include:
-          - php_version: '8.2'
-            dependencies: 'lowest'
-            kohana_modules: 'Core,Minion'
-          - php_version: '8.3'
-            dependencies: 'lowest'
-            kohana_modules: 'Core,Minion'
           - php_version: '8.4'
+            dependencies: 'lowest'
+            kohana_modules: 'Core,Minion'
+          - php_version: '8.5'
+            dependencies: 'lowest'
+            kohana_modules: 'Core,Minion'
+          - php_version: '8.6'
             dependencies: 'lowest'
             kohana_modules: 'Core,Minion'
     steps:
