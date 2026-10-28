@@ -102,7 +102,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 		// Don't auto-call constructor, we need to setup the mock first
 		$session = $this->getMockBuilder('Session')
 			->disableOriginalConstructor()
-			->setMethods(['read'])
+			->onlyMethods(['read'])
 			->getMockForAbstractClass();
 
 		$session

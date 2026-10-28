@@ -162,7 +162,7 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 		$config = new Config;
 
 		$reader = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->getMock();
 
 		$reader
@@ -189,7 +189,7 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 		$config = new Config;
 
 		$reader = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->getMock();
 
 		$reader
@@ -272,10 +272,10 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 
 		$reader1 = $this->createMock('Kohana_Config_Reader');
 		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')
-			->setMethods(['write'])
+			->onlyMethods(['write'])
 			->getMock();
 		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')
-			->setMethods(['write'])
+			->onlyMethods(['write'])
 			->getMock();
 
 		$writer1
@@ -305,11 +305,11 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 		$group_name = 'lolumns';
 
 		$reader1 = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->setMockClassName('Unittest_Config_Reader_1')
 			->getMock();
 		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->setMockClassName('Unittest_Config_Reader_2')
 			->getMock();
 
@@ -359,7 +359,7 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 	public function test_load_reuses_config_groups()
 	{
 		$reader = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->getMock();
 		$reader
 			->expects($this->once())
@@ -388,10 +388,10 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 		$config = new Kohana_Config;
 
 		$reader1 = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->getMock();
 		$reader2 = $this->getMockBuilder('Kohana_Config_Reader')
-			->setMethods(['load'])
+			->onlyMethods(['load'])
 			->getMock();
 
 		$reader1
@@ -407,10 +407,10 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
 			->will($this->returnValue(['kohana' => 'good']));
 
 		$writer1 = $this->getMockBuilder('Kohana_Config_Writer')
-			->setMethods(['write'])
+			->onlyMethods(['write'])
 			->getMock();
 		$writer2 = $this->getMockBuilder('Kohana_Config_Writer')
-			->setMethods(['write'])
+			->onlyMethods(['write'])
 			->getMock();
 
 		// Due to crazy limitations in phpunit's mocking engine we have to be fairly

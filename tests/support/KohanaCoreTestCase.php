@@ -2,6 +2,7 @@
 
 namespace tests\Kohana\Support;
 
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -110,7 +111,7 @@ abstract class KohanaCoreTestCase extends TestCase
      */
     public static function assertTag($matcher, $actual, $message = '', $isHtml = true)
     {
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 
 }
