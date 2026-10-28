@@ -1,6 +1,9 @@
 <?php
 
+namespace tests\Kohana\Support;
+
 use PHPUnit\Framework\Assert;
+use ReflectionProperty;
 
 /**
  * @author    Craig Gosman <craig@ingenerator.com>

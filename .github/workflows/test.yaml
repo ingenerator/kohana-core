@@ -19,19 +19,19 @@ jobs:
           - '8.4'
         dependencies:
           - 'highest'
-        koharness_modules:
-          - 'all-modules'
-          - 'core-only'
+        kohana_modules:
+          - 'Core,Minion'
+          - 'Core'
         include:
           - php_version: '8.2'
             dependencies: 'lowest'
-            koharness_modules: 'all-modules'
+            kohana_modules: 'Core,Minion'
           - php_version: '8.3'
             dependencies: 'lowest'
-            koharness_modules: 'all-modules'
+            kohana_modules: 'Core,Minion'
           - php_version: '8.4'
             dependencies: 'lowest'
-            koharness_modules: 'all-modules'
+            kohana_modules: 'Core,Minion'
     steps:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -49,14 +49,7 @@ jobs:
         with:
           dependency-versions: ${{ matrix.dependency-versions }}
 
-      - name: Run koharness
-        env:
-          KOHARNESS_MODULES: ${{ matrix.koharness_modules }}
-        run: |
-          vendor/bin/koharness
-
       - name: Run unit tests
-        run: |
-          set -o errexit
-          cd /tmp/koharness
-          ./vendor/bin/phpunit --configuration=modules/unittest/phpunit.xml modules/unittest/tests.php
+        env:
+          KOHANA_MODULES: ${{ matrix.kohana_modules }}
+        run: vendor/bin/phpunit --testsuite ${{ matrix.kohana_modules }}

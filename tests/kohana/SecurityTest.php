@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
+<?php
+
+use tests\Kohana\Support\KohanaCoreTestCase;
+
+defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana_Security
@@ -10,7 +14,7 @@
  * @package    Kohana
  * @category   Tests
  */
-class Kohana_SecurityTest extends Unittest_TestCase
+class Kohana_SecurityTest extends KohanaCoreTestCase
 {
 	/**
 	 * Provides test data for test_envode_php_tags()

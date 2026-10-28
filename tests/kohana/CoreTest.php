@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
+<?php
+
+use tests\Kohana\Support\KohanaCoreTestCase;
+
+defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Kohana Core
@@ -16,7 +20,7 @@
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-class Kohana_CoreTest extends Unittest_TestCase
+class Kohana_CoreTest extends KohanaCoreTestCase
 {
 	protected $old_modules = [];
 
@@ -339,20 +343,24 @@ class Kohana_CoreTest extends Unittest_TestCase
 	}
 
 	/**
-	 * To make the tests as portable as possible this just tests that
-	 * you get an array of modules when you can Kohana::modules() and that
-	 * said array contains unittest
 	 *
 	 * @test
 	 * @covers Kohana::modules
 	 */
 	public function test_modules_returns_array_of_modules()
 	{
-		$modules = Kohana::modules();
+		$original_modules = Kohana::modules();
 
-		$this->assertIsArray($modules);
+        try {
+            Kohana::modules(['some-module' => __DIR__]);
 
-		$this->assertArrayHasKey('unittest', $modules);
+            $this->assertSame(
+                ['some-module' => __DIR__.'/'],
+                Kohana::modules()
+            );
+        } finally {
+            Kohana::modules($original_modules);
+        }
 	}
 
 	/**
@@ -371,7 +379,7 @@ class Kohana_CoreTest extends Unittest_TestCase
 		$this->assertIsArray($include_paths);
 
 		// We must have at least 2 items in include paths (APP / SYS)
-		$this->assertGreaterThan(2, count($include_paths));
+		$this->assertGreaterThanOrEqual(2, count($include_paths));
 		// Make sure said paths are in the include paths
 		// And make sure they're in the correct positions
 		$this->assertSame(APPPATH, reset($include_paths));
@@ -382,4 +390,3 @@ class Kohana_CoreTest extends Unittest_TestCase
 		}
 	}
 }
-

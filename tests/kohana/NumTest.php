@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
+<?php
+
+use tests\Kohana\Support\KohanaCoreTestCase;
+
+defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests Num
@@ -13,7 +17,7 @@
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-class Kohana_NumTest extends Unittest_TestCase
+class Kohana_NumTest extends KohanaCoreTestCase
 {
 	protected $default_locale;
 

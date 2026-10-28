@@ -1,5 +1,7 @@
 <?php
 
+use tests\Kohana\Support\KohanaCoreTestCase;
+
 /**
  * Test case for Minion_Util
  *
@@ -12,7 +14,7 @@
  * @license    http://kohanaframework.org/license
  */
 
-class Minion_TaskTest extends Kohana_Unittest_TestCase
+class Minion_TaskTest extends KohanaCoreTestCase
 {
 	/**
 	 * Provides test data for test_convert_task_to_class_name()

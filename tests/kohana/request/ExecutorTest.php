@@ -79,7 +79,7 @@ class Kohana_Request_ExecutorTest extends TestCase
 	{
 		$this->routes = [new Route('<controller>/<action>')];
 		$response     = $this->newSubject()->execute(
-			Request::with(['uri' => 'welcome/index', 'protocol' => 'HTTP/12.5'])
+			Request::with(['uri' => 'textresponse/index', 'protocol' => 'HTTP/12.5'])
 		);
 		$this->assertSame('HTTP/12.5', $response->protocol());
 	}
@@ -250,6 +250,15 @@ class Controller_EmptyReturn extends Controller
 	public function execute()
 	{
 		// Do nothing
+	}
+}
+
+class Controller_TextResponse extends Controller
+{
+
+	public function action_index()
+	{
+		$this->response->body('text');
 	}
 }
 

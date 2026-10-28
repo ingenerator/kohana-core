@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
+<?php
+
+use tests\Kohana\Support\KohanaCoreTestCase;
+
+defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Unit tests for request class
@@ -14,7 +18,7 @@
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-class Kohana_RequestTest extends Unittest_TestCase
+class Kohana_RequestTest extends KohanaCoreTestCase
 {
 	protected $_inital_request;
 

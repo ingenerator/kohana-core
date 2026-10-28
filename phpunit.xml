@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<!-- Config file for PHPUnit automated tests -->
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         bootstrap="tests/bootstrap.php"
+         colors="true"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         convertDeprecationsToExceptions="true"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.3/phpunit.xsd">
+
+    <testsuites>
+        <testsuite name="Core">
+            <directory>tests/kohana</directory>
+        </testsuite>
+        <testsuite name="Minion">
+            <directory>modules/minion/tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <php>
+        <!-- Override this environment var at runtime to enable only a subset of modules -->
+        <env name="KOHANA_MODULES" value="Core,Minion"/>
+    </php>
+</phpunit>

@@ -2,6 +2,12 @@ You're really going to want to read this.
 
 ## Unreleased
 
+* Remove `unittest` module, `koharness` and custom helpers - run tests as standard PHPUnit suites.
+  The `unittest` module provided bootstrapping to dynamically load tests from enabled modules, by
+  searching for them in the CFS. This was incompatible with newer PHPUnit, and made test setup
+  more complex than it needed to be for this package. This is all now removed and tests run with
+  a standard phpunit.xml and custom bootstrap.
+
 ## 4.13.0 (2025-07-22)
 
 * Support PHP 8.4

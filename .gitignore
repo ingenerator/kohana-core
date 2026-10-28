@@ -2,4 +2,4 @@
 *.swp
 /composer.lock
 /vendor/*
-/koharness_bootstrap.php
+.phpunit.result.cache
