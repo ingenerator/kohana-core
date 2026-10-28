@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana_UTF8 class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.utf8
  *
  * @package        Kohana
  * @category       Tests
@@ -17,13 +17,16 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.utf8')]
 class Kohana_UTF8Test extends KohanaCoreTestCase
 {
 
 	/**
 	 * Provides test data for test_clean()
 	 */
-	public function provider_clean()
+	public static function provider_clean()
 	{
 		return [
 			["\0", ''],
@@ -36,12 +39,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::clean
-	 *
-	 * @test
-	 * @dataProvider provider_clean
-	 */
-	public function test_clean($input, $expected)
+     * Tests UTF8::clean
+     */
+    #[DataProvider('provider_clean')]
+    #[Test]
+    public function test_clean($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::clean($input));
 	}
@@ -49,7 +51,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_is_ascii()
 	 */
-	public function provider_is_ascii()
+	public static function provider_is_ascii()
 	{
 		return [
 			["\0", TRUE],
@@ -61,12 +63,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::is_ascii
-	 *
-	 * @test
-	 * @dataProvider provider_is_ascii
-	 */
-	public function test_is_ascii($input, $expected)
+     * Tests UTF8::is_ascii
+     */
+    #[DataProvider('provider_is_ascii')]
+    #[Test]
+    public function test_is_ascii($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::is_ascii($input));
 	}
@@ -74,7 +75,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strip_ascii_ctrl()
 	 */
-	public function provider_strip_ascii_ctrl()
+	public static function provider_strip_ascii_ctrl()
 	{
 		return [
 			["\0", ''],
@@ -86,12 +87,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strip_ascii_ctrl
-	 *
-	 * @test
-	 * @dataProvider provider_strip_ascii_ctrl
-	 */
-	public function test_strip_ascii_ctrl($input, $expected)
+     * Tests UTF8::strip_ascii_ctrl
+     */
+    #[DataProvider('provider_strip_ascii_ctrl')]
+    #[Test]
+    public function test_strip_ascii_ctrl($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strip_ascii_ctrl($input));
 	}
@@ -99,7 +99,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strip_non_ascii()
 	 */
-	public function provider_strip_non_ascii()
+	public static function provider_strip_non_ascii()
 	{
 		return [
 			["\0\021\x7F", "\0\021\x7F"],
@@ -108,12 +108,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strip_non_ascii
-	 *
-	 * @test
-	 * @dataProvider provider_strip_non_ascii
-	 */
-	public function test_strip_non_ascii($input, $expected)
+     * Tests UTF8::strip_non_ascii
+     */
+    #[DataProvider('provider_strip_non_ascii')]
+    #[Test]
+    public function test_strip_non_ascii($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strip_non_ascii($input));
 	}
@@ -121,7 +120,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_transliterate_to_ascii()
 	 */
-	public function provider_transliterate_to_ascii()
+	public static function provider_transliterate_to_ascii()
 	{
 		return [
 			['Cocoñùт', -1, 'Coconuт'],
@@ -134,12 +133,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::transliterate_to_ascii
-	 *
-	 * @test
-	 * @dataProvider provider_transliterate_to_ascii
-	 */
-	public function test_transliterate_to_ascii($input, $case, $expected)
+     * Tests UTF8::transliterate_to_ascii
+     */
+    #[DataProvider('provider_transliterate_to_ascii')]
+    #[Test]
+    public function test_transliterate_to_ascii($input, $case, $expected)
 	{
 		$this->assertSame($expected, UTF8::transliterate_to_ascii($input, $case));
 	}
@@ -147,7 +145,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strlen()
 	 */
-	public function provider_strlen()
+	public static function provider_strlen()
 	{
 		return [
 			['Cocoñùт', 7],
@@ -156,12 +154,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strlen
-	 *
-	 * @test
-	 * @dataProvider provider_strlen
-	 */
-	public function test_strlen($input, $expected)
+     * Tests UTF8::strlen
+     */
+    #[DataProvider('provider_strlen')]
+    #[Test]
+    public function test_strlen($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strlen($input));
 	}
@@ -169,7 +166,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strpos()
 	 */
-	public function provider_strpos()
+	public static function provider_strpos()
 	{
 		return [
 			['Cocoñùт', 'o', 0, 1],
@@ -178,12 +175,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strpos
-	 *
-	 * @test
-	 * @dataProvider provider_strpos
-	 */
-	public function test_strpos($input, $str, $offset, $expected)
+     * Tests UTF8::strpos
+     */
+    #[DataProvider('provider_strpos')]
+    #[Test]
+    public function test_strpos($input, $str, $offset, $expected)
 	{
 		$this->assertSame($expected, UTF8::strpos($input, $str, $offset));
 	}
@@ -191,7 +187,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strrpos()
 	 */
-	public function provider_strrpos()
+	public static function provider_strrpos()
 	{
 		return [
 			['Cocoñùт', 'o', 0, 3],
@@ -200,12 +196,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strrpos
-	 *
-	 * @test
-	 * @dataProvider provider_strrpos
-	 */
-	public function test_strrpos($input, $str, $offset, $expected)
+     * Tests UTF8::strrpos
+     */
+    #[DataProvider('provider_strrpos')]
+    #[Test]
+    public function test_strrpos($input, $str, $offset, $expected)
 	{
 		$this->assertSame($expected, UTF8::strrpos($input, $str, $offset));
 	}
@@ -213,7 +208,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_substr()
 	 */
-	public function provider_substr()
+	public static function provider_substr()
 	{
 		return [
 			['Cocoñùт', 3, 2, 'oñ'],
@@ -224,12 +219,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::substr
-	 *
-	 * @test
-	 * @dataProvider provider_substr
-	 */
-	public function test_substr($input, $offset, $length, $expected)
+     * Tests UTF8::substr
+     */
+    #[DataProvider('provider_substr')]
+    #[Test]
+    public function test_substr($input, $offset, $length, $expected)
 	{
 		$this->assertSame($expected, UTF8::substr($input, $offset, $length));
 	}
@@ -237,7 +231,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_substr_replace()
 	 */
-	public function provider_substr_replace()
+	public static function provider_substr_replace()
 	{
 		return [
 			['Cocoñùт', 'šš', 3, 2, 'Cocššùт'],
@@ -246,12 +240,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::substr_replace
-	 *
-	 * @test
-	 * @dataProvider provider_substr_replace
-	 */
-	public function test_substr_replace($input, $replacement, $offset, $length, $expected)
+     * Tests UTF8::substr_replace
+     */
+    #[DataProvider('provider_substr_replace')]
+    #[Test]
+    public function test_substr_replace($input, $replacement, $offset, $length, $expected)
 	{
 		$this->assertSame($expected, UTF8::substr_replace($input, $replacement, $offset, $length));
 	}
@@ -259,7 +252,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strtolower()
 	 */
-	public function provider_strtolower()
+	public static function provider_strtolower()
 	{
 		return [
 			['COCOÑÙТ', 'cocoñùт'],
@@ -268,12 +261,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strtolower
-	 *
-	 * @test
-	 * @dataProvider provider_strtolower
-	 */
-	public function test_strtolower($input, $expected)
+     * Tests UTF8::strtolower
+     */
+    #[DataProvider('provider_strtolower')]
+    #[Test]
+    public function test_strtolower($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strtolower($input));
 	}
@@ -281,7 +273,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strtoupper()
 	 */
-	public function provider_strtoupper()
+	public static function provider_strtoupper()
 	{
 		return [
 			['Cocoñùт', 'COCOÑÙТ'],
@@ -290,12 +282,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strtoupper
-	 *
-	 * @test
-	 * @dataProvider provider_strtoupper
-	 */
-	public function test_strtoupper($input, $expected)
+     * Tests UTF8::strtoupper
+     */
+    #[DataProvider('provider_strtoupper')]
+    #[Test]
+    public function test_strtoupper($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strtoupper($input));
 	}
@@ -303,7 +294,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_ucfirst()
 	 */
-	public function provider_ucfirst()
+	public static function provider_ucfirst()
 	{
 		return [
 			['ñùт', 'Ñùт'],
@@ -311,12 +302,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::ucfirst
-	 *
-	 * @test
-	 * @dataProvider provider_ucfirst
-	 */
-	public function test_ucfirst($input, $expected)
+     * Tests UTF8::ucfirst
+     */
+    #[DataProvider('provider_ucfirst')]
+    #[Test]
+    public function test_ucfirst($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::ucfirst($input));
 	}
@@ -324,7 +314,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strip_non_ascii()
 	 */
-	public function provider_ucwords()
+	public static function provider_ucwords()
 	{
 		return [
 			['ExAmple', 'ExAmple'],
@@ -333,12 +323,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::ucwords
-	 *
-	 * @test
-	 * @dataProvider provider_ucwords
-	 */
-	public function test_ucwords($input, $expected)
+     * Tests UTF8::ucwords
+     */
+    #[DataProvider('provider_ucwords')]
+    #[Test]
+    public function test_ucwords($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::ucwords($input));
 	}
@@ -346,7 +335,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strcasecmp()
 	 */
-	public function provider_strcasecmp()
+	public static function provider_strcasecmp()
 	{
 		return [
 			['Cocoñùт', 'Cocoñùт', 0],
@@ -358,12 +347,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strcasecmp
-	 *
-	 * @test
-	 * @dataProvider provider_strcasecmp
-	 */
-	public function test_strcasecmp($input, $input2, $expected)
+     * Tests UTF8::strcasecmp
+     */
+    #[DataProvider('provider_strcasecmp')]
+    #[Test]
+    public function test_strcasecmp($input, $input2, $expected)
 	{
 		$this->assertSame($expected, UTF8::strcasecmp($input, $input2));
 	}
@@ -371,7 +359,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_str_ireplace()
 	 */
-	public function provider_str_ireplace()
+	public static function provider_str_ireplace()
 	{
 		return [
 			['т', 't', 'cocoñuт', 'cocoñut'],
@@ -382,12 +370,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::str_ireplace
-	 *
-	 * @test
-	 * @dataProvider provider_str_ireplace
-	 */
-	public function test_str_ireplace($search, $replace, $subject, $expected)
+     * Tests UTF8::str_ireplace
+     */
+    #[DataProvider('provider_str_ireplace')]
+    #[Test]
+    public function test_str_ireplace($search, $replace, $subject, $expected)
 	{
 		$this->assertSame($expected, UTF8::str_ireplace($search, $replace, $subject));
 	}
@@ -395,7 +382,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_stristr()
 	 */
-	public function provider_stristr()
+	public static function provider_stristr()
 	{
 		return [
 			['Cocoñùт', 'oñ', 'oñùт'],
@@ -405,12 +392,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::stristr
-	 *
-	 * @test
-	 * @dataProvider provider_stristr
-	 */
-	public function test_stristr($input, $input2, $expected)
+     * Tests UTF8::stristr
+     */
+    #[DataProvider('provider_stristr')]
+    #[Test]
+    public function test_stristr($input, $input2, $expected)
 	{
 		$this->assertSame($expected, UTF8::stristr($input, $input2));
 	}
@@ -418,7 +404,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strspn()
 	 */
-	public function provider_strspn()
+	public static function provider_strspn()
 	{
 		return [
 			["foo", "o", 1, 2, 2],
@@ -429,12 +415,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strspn
-	 *
-	 * @test
-	 * @dataProvider provider_strspn
-	 */
-	public function test_strspn($input, $mask, $offset, $length, $expected)
+     * Tests UTF8::strspn
+     */
+    #[DataProvider('provider_strspn')]
+    #[Test]
+    public function test_strspn($input, $mask, $offset, $length, $expected)
 	{
 		$this->assertSame($expected, UTF8::strspn($input, $mask, $offset, $length));
 	}
@@ -442,7 +427,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strcspn()
 	 */
-	public function provider_strcspn()
+	public static function provider_strcspn()
 	{
 		return [
 			['Cocoñùт', 'oñ', NULL, NULL, 1],
@@ -452,12 +437,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strcspn
-	 *
-	 * @test
-	 * @dataProvider provider_strcspn
-	 */
-	public function test_strcspn($input, $mask, $offset, $length, $expected)
+     * Tests UTF8::strcspn
+     */
+    #[DataProvider('provider_strcspn')]
+    #[Test]
+    public function test_strcspn($input, $mask, $offset, $length, $expected)
 	{
 		$this->assertSame($expected, UTF8::strcspn($input, $mask, $offset, $length));
 	}
@@ -465,7 +449,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_str_pad()
 	 */
-	public function provider_str_pad()
+	public static function provider_str_pad()
 	{
 		return [
 			['Cocoñùт', 10, 'š', STR_PAD_RIGHT, 'Cocoñùтššš'],
@@ -475,22 +459,20 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::str_pad
-	 *
-	 * @test
-	 * @dataProvider provider_str_pad
-	 */
-	public function test_str_pad($input, $length, $pad, $type, $expected)
+     * Tests UTF8::str_pad
+     */
+    #[DataProvider('provider_str_pad')]
+    #[Test]
+    public function test_str_pad($input, $length, $pad, $type, $expected)
 	{
 		$this->assertSame($expected, UTF8::str_pad($input, $length, $pad, $type));
 	}
 
 	/**
-	 * Tests UTF8::str_pad error
-	 *
-	 * @test
-	 */
-	public function test_str_pad_error()
+     * Tests UTF8::str_pad error
+     */
+    #[Test]
+    public function test_str_pad_error()
 	{
 		$this->expectException(UTF8_Exception::class);
 		UTF8::str_pad('Cocoñùт', 10, 'š', 15, 'šCocoñùтšš');
@@ -499,7 +481,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_str_split()
 	 */
-	public function provider_str_split()
+	public static function provider_str_split()
 	{
 		return [
 			['Bár', 1, ['B', 'á', 'r']],
@@ -509,12 +491,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::str_split
-	 *
-	 * @test
-	 * @dataProvider provider_str_split
-	 */
-	public function test_str_split($input, $split_length, $expected)
+     * Tests UTF8::str_split
+     */
+    #[DataProvider('provider_str_split')]
+    #[Test]
+    public function test_str_split($input, $split_length, $expected)
 	{
 		$this->assertSame($expected, UTF8::str_split($input, $split_length));
 	}
@@ -522,7 +503,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_strrev()
 	 */
-	public function provider_strrev()
+	public static function provider_strrev()
 	{
 		return [
 			['Cocoñùт', 'тùñocoC'],
@@ -530,12 +511,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::strrev
-	 *
-	 * @test
-	 * @dataProvider provider_strrev
-	 */
-	public function test_strrev($input, $expected)
+     * Tests UTF8::strrev
+     */
+    #[DataProvider('provider_strrev')]
+    #[Test]
+    public function test_strrev($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::strrev($input));
 	}
@@ -543,7 +523,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_trim()
 	 */
-	public function provider_trim()
+	public static function provider_trim()
 	{
 		return [
 			[' bar ', NULL, 'bar'],
@@ -553,12 +533,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::trim
-	 *
-	 * @test
-	 * @dataProvider provider_trim
-	 */
-	public function test_trim($input, $input2, $expected)
+     * Tests UTF8::trim
+     */
+    #[DataProvider('provider_trim')]
+    #[Test]
+    public function test_trim($input, $input2, $expected)
 	{
 		$this->assertSame($expected, UTF8::trim($input, $input2));
 	}
@@ -566,7 +545,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_ltrim()
 	 */
-	public function provider_ltrim()
+	public static function provider_ltrim()
 	{
 		return [
 			[' bar ', NULL, 'bar '],
@@ -577,12 +556,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::ltrim
-	 *
-	 * @test
-	 * @dataProvider provider_ltrim
-	 */
-	public function test_ltrim($input, $charlist, $expected)
+     * Tests UTF8::ltrim
+     */
+    #[DataProvider('provider_ltrim')]
+    #[Test]
+    public function test_ltrim($input, $charlist, $expected)
 	{
 		$this->assertSame($expected, UTF8::ltrim($input, $charlist));
 	}
@@ -590,7 +568,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_rtrim()
 	 */
-	public function provider_rtrim()
+	public static function provider_rtrim()
 	{
 		return [
 			[' bar ', NULL, ' bar'],
@@ -601,12 +579,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::rtrim
-	 *
-	 * @test
-	 * @dataProvider provider_rtrim
-	 */
-	public function test_rtrim($input, $input2, $expected)
+     * Tests UTF8::rtrim
+     */
+    #[DataProvider('provider_rtrim')]
+    #[Test]
+    public function test_rtrim($input, $input2, $expected)
 	{
 		$this->assertSame($expected, UTF8::rtrim($input, $input2));
 	}
@@ -614,7 +591,7 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	/**
 	 * Provides test data for test_ord()
 	 */
-	public function provider_ord()
+	public static function provider_ord()
 	{
 		return [
 			['f', 102],
@@ -624,12 +601,11 @@ class Kohana_UTF8Test extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests UTF8::ord
-	 *
-	 * @test
-	 * @dataProvider provider_ord
-	 */
-	public function test_ord($input, $expected)
+     * Tests UTF8::ord
+     */
+    #[DataProvider('provider_ord')]
+    #[Test]
+    public function test_ord($input, $expected)
 	{
 		$this->assertSame($expected, UTF8::ord($input));
 	}

@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the View class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.view
  *
  * @package        Kohana
  * @category       Tests
@@ -17,6 +17,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.view')]
 class Kohana_ViewTest extends KohanaCoreTestCase
 {
 	protected static $old_modules = [];
@@ -55,7 +58,7 @@ class Kohana_ViewTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_instantiate()
+	public static function provider_instantiate()
 	{
 		return [
 			['kohana/error', FALSE],
@@ -69,7 +72,7 @@ class Kohana_ViewTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_set()
+	public static function provider_set()
 	{
 		return [
 			['foo', 'bar', 'foo', 'bar'],
@@ -79,14 +82,14 @@ class Kohana_ViewTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that we can instantiate a view file
-	 *
-	 * @test
-	 * @dataProvider provider_instantiate
-	 *
-	 * @return null
-	 */
-	public function test_instantiate($path, $expects_exception)
+     * Tests that we can instantiate a view file
+     *
+     *
+     * @return null
+     */
+    #[DataProvider('provider_instantiate')]
+    #[Test]
+    public function test_instantiate($path, $expects_exception)
 	{
 		try {
 			$view = new View($path);
@@ -97,28 +100,28 @@ class Kohana_ViewTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that we can set using string, array or Traversable object
-	 *
-	 * @test
-	 * @dataProvider provider_set
-	 *
-	 * @return null
-	 */
-	public function test_set($data_key, $value, $test_key, $expected)
+     * Tests that we can set using string, array or Traversable object
+     *
+     *
+     * @return null
+     */
+    #[DataProvider('provider_set')]
+    #[Test]
+    public function test_set($data_key, $value, $test_key, $expected)
 	{
 		$view = View::factory()->set($data_key, $value);
 		$this->assertSame($expected, $view->$test_key);
 	}
 
 	/**
-	 * Tests that we can set global using string, array or Traversable object
-	 *
-	 * @test
-	 * @dataProvider provider_set
-	 *
-	 * @return null
-	 */
-	public function test_set_global($data_key, $value, $test_key, $expected)
+     * Tests that we can set global using string, array or Traversable object
+     *
+     *
+     * @return null
+     */
+    #[DataProvider('provider_set')]
+    #[Test]
+    public function test_set_global($data_key, $value, $test_key, $expected)
 	{
 		$view = View::factory();
 		$view::set_global($data_key, $value);

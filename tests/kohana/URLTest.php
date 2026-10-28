@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests URL
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.url
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.url')]
 class Kohana_URLTest extends KohanaCoreTestCase
 {
 
@@ -51,7 +54,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_base()
+	public static function provider_base()
 	{
 		$rq_with_cli = Request::with(['uri' => '/', 'protocol' => 'cli']);
 
@@ -95,17 +98,17 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::base()
-	 *
-	 * @test
-	 * @dataProvider provider_base
-	 *
-	 * @param boolean $protocol   Parameter for Url::base()
-	 * @param boolean $index      Parameter for Url::base()
-	 * @param string  $expected   Expected url
-	 * @param array   $enviroment Array of enviroment vars to change @see Kohana_URLTest::setEnvironment()
-	 */
-	public function test_base($protocol, $index, $expected, array $enviroment = [])
+     * Tests URL::base()
+     *
+     *
+     * @param boolean $protocol   Parameter for Url::base()
+     * @param boolean $index      Parameter for Url::base()
+     * @param string  $expected   Expected url
+     * @param array   $enviroment Array of enviroment vars to change @see Kohana_URLTest::setEnvironment()
+     */
+    #[DataProvider('provider_base')]
+    #[Test]
+    public function test_base($protocol, $index, $expected, array $enviroment = [])
 	{
 		$this->setEnvironment($enviroment);
 
@@ -120,7 +123,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_site()
+	public static function provider_site()
 	{
 		return [
 			['', NULL, '/kohana/index.php/'],
@@ -175,17 +178,17 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::site()
-	 *
-	 * @test
-	 * @dataProvider provider_site
-	 *
-	 * @param string         $uri        URI to use
-	 * @param boolean|string $protocol   Protocol to use
-	 * @param string         $expected   Expected result
-	 * @param array          $enviroment Array of enviroment vars to set
-	 */
-	public function test_site($uri, $protocol, $expected, array $enviroment = [])
+     * Tests URL::site()
+     *
+     *
+     * @param string         $uri        URI to use
+     * @param boolean|string $protocol   Protocol to use
+     * @param string         $expected   Expected result
+     * @param array          $enviroment Array of enviroment vars to set
+     */
+    #[DataProvider('provider_site')]
+    #[Test]
+    public function test_site($uri, $protocol, $expected, array $enviroment = [])
 	{
 		$this->setEnvironment($enviroment);
 
@@ -201,7 +204,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_site_url_encode_uri()
+	public static function provider_site_url_encode_uri()
 	{
 		$provider = [
 			['test', 'encode'],
@@ -224,12 +227,11 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::site for proper URL encoding when working with non-ASCII characters.
-	 *
-	 * @test
-	 * @dataProvider provider_site_url_encode_uri
-	 */
-	public function test_site_url_encode_uri($expected, $uri)
+     * Tests URL::site for proper URL encoding when working with non-ASCII characters.
+     */
+    #[DataProvider('provider_site_url_encode_uri')]
+    #[Test]
+    public function test_site_url_encode_uri($expected, $uri)
 	{
 		$this->assertSame($expected, URL::site($uri, FALSE));
 	}
@@ -239,7 +241,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_title()
+	public static function provider_title()
 	{
 		return [
 			// Tests that..
@@ -267,16 +269,16 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::title()
-	 *
-	 * @test
-	 * @dataProvider provider_title
-	 *
-	 * @param string $title     Input to convert
-	 * @param string $separator Seperate to replace invalid characters with
-	 * @param string $expected  Expected result
-	 */
-	public function test_title($expected, $title, $separator, $ascii_only = FALSE)
+     * Tests URL::title()
+     *
+     *
+     * @param string $title     Input to convert
+     * @param string $separator Seperate to replace invalid characters with
+     * @param string $expected  Expected result
+     */
+    #[DataProvider('provider_title')]
+    #[Test]
+    public function test_title($expected, $title, $separator, $ascii_only = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -289,7 +291,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_query()
+	public static function provider_query()
 	{
 		return [
 			[[], '', NULL],
@@ -312,17 +314,17 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::query()
-	 *
-	 * @test
-	 * @dataProvider provider_query
-	 *
-	 * @param array   $enviroment Set environment
-	 * @param string  $expected   Expected result
-	 * @param array   $params     Query string
-	 * @param boolean $use_get    Combine with GET parameters
-	 */
-	public function test_query($enviroment, $expected, $params, $use_get = TRUE)
+     * Tests URL::query()
+     *
+     *
+     * @param array   $enviroment Set environment
+     * @param string  $expected   Expected result
+     * @param array   $params     Query string
+     * @param boolean $use_get    Combine with GET parameters
+     */
+    #[DataProvider('provider_query')]
+    #[Test]
+    public function test_query($enviroment, $expected, $params, $use_get = TRUE)
 	{
 		$this->setEnvironment($enviroment);
 
@@ -337,7 +339,7 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_is_trusted_host()
+	public static function provider_is_trusted_host()
 	{
 		return [
 			// data set #0
@@ -377,16 +379,16 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests URL::is_trusted_hosts()
-	 *
-	 * @test
-	 * @dataProvider provider_is_trusted_host
-	 *
-	 * @param string  $host          the given host
-	 * @param array   $trusted_hosts list of trusted hosts
-	 * @param boolean $expected      TRUE if host is trusted, FALSE otherwise
-	 */
-	public function test_is_trusted_host($host, $trusted_hosts, $expected)
+     * Tests URL::is_trusted_hosts()
+     *
+     *
+     * @param string  $host          the given host
+     * @param array   $trusted_hosts list of trusted hosts
+     * @param boolean $expected      TRUE if host is trusted, FALSE otherwise
+     */
+    #[DataProvider('provider_is_trusted_host')]
+    #[Test]
+    public function test_is_trusted_host($host, $trusted_hosts, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -395,11 +397,10 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests if invalid host throws "Invalid host" exception
-	 *
-	 * @test
-	 */
-	public function test_if_invalid_host_throws_exception()
+     * Tests if invalid host throws "Invalid host" exception
+     */
+    #[Test]
+    public function test_if_invalid_host_throws_exception()
 	{
 		// set the global HTTP_HOST to <invalid>
 		$_SERVER['HTTP_HOST'] = '<invalid>';
@@ -411,11 +412,10 @@ class Kohana_URLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests if untrusted host throws "Untrusted host" exception
-	 *
-	 * @test
-	 */
-	public function test_if_untrusted_host_throws_exception()
+     * Tests if untrusted host throws "Untrusted host" exception
+     */
+    #[Test]
+    public function test_if_untrusted_host_throws_exception()
 	{
 		// set the global HTTP_HOST to a valid but untrusted host
 		$_SERVER['HTTP_HOST'] = 'untrusted.com';

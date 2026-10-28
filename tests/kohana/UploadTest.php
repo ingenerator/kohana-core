@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana upload class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.upload
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.upload')]
 class Kohana_UploadTest extends KohanaCoreTestCase
 {
 	/**
@@ -25,7 +28,7 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_size()
+	public static function provider_size()
 	{
 		return [
 			// $field, $bytes, $environment, $expected
@@ -77,18 +80,17 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Upload::size
-	 *
-	 * @test
-	 * @dataProvider provider_size
-	 * @covers       upload::size
-	 *
-	 * @param string $field       the files field to test
-	 * @param string $bytes       valid bite size
-	 * @param array  $environment set the $_FILES array
-	 * @param bool   $expected    what to expect
-	 */
-	public function test_size($field, $bytes, $environment, $expected)
+     * Tests Upload::size
+     *
+     *
+     * @param string $field       the files field to test
+     * @param string $bytes       valid bite size
+     * @param array  $environment set the $_FILES array
+     * @param bool   $expected    what to expect
+     */
+    #[DataProvider('provider_size')]
+    #[Test]
+    public function test_size($field, $bytes, $environment, $expected)
 	{
 		$this->setEnvironment($environment);
 
@@ -96,12 +98,10 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * size() should throw an exception of the supplied max size is invalid
-	 *
-	 * @test
-	 * @covers upload::size
-	 */
-	public function test_size_throws_exception_for_invalid_size()
+     * size() should throw an exception of the supplied max size is invalid
+     */
+    #[Test]
+    public function test_size_throws_exception_for_invalid_size()
 	{
 		$this->setEnvironment([
 			'_FILES' => [
@@ -119,7 +119,7 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 		Upload::size($_FILES['unit_test'], '1DooDah');
 	}
 
-	public function provider_not_empty()
+	public static function provider_not_empty()
 	{
 		return [
 			[
@@ -146,25 +146,16 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_not_empty
-	 */
-	public function test_not_empty($to_validate, $expect)
+	#[DataProvider('provider_not_empty')]
+    public function test_not_empty($to_validate, $expect)
 	{
 		$this->assertSame($expect, Upload::not_empty($to_validate));
 	}
 
 	/**
-	 * Provides test data for test_valid()
-	 *
-	 * Not clear if this is actually testing anything as well as being a data provider
-	 * but as it's tagged as a test lets tag it as performing zero assertions
-	 *
-	 * @test
-	 * @doesNotPerformAssertions
-	 * @return array
-	 */
-	public function provider_valid()
+     * Provides test data for test_valid()
+     */
+    public static function provider_valid(): array
 	{
 		return [
 			[
@@ -227,13 +218,11 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test Upload::valid
-	 *
-	 * @test
-	 * @dataProvider provider_valid
-	 * @covers       Upload::valid
-	 */
-	public function test_valid($expected, $file)
+     * Test Upload::valid
+     */
+    #[DataProvider('provider_valid')]
+    #[Test]
+    public function test_valid($expected, $file)
 	{
 		$this->setEnvironment([
 			'_FILES' => [
@@ -245,12 +234,10 @@ class Kohana_UploadTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Upload::type
-	 *
-	 * @test
-	 * @covers Upload::type
-	 */
-	public function test_type()
+     * Tests Upload::type
+     */
+    #[Test]
+    public function test_type()
 	{
 		$this->setEnvironment([
 			'_FILES' => [

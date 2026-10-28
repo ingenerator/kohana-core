@@ -2,12 +2,15 @@
 
 namespace tests\Kohana\Support;
 
+use PHPUnit\Framework\Attributes\UsesClass;
+use BadMethodCallException;
 use PHPUnit\Framework\TestCase;
 
 /**
  * A version of the stock PHPUnit testcase that includes some extra helpers
  * and default settings
  */
+#[UsesClass(Unittest_TestCase::tag_match)]
 abstract class KohanaCoreTestCase extends TestCase
 {
 
@@ -68,7 +71,7 @@ abstract class KohanaCoreTestCase extends TestCase
      * @param string $path The path to act on
      * @return string
      */
-    public function dirSeparator($path)
+    public static function dirSeparator($path)
     {
         return KohanaTestHelpers::dir_separator($path);
     }
@@ -106,11 +109,10 @@ abstract class KohanaCoreTestCase extends TestCase
      * @param string $actual
      * @param string $message
      * @param bool $isHtml
-     * @uses Unittest_TestCase::tag_match
      */
     public static function assertTag($matcher, $actual, $message = '', $isHtml = true)
     {
-        throw new \BadMethodCallException();
+        throw new BadMethodCallException();
     }
 
 }

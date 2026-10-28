@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +9,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * This test only really exists for code coverage.
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.model
  *
  * @package        Kohana
  * @category       Tests
@@ -18,15 +17,16 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.model')]
 class Kohana_ModelTest extends KohanaCoreTestCase
 {
 	/**
-	 * Test the model's factory.
-	 *
-	 * @test
-	 * @covers Model::factory
-	 */
-	public function test_create()
+     * Test the model's factory.
+     */
+    #[Test]
+    public function test_create()
 	{
 		$foobar = Model::factory('Foobar');
 

@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Num
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.num
  * @package        Kohana
  * @category       Tests
  * @author         Kohana Team
@@ -17,6 +17,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.num')]
 class Kohana_NumTest extends KohanaCoreTestCase
 {
 	protected $default_locale;
@@ -51,7 +54,7 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_bytes()
+	public static function provider_bytes()
 	{
 		return [
 			[204800.0, '200K'],
@@ -62,16 +65,15 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Num::bytes()
-	 *
-	 * @test
-	 * @covers       Num::bytes
-	 * @dataProvider provider_bytes
-	 *
-	 * @param integer Expected Value
-	 * @param string  Input value
-	 */
-	public function test_bytes($expected, $size)
+     * Tests Num::bytes()
+     *
+     *
+     * @param integer Expected Value
+     * @param string  Input value
+     */
+    #[DataProvider('provider_bytes')]
+    #[Test]
+    public function test_bytes($expected, $size)
 	{
 		$this->assertSame($expected, Num::bytes($size));
 	}
@@ -81,7 +83,7 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_ordinal()
+	public static function provider_ordinal()
 	{
 		return [
 			[0, 'th'],
@@ -94,14 +96,14 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 *
-	 * @test
-	 * @dataProvider provider_ordinal
-	 *
-	 * @param integer $number
-	 * @param <type>  $expected
-	 */
-	public function test_ordinal($number, $expected)
+     *
+     *
+     * @param integer $number
+     * @param <type>  $expected
+     */
+    #[DataProvider('provider_ordinal')]
+    #[Test]
+    public function test_ordinal($number, $expected)
 	{
 		$this->assertSame($expected, Num::ordinal($number));
 	}
@@ -111,7 +113,7 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_format()
+	public static function provider_format()
 	{
 		return [
 			// English
@@ -125,16 +127,16 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * @param integer $number
-	 * @param integer $places
-	 * @param boolean $monetary
-	 * @param string  $expected
-	 *
-	 * @todo         test locales
-	 * @test
-	 * @dataProvider provider_format
-	 */
-	public function test_format($number, $places, $monetary, $expected)
+     * @param integer $number
+     * @param integer $places
+     * @param boolean $monetary
+     * @param string  $expected
+     *
+     * @todo         test locales
+     */
+    #[DataProvider('provider_format')]
+    #[Test]
+    public function test_format($number, $places, $monetary, $expected)
 	{
 		$this->assertSame($expected, Num::format($number, $places, $monetary));
 	}
@@ -144,7 +146,7 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	function provider_round()
+	static function provider_round()
 	{
 		return [
 			[
@@ -231,15 +233,15 @@ class Kohana_NumTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * @test
-	 * @dataProvider provider_round
-	 *
-	 * @param number  $input
-	 * @param integer $precision
-	 * @param integer $mode
-	 * @param number  $expected
-	 */
-	function test_round($input, $precision, $expected)
+     *
+     * @param number  $input
+     * @param integer $precision
+     * @param integer $mode
+     * @param number  $expected
+     */
+    #[DataProvider('provider_round')]
+    #[Test]
+    function test_round($input, $precision, $expected)
 	{
 		foreach ([Num::ROUND_HALF_UP, Num::ROUND_HALF_DOWN, Num::ROUND_HALF_EVEN, Num::ROUND_HALF_ODD] as $i => $mode) {
 			$this->assertSame($expected[$i], Num::round($input, $precision, $mode, FALSE));

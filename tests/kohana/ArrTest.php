@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the Arr lib that's shipped with kohana
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.arr
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.arr')]
 class Kohana_ArrTest extends KohanaCoreTestCase
 {
 	/**
@@ -25,7 +28,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_callback()
+	public static function provider_callback()
 	{
 		return [
 			// Tests....
@@ -44,15 +47,15 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::callback()
-	 *
-	 * @test
-	 * @dataProvider provider_callback
-	 *
-	 * @param string $str      String to parse
-	 * @param array  $expected Callback and its parameters
-	 */
-	public function test_callback($str, $expected)
+     * Tests Arr::callback()
+     *
+     *
+     * @param string $str      String to parse
+     * @param array  $expected Callback and its parameters
+     */
+    #[DataProvider('provider_callback')]
+    #[Test]
+    public function test_callback($str, $expected)
 	{
 		$result = Arr::callback($str);
 
@@ -65,7 +68,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_extract()
+	public static function provider_extract()
 	{
 		return [
 			[
@@ -121,17 +124,17 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::extract()
-	 *
-	 * @test
-	 * @dataProvider provider_extract
-	 *
-	 * @param array $array
-	 * @param array $paths
-	 * @param mixed $default
-	 * @param array $expected
-	 */
-	public function test_extract(array $array, array $paths, $default, $expected)
+     * Tests Arr::extract()
+     *
+     *
+     * @param array $array
+     * @param array $paths
+     * @param mixed $default
+     * @param array $expected
+     */
+    #[DataProvider('provider_extract')]
+    #[Test]
+    public function test_extract(array $array, array $paths, $default, $expected)
 	{
 		$array = Arr::extract($array, $paths, $default);
 
@@ -144,7 +147,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_pluck()
+	public static function provider_pluck()
 	{
 		return [
 			[
@@ -160,16 +163,16 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::pluck()
-	 *
-	 * @test
-	 * @dataProvider provider_pluck
-	 *
-	 * @param array  $array
-	 * @param string $key
-	 * @param array  $expected
-	 */
-	public function test_pluck(array $array, $key, $expected)
+     * Tests Arr::pluck()
+     *
+     *
+     * @param array  $array
+     * @param string $key
+     * @param array  $expected
+     */
+    #[DataProvider('provider_pluck')]
+    #[Test]
+    public function test_pluck(array $array, $key, $expected)
 	{
 		$array = Arr::pluck($array, $key);
 
@@ -182,7 +185,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_get()
+	public static function provider_get()
 	{
 		return [
 			[['uno', 'dos', 'tress'], 1, NULL, 'dos'],
@@ -196,17 +199,17 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::get()
-	 *
-	 * @test
-	 * @dataProvider provider_get()
-	 *
-	 * @param array          $array    Array to look in
-	 * @param string|integer $key      Key to look for
-	 * @param mixed          $default  What to return if $key isn't set
-	 * @param mixed          $expected The expected value returned
-	 */
-	public function test_get(array $array, $key, $default, $expected)
+     * Tests Arr::get()
+     *
+     *
+     * @param array          $array    Array to look in
+     * @param string|integer $key      Key to look for
+     * @param mixed          $default  What to return if $key isn't set
+     * @param mixed          $expected The expected value returned
+     */
+    #[DataProvider('provider_get')]
+    #[Test]
+    public function test_get(array $array, $key, $default, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -219,7 +222,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_is_assoc()
+	public static function provider_is_assoc()
 	{
 		return [
 			[['one', 'two', 'three'], FALSE],
@@ -228,15 +231,15 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::is_assoc()
-	 *
-	 * @test
-	 * @dataProvider provider_is_assoc
-	 *
-	 * @param array   $array    Array to check
-	 * @param boolean $expected Is $array assoc
-	 */
-	public function test_is_assoc(array $array, $expected)
+     * Tests Arr::is_assoc()
+     *
+     *
+     * @param array   $array    Array to check
+     * @param boolean $expected Is $array assoc
+     */
+    #[DataProvider('provider_is_assoc')]
+    #[Test]
+    public function test_is_assoc(array $array, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -249,7 +252,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_is_array()
+	public static function provider_is_array()
 	{
 		return [
 			[$a = ['one', 'two', 'three'], TRUE],
@@ -261,15 +264,15 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::is_array()
-	 *
-	 * @test
-	 * @dataProvider provider_is_array
-	 *
-	 * @param mixed   $value    Value to check
-	 * @param boolean $expected Is $value an array?
-	 */
-	public function test_is_array($array, $expected)
+     * Tests Arr::is_array()
+     *
+     *
+     * @param mixed   $value    Value to check
+     * @param boolean $expected Is $value an array?
+     */
+    #[DataProvider('provider_is_array')]
+    #[Test]
+    public function test_is_array($array, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -277,7 +280,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 		);
 	}
 
-	public function provider_merge()
+	public static function provider_merge()
 	{
 		return [
 			// Test how it merges arrays and sub arrays with assoc keys
@@ -400,12 +403,9 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_merge
-	 */
-	public function test_merge($expected, $array1, $array2)
+	#[DataProvider('provider_merge')]
+    #[Test]
+    public function test_merge($expected, $array1, $array2)
 	{
 		$this->assertSame(
 			$expected,
@@ -418,7 +418,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_path()
+	public static function provider_path()
 	{
 		$array = [
 			'foobar' => ['definition' => 'lost'],
@@ -491,17 +491,17 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::path()
-	 *
-	 * @test
-	 * @dataProvider provider_path
-	 *
-	 * @param string  $path      The path to follow
-	 * @param mixed   $default   The value to return if dnx
-	 * @param boolean $expected  The expected value
-	 * @param string  $delimiter The path delimiter
-	 */
-	public function test_path($expected, $array, $path, $default = NULL, $delimiter = NULL)
+     * Tests Arr::path()
+     *
+     *
+     * @param string  $path      The path to follow
+     * @param mixed   $default   The value to return if dnx
+     * @param boolean $expected  The expected value
+     * @param string  $delimiter The path delimiter
+     */
+    #[DataProvider('provider_path')]
+    #[Test]
+    public function test_path($expected, $array, $path, $default = NULL, $delimiter = NULL)
 	{
 		$this->assertSame(
 			$expected,
@@ -514,7 +514,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_set_path()
+	public static function provider_set_path()
 	{
 		return [
 			// Tests returns normal values
@@ -536,16 +536,16 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::path()
-	 *
-	 * @test
-	 * @dataProvider provider_set_path
-	 *
-	 * @param string  $path      The path to follow
-	 * @param boolean $expected  The expected value
-	 * @param string  $delimiter The path delimiter
-	 */
-	public function test_set_path($expected, $array, $path, $value, $delimiter = NULL)
+     * Tests Arr::path()
+     *
+     *
+     * @param string  $path      The path to follow
+     * @param boolean $expected  The expected value
+     * @param string  $delimiter The path delimiter
+     */
+    #[DataProvider('provider_set_path')]
+    #[Test]
+    public function test_set_path($expected, $array, $path, $value, $delimiter = NULL)
 	{
 		Arr::set_path($array, $path, $value, $delimiter);
 
@@ -557,7 +557,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_range()
+	public static function provider_range()
 	{
 		return [
 			[1, 2],
@@ -567,14 +567,14 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::range()
-	 *
-	 * @dataProvider provider_range
-	 *
-	 * @param integer $step The step between each value in the array
-	 * @param integer $max  The max value of the range (inclusive)
-	 */
-	public function test_range($step, $max)
+     * Tests Arr::range()
+     *
+     *
+     * @param integer $step The step between each value in the array
+     * @param integer $max  The max value of the range (inclusive)
+     */
+    #[DataProvider('provider_range')]
+    public function test_range($step, $max)
 	{
 		$range = Arr::range($step, $max);
 
@@ -595,7 +595,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_unshift()
+	public static function provider_unshift()
 	{
 		return [
 			[['one' => '1', 'two' => '2',], 'zero', '0'],
@@ -604,16 +604,16 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Arr::unshift()
-	 *
-	 * @test
-	 * @dataProvider provider_unshift
-	 *
-	 * @param array  $array
-	 * @param string $key
-	 * @param mixed  $value
-	 */
-	public function test_unshift(array $array, $key, $value)
+     * Tests Arr::unshift()
+     *
+     *
+     * @param array  $array
+     * @param string $key
+     * @param mixed  $value
+     */
+    #[DataProvider('provider_unshift')]
+    #[Test]
+    public function test_unshift(array $array, $key, $value)
 	{
 		$original = $array;
 
@@ -632,7 +632,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_overwrite()
+	public static function provider_overwrite()
 	{
 		return [
 			[
@@ -644,12 +644,9 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_overwrite
-	 */
-	public function test_overwrite($expected, $arr1, $arr2, $arr3 = [], $arr4 = [])
+	#[DataProvider('provider_overwrite')]
+    #[Test]
+    public function test_overwrite($expected, $arr1, $arr2, $arr3 = [], $arr4 = [])
 	{
 		$this->assertSame(
 			$expected,
@@ -662,7 +659,7 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_map()
+	public static function provider_map()
 	{
 		return [
 			['strip_tags', ['<p>foobar</p>'], NULL, ['foobar']],
@@ -725,12 +722,9 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_map
-	 */
-	public function test_map($method, $source, $keys, $expected)
+	#[DataProvider('provider_map')]
+    #[Test]
+    public function test_map($method, $source, $keys, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -743,19 +737,16 @@ class Kohana_ArrTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_flatten()
+	public static function provider_flatten()
 	{
 		return [
 			[['set' => ['one' => 'something'], 'two' => 'other'], ['one' => 'something', 'two' => 'other']],
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_flatten
-	 */
-	public function test_flatten($source, $expected)
+	#[DataProvider('provider_flatten')]
+    #[Test]
+    public function test_flatten($source, $expected)
 	{
 		$this->assertSame(
 			$expected,

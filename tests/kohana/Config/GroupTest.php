@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,8 +9,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the Config group lib
  *
- * @group          kohana
- * @group          kohana.config
  *
  * @package        Unittest
  * @author         Kohana Team
@@ -17,6 +17,8 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2014 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.config')]
 class Kohana_Config_GroupTest extends KohanaCoreTestCase
 {
 	/**
@@ -48,13 +50,11 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * The group name and group's config values should be loaded into the object
-	 * by the constructor
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group
-	 */
-	public function test_loads_group_name_and_values_in_constructor()
+     * The group name and group's config values should be loaded into the object
+     * by the constructor
+     */
+    #[Test]
+    public function test_loads_group_name_and_values_in_constructor()
 	{
 		$group_name   = 'information';
 		$group_values = ['var' => 'value'];
@@ -70,13 +70,11 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * A config group may not exist (or may not have any values) when it is loaded.
-	 * The config group should allow for this situation and not complain
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group
-	 */
-	public function test_allows_empty_group_values()
+     * A config group may not exist (or may not have any values) when it is loaded.
+     * The config group should allow for this situation and not complain
+     */
+    #[Test]
+    public function test_allows_empty_group_values()
 	{
 		$group = $this->get_mock_group('informatica');
 
@@ -84,12 +82,10 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When get() is called it should fetch the config value specified
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::get
-	 */
-	public function test_get_fetches_config_value()
+     * When get() is called it should fetch the config value specified
+     */
+    #[Test]
+    public function test_get_fetches_config_value()
 	{
 		$group = $this->get_mock_group('kohana', ['status' => 'awesome']);
 
@@ -97,13 +93,11 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If a config option does not exist then get() should return the default value, which is
-	 * NULL by default
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::get
-	 */
-	public function test_get_returns_default_value_if_config_option_dnx()
+     * If a config option does not exist then get() should return the default value, which is
+     * NULL by default
+     */
+    #[Test]
+    public function test_get_returns_default_value_if_config_option_dnx()
 	{
 		$group = $this->get_mock_group('kohana');
 
@@ -112,12 +106,10 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * We should be able to modify existing configuration items using set()
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::set
-	 */
-	public function test_set_modifies_existing_config()
+     * We should be able to modify existing configuration items using set()
+     */
+    #[Test]
+    public function test_set_modifies_existing_config()
 	{
 		$group = $this->get_mock_group('kohana', ['status' => 'pre-awesome']);
 
@@ -127,15 +119,13 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If we modify the config via set() [$var] or ->$var then the change should be passed to
-	 * the parent config instance so that the config writers can be notified.
-	 *
-	 * The modification to the config should also stick
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::offsetSet
-	 */
-	public function test_writes_changes_to_config()
+     * If we modify the config via set() [$var] or ->$var then the change should be passed to
+     * the parent config instance so that the config writers can be notified.
+     *
+     * The modification to the config should also stick
+     */
+    #[Test]
+    public function test_writes_changes_to_config()
 	{
 		$mock = $this->createPartialMock('Kohana_Config', ['_write_config']);
 
@@ -154,12 +144,10 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Calling as_array() should return the full array, inc. any modifications
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::as_array
-	 */
-	public function test_as_array_returns_full_array()
+     * Calling as_array() should return the full array, inc. any modifications
+     */
+    #[Test]
+    public function test_as_array_returns_full_array()
 	{
 		$config = $this->get_mock_group('something', ['var' => 'value']);
 
@@ -180,12 +168,10 @@ class Kohana_Config_GroupTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Casting the object to a string should serialize the output of as_array
-	 *
-	 * @test
-	 * @covers Kohana_Config_Group::__toString
-	 */
-	public function test_to_string_serializes_array_output()
+     * Casting the object to a string should serialize the output of as_array
+     */
+    #[Test]
+    public function test_to_string_serializes_array_output()
 	{
 		$vars   = ['kohana' => 'cool', 'unit_tests' => 'boring'];
 		$config = $this->get_mock_group('hehehe', $vars);

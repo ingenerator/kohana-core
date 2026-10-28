@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana i18n class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.i18n
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.i18n')]
 class Kohana_I18nTest extends KohanaCoreTestCase
 {
 
@@ -37,7 +40,7 @@ class Kohana_I18nTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_lang()
+	public static function provider_lang()
 	{
 		return [
 			// $input, $expected_result
@@ -47,15 +50,15 @@ class Kohana_I18nTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests I18n::lang()
-	 *
-	 * @test
-	 * @dataProvider provider_lang
-	 *
-	 * @param boolean $input    Input for I18n::lang
-	 * @param boolean $expected Output for I18n::lang
-	 */
-	public function test_lang($input, $expected_result)
+     * Tests I18n::lang()
+     *
+     *
+     * @param boolean $input    Input for I18n::lang
+     * @param boolean $expected Output for I18n::lang
+     */
+    #[DataProvider('provider_lang')]
+    #[Test]
+    public function test_lang($input, $expected_result)
 	{
 		$this->assertSame($expected_result, I18n::lang($input));
 		$this->assertSame($expected_result, I18n::lang());
@@ -66,7 +69,7 @@ class Kohana_I18nTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_get()
+	public static function provider_get()
 	{
 		return [
 			// $value, $result
@@ -77,15 +80,15 @@ class Kohana_I18nTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests i18n::get()
-	 *
-	 * @test
-	 * @dataProvider provider_get
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_get($lang, $input, $expected)
+     * Tests i18n::get()
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_get')]
+    #[Test]
+    public function test_get($lang, $input, $expected)
 	{
 		I18n::lang($lang);
 		$this->assertSame($expected, I18n::get($input));
