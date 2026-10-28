@@ -27,16 +27,47 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
 
-	/**
-	 * Gets a mock of the session class
-	 *
-	 * @return Session
-	 */
-	// @codingStandardsIgnoreStart
-	public function getMockSession(array $config = [])
-		// @codingStandardsIgnoreEnd
+    public function getTestableSessionDriver(?array $config = NULL, $id = NULL, SessionDriverMethodMock $driverMock = new SessionDriverMethodMock()): Session
 	{
-		return $this->getMockForAbstractClass('Session', [$config]);
+        // This is fairly ugly, but it reflects the original Kohana design where drivers extend `Session` rather than
+        // being injected into them through e.g. a driver interface.
+        // PHPUnit no longer cleanly supports mocking an abstract class, so we separate the underlying Session
+        // implementation from the mockable / injectable abstract method implementations for testing.
+        return new class($driverMock, $config, $id) extends Session {
+            public function __construct(
+                public readonly SessionDriverMethodMock $mock,
+                ?array $config = NULL,
+                $id = NULL
+            )
+            {
+                parent::__construct($config, $id);
+            }
+
+            protected function _read($id = NULL)
+            {
+                return $this->mock->doCall(__FUNCTION__, func_get_args());
+            }
+
+            protected function _regenerate()
+            {
+                return $this->mock->doCall(__FUNCTION__, func_get_args());
+            }
+
+            protected function _write()
+            {
+                return $this->mock->doCall(__FUNCTION__, func_get_args());
+            }
+
+            protected function _destroy()
+            {
+                return $this->mock->doCall(__FUNCTION__, func_get_args());
+            }
+
+            protected function _restart()
+            {
+                return $this->mock->doCall(__FUNCTION__, func_get_args());
+            }
+        };
 	}
 
 	/**
@@ -81,7 +112,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_constructor_uses_settings_from_config_and_casts($expected, $config)
 	{
-		$session = $this->getMockForAbstractClass('Session', [$config]);
+		$session = $this->getTestableSessionDriver($config);
 
 		foreach ($expected as $var => $value) {
 			$this->assertAttributeSame($value, '_'.$var, $session);
@@ -95,21 +126,18 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_constructor_loads_session_with_session_id()
 	{
-		$config     = [];
-		$session_id = 'lolums';
+        $session_id = 'lolums';
+        $mock = new SessionDriverMethodMock();
 
-		// Don't auto-call constructor, we need to setup the mock first
-		$session = $this->getMockBuilder('Session')
-			->disableOriginalConstructor()
-			->onlyMethods(['read'])
-			->getMockForAbstractClass();
+        // Create the session
+        $session = $this->getTestableSessionDriver([], $session_id, $mock);
 
-		$session
-			->expects($this->once())
-			->method('read')
-			->with($session_id);
-
-		$session->__construct($config, $session_id);
+        $this->assertSame(
+            [
+                ['_read'=> [$session_id]],
+            ],
+            $mock->getCalls(),
+        );
 	}
 
 	/**
@@ -120,7 +148,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_bind_actually_binds_variable()
 	{
-		$session = $this->getMockForAbstractClass('Session');
+		$session = $this->getTestableSessionDriver();
 
 		$var = 'asd';
 
@@ -139,7 +167,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_initially_session_has_no_data()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertAttributeSame([], '_data', $session);
 	}
@@ -151,7 +179,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_default_session_name_is_set()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertAttributeSame('session', '_name', $session);
 	}
@@ -162,7 +190,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_default_session_is_not_classed_as_destroyed()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertAttributeSame(FALSE, '_destroyed', $session);
 	}
@@ -189,7 +217,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_get_returns_default_if_var_dnx($var, $default)
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertSame($default, $session->get($var, $default));
 	}
@@ -200,7 +228,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_get_uses_null_as_default_return_value()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertSame(NULL, $session->get('level_of_cool'));
 	}
@@ -212,7 +240,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_get_returns_value_if_it_equals_null()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$session->set('arkward', NULL);
 
@@ -227,7 +255,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_as_array_returns_data_by_ref_or_copy()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$data_ref =& $session->as_array();
 
@@ -250,14 +278,14 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_set_adds_and_modifies_to_session_data()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$this->assertSame($session, $session->set('pork', 'pie'));
 
 		$this->assertAttributeSame(
 			['pork' => 'pie'],
 			'_data',
-			$session
+			$session,
 		);
 
 		$session->set('pork', 'delicious');
@@ -265,7 +293,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 		$this->assertAttributeSame(
 			['pork' => 'delicious'],
 			'_data',
-			$session
+			$session,
 		);
 	}
 
@@ -275,7 +303,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_delete_removes_select_session_data()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		// Bit of a hack for mass-loading session data
 		$data =& $session->as_array();
@@ -348,15 +376,20 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_read_loads_session_data($expected_data, $session_id, $driver_data, array $config = [])
 	{
-		$session = $this->getMockSession($config);
-
-		$session->expects($this->once())
-			->method('_read')
-			->with($session_id)
-			->willReturn($driver_data);
+        $mock = new SessionDriverMethodMock(
+            _read: fn($i) => $driver_data,
+        );
+		$session = $this->getTestableSessionDriver(config: $config, driverMock: $mock);
 
 		$session->read($session_id);
 		$this->assertAttributeSame($expected_data, '_data', $session);
+        $this->assertSame(
+            [
+                ['_read' => [null]],
+                ['_read' => [$session_id]],
+            ],
+            $mock->getCalls(),
+        );
 	}
 
 	/**
@@ -365,16 +398,22 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_regenerate_tells_driver_to_regenerate()
 	{
-		$session = $this->getMockSession();
+        $new_session_id = 'asdnoawdnoainf';
 
-		$new_session_id = 'asdnoawdnoainf';
+        $mock = new SessionDriverMethodMock(
+            _regenerate: fn() => $new_session_id,
+        );
+        $session = $this->getTestableSessionDriver(driverMock: $mock);
 
-		$session->expects($this->once())
-			->method('_regenerate')
-			->with()
-			->willReturn($new_session_id);
 
 		$this->assertSame($new_session_id, $session->regenerate());
+        $this->assertSame(
+            [
+                ['_read' => [null]],
+                ['_regenerate' => []],
+            ],
+            $mock->getCalls(),
+        );
 	}
 
 	/**
@@ -384,19 +423,20 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_destroy_deletes_data_if_driver_destroys_session()
 	{
-		$session = $this->getMockSession();
+        $mock = new SessionDriverMethodMock(
+            _destroy: fn() => TRUE,
+        );
+		$session = $this->getTestableSessionDriver(driverMock: $mock);
 
 		$session
 			->set('asd', 'dsa')
 			->set('dog', 'god');
 
-		$session
-			->expects($this->once())
-			->method('_destroy')
-			->with()
-			->willReturn(TRUE);
-
 		$this->assertTrue($session->destroy());
+        $this->assertSame([
+            ['_read' => [null]],
+            ['_destroy' => []],
+        ], $mock->getCalls());
 
 		$this->assertAttributeSame([], '_data', $session);
 	}
@@ -408,23 +448,25 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_destroy_only_deletes_data_if_driver_destroys_session()
 	{
-		$session = $this->getMockSession();
+        $mock = new SessionDriverMethodMock(
+            _destroy: fn() => FALSE,
+        );
+		$session = $this->getTestableSessionDriver(driverMock: $mock);
 
 		$session
 			->set('asd', 'dsa')
 			->set('dog', 'god');
 
-		$session
-			->expects($this->once())
-			->method('_destroy')
-			->with()
-			->willReturn(FALSE);
-
 		$this->assertFalse($session->destroy());
+        $this->assertSame([
+            ['_read' => [null]],
+            ['_destroy' => []],
+        ], $mock->getCalls());
+
 		$this->assertAttributeSame(
 			['asd' => 'dsa', 'dog' => 'god'],
 			'_data',
-			$session
+			$session,
 		);
 	}
 
@@ -435,7 +477,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
     #[Test]
     public function test_get_once_gets_once_or_returns_default()
 	{
-		$session = $this->getMockSession();
+		$session = $this->getTestableSessionDriver();
 
 		$session->set('foo', 'bar');
 
@@ -449,4 +491,34 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 
 		$this->assertSame('maybe', $session->get_once('foo', 'maybe'));
 	}
+}
+
+final class SessionDriverMethodMock {
+    private array $driverCalls = [];
+
+    public function __construct(
+        private readonly ?Closure $_read = null,
+        private readonly ?Closure $_regenerate = null,
+        private readonly ?Closure $_write = null,
+        private readonly ?Closure $_destroy = null,
+        private readonly ?Closure $_restart = null,
+    )
+    {
+    }
+
+    public function getCalls():array
+    {
+        return $this->driverCalls;
+    }
+
+    public function doCall(string $method, array $args):mixed
+    {
+        $this->driverCalls[] = [$method => $args];
+        if ($this->$method !== null) {
+            return ($this->$method)(...$args);
+        }
+
+        return null;
+    }
+
 }
