@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Unit tests for response class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.response
  *
  * @package        Kohana
  * @category       Tests
@@ -17,6 +17,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.response')]
 class Kohana_ResponseTest extends KohanaCoreTestCase
 {
 	/**
@@ -24,28 +27,31 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_body()
+	public static function provider_body()
 	{
-		$view = $this->createMock('View');
-		$view->expects($this->any())
-			->method('__toString')
-			->will($this->returnValue('foo'));
-
-		return [
-			['unit test', 'unit test'],
-			[$view, 'foo'],
-		];
+        return [
+            ['unit test', 'unit test'],
+            [
+                new class extends View {
+                    public function __toString()
+                    {
+                        return 'foo';
+                    }
+                },
+                'foo',
+            ],
+        ];
 	}
 
 	/**
-	 * Tests that we can set and read a body of a response
-	 *
-	 * @test
-	 * @dataProvider provider_body
-	 *
-	 * @return null
-	 */
-	public function test_body($source, $expected)
+     * Tests that we can set and read a body of a response
+     *
+     *
+     * @return null
+     */
+    #[DataProvider('provider_body')]
+    #[Test]
+    public function test_body($source, $expected)
 	{
 		$response = new Response;
 		$response->body($source);
@@ -60,7 +66,7 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_body_string_zero()
+	public static function provider_body_string_zero()
 	{
 		return [
 			['0', '0'],
@@ -70,17 +76,17 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test that Response::body() handles numerics correctly
-	 *
-	 * @test
-	 * @dataProvider provider_body_string_zero
-	 *
-	 * @param string $string
-	 * @param string $expected
-	 *
-	 * @return void
-	 */
-	public function test_body_string_zero($string, $expected)
+     * Test that Response::body() handles numerics correctly
+     *
+     *
+     * @param string $string
+     * @param string $expected
+     *
+     * @return void
+     */
+    #[DataProvider('provider_body_string_zero')]
+    #[Test]
+    public function test_body_string_zero($string, $expected)
 	{
 		$response = new Response;
 		$response->body($string);
@@ -125,10 +131,8 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_set_json
-	 */
-	public function test_set_json(array $args, array $expected)
+	#[DataProvider('provider_set_json')]
+    public function test_set_json(array $args, array $expected)
 	{
 		$response = new Response();
 		$response->setJSON(...$args);
@@ -151,7 +155,7 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_cookie_set()
+	public static function provider_cookie_set()
 	{
 		return [
 			[
@@ -190,19 +194,19 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests the Response::cookie() method, ensures
-	 * correct values are set, including defaults
-	 *
-	 * @test
-	 * @dataProvider provider_cookie_set
-	 *
-	 * @param string $key
-	 * @param string $value
-	 * @param array  $expected
-	 *
-	 * @return void
-	 */
-	public function test_cookie_set($key, $value, $expected)
+     * Tests the Response::cookie() method, ensures
+     * correct values are set, including defaults
+     *
+     *
+     * @param string $key
+     * @param string $value
+     * @param array  $expected
+     *
+     * @return void
+     */
+    #[DataProvider('provider_cookie_set')]
+    #[Test]
+    public function test_cookie_set($key, $value, $expected)
 	{
 		Cookie::$expiration = 900;
 		// Setup the Response and apply cookie
@@ -240,11 +244,10 @@ class Kohana_ResponseTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test the content type is sent when set
-	 *
-	 * @test
-	 */
-	public function test_content_type_when_set()
+     * Test the content type is sent when set
+     */
+    #[Test]
+    public function test_content_type_when_set()
 	{
 		$content_type = 'application/json';
 		$response     = new Response;

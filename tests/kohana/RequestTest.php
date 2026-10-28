@@ -1,5 +1,9 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\TestWith;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +11,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Unit tests for request class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.request
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +19,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.request')]
 class Kohana_RequestTest extends KohanaCoreTestCase
 {
 	protected $_inital_request;
@@ -92,7 +96,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 		$this->assertEquals([], $request->post());
 	}
 
-	public function provider_incoming_uri()
+	public static function provider_incoming_uri()
 	{
 		return [
 			[
@@ -141,10 +145,8 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_incoming_uri
-	 */
-	public function test_from_globals_detects_incoming_uri($server, $expect)
+	#[DataProvider('provider_incoming_uri')]
+    public function test_from_globals_detects_incoming_uri($server, $expect)
 	{
 		$this->setEnvironment(
 			[
@@ -161,11 +163,10 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Ensure that parameters can be read
-	 *
-	 * @test
-	 */
-	public function test_assigns_route_params_and_splits_out_directory_controller_action()
+     * Ensure that parameters can be read
+     */
+    #[Test]
+    public function test_assigns_route_params_and_splits_out_directory_controller_action()
 	{
 		$request = Request::with([]);
 		$request->set_matched_route_params(
@@ -191,14 +192,13 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Request::method()
-	 *
-	 * @test
-	 * @testWith [null, "GET"]
-	 *           ["GET", "GET"]
-	 *           ["POST", "POST"]
-	 */
-	public function test_method($server_method, $expect)
+     * Tests Request::method()
+     */
+    #[TestWith([null, 'GET'])]
+    #[TestWith(['GET', 'GET'])]
+    #[TestWith(['POST', 'POST'])]
+    #[Test]
+    public function test_method($server_method, $expect)
 	{
 		if ($server_method) {
 			$_SERVER['REQUEST_METHOD'] = $server_method;
@@ -210,12 +210,10 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Request::accept_type()
-	 *
-	 * @test
-	 * @covers Request::accept_type
-	 */
-	public function test_accept_type()
+     * Tests Request::accept_type()
+     */
+    #[Test]
+    public function test_accept_type()
 	{
 		$this->assertEquals(['*/*' => 1], Request::accept_type());
 	}
@@ -225,7 +223,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_accept_lang()
+	public static function provider_accept_lang()
 	{
 		return [
 			['en-us', 1, ['_SERVER' => ['HTTP_ACCEPT_LANGUAGE' => 'en-us,en;q=0.5']]],
@@ -235,17 +233,16 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Request::accept_lang()
-	 *
-	 * @test
-	 * @covers       Request::accept_lang
-	 * @dataProvider provider_accept_lang
-	 *
-	 * @param array  $params     Query string
-	 * @param string $expected   Expected result
-	 * @param array  $enviroment Set environment
-	 */
-	public function test_accept_lang($params, $expected, $enviroment)
+     * Tests Request::accept_lang()
+     *
+     *
+     * @param array  $params     Query string
+     * @param string $expected   Expected result
+     * @param array  $enviroment Set environment
+     */
+    #[DataProvider('provider_accept_lang')]
+    #[Test]
+    public function test_accept_lang($params, $expected, $enviroment)
 	{
 		$this->setEnvironment($enviroment);
 
@@ -260,7 +257,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_url()
+	public static function provider_url()
 	{
 		return [
 			[
@@ -282,17 +279,16 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Request::url()
-	 *
-	 * @test
-	 * @dataProvider provider_url
-	 * @covers       Request::url
-	 *
-	 * @param string $uri      the uri to use
-	 * @param string $protocol the protocol to use
-	 * @param array  $expected The string we expect
-	 */
-	public function test_url($uri, $protocol, $expected)
+     * Tests Request::url()
+     *
+     *
+     * @param string $uri      the uri to use
+     * @param string $protocol the protocol to use
+     * @param array  $expected The string we expect
+     */
+    #[DataProvider('provider_url')]
+    #[Test]
+    public function test_url($uri, $protocol, $expected)
 	{
 		if ( ! isset($_SERVER['argc'])) {
 			$_SERVER['argc'] = 1;
@@ -314,7 +310,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_set_protocol()
+	public static function provider_set_protocol()
 	{
 		return [
 			[
@@ -333,13 +329,13 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests the protocol() method
-	 *
-	 * @dataProvider provider_set_protocol
-	 *
-	 * @return null
-	 */
-	public function test_set_protocol($protocol, $expected)
+     * Tests the protocol() method
+     *
+     *
+     * @return null
+     */
+    #[DataProvider('provider_set_protocol')]
+    public function test_set_protocol($protocol, $expected)
 	{
 		// @todo: shouldn't protocol just come from the global $_SERVER not from HTTP::$protocol
 		// which is then overridden in the standard bootstrap for unexplained reasons
@@ -354,7 +350,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return  array
 	 */
-	public function provider_post_max_size_exceeded()
+	public static function provider_post_max_size_exceeded()
 	{
 		// Get the post max size
 		$post_max_size = Num::bytes(ini_get('post_max_size'));
@@ -376,16 +372,15 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests the post_max_size_exceeded() method
-	 *
-	 * @dataProvider provider_post_max_size_exceeded
-	 *
-	 * @param int      content_length
-	 * @param bool     expected
-	 *
-	 * @return  void
-	 */
-	public function test_post_max_size_exceeded($content_length, $expected)
+     * Tests the post_max_size_exceeded() method
+     *
+     *
+     * @param int      content_length
+     * @param bool     expected
+     * @return  void
+     */
+    #[DataProvider('provider_post_max_size_exceeded')]
+    public function test_post_max_size_exceeded($content_length, $expected)
 	{
 		$_SERVER['REQUEST_METHOD'] = 'POST';
 		$_SERVER['CONTENT_LENGTH'] = $content_length;
@@ -400,7 +395,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return  array
 	 */
-	public function provider_uri_only_trimed_on_internal()
+	public static function provider_uri_only_trimed_on_internal()
 	{
 		// issue #3967: inject the route so that we don't conflict with the application's default route
 		$route = new Route('(<controller>(/<action>))');
@@ -440,14 +435,14 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that the uri supplied to Request is only trimed
-	 * for internal requests.
-	 *
-	 * @dataProvider provider_uri_only_trimed_on_internal
-	 *
-	 * @return void
-	 */
-	public function test_uri_only_trimed_on_internal(Request $request, $expected)
+     * Tests that the uri supplied to Request is only trimed
+     * for internal requests.
+     *
+     *
+     * @return void
+     */
+    #[DataProvider('provider_uri_only_trimed_on_internal')]
+    public function test_uri_only_trimed_on_internal(Request $request, $expected)
 	{
 		$this->assertSame($request->uri(), $expected);
 	}
@@ -457,7 +452,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return  array
 	 */
-	public function provider_headers_get()
+	public static function provider_headers_get()
 	{
 		$x_powered_by = 'Kohana Unit Test';
 		$content_type = 'application/x-www-form-urlencoded';
@@ -478,13 +473,13 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests getting headers from the Request object
-	 *
-	 * @dataProvider provider_headers_get
-	 *
-	 * @return  void
-	 */
-	public function test_headers_get($set_headers, $expect)
+     * Tests getting headers from the Request object
+     *
+     *
+     * @return  void
+     */
+    #[DataProvider('provider_headers_get')]
+    public function test_headers_get($set_headers, $expect)
 	{
 		foreach ($set_headers as $key => $value) {
 			$_SERVER[$key] = $value;
@@ -500,7 +495,7 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	 *
 	 * @return  array
 	 */
-	public function provider_query_parameter_access()
+	public static function provider_query_parameter_access()
 	{
 		return [
 			[
@@ -534,17 +529,16 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that query parameters are parsed correctly
-	 *
-	 * @dataProvider provider_query_parameter_access
-	 *
-	 * @param string    url
-	 * @param array     query
-	 * @param array    expected
-	 *
-	 * @return  void
-	 */
-	public function test_query_parameter_access($get, $key, $expect)
+     * Tests that query parameters are parsed correctly
+     *
+     *
+     * @param string    url
+     * @param array     query
+     * @param array    expected
+     * @return  void
+     */
+    #[DataProvider('provider_query_parameter_access')]
+    public function test_query_parameter_access($get, $key, $expect)
 	{
 		$_GET = $get;
 		$this->assertSame($expect, Request::fromGlobals()->query($key));
@@ -636,10 +630,8 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_json_body_array
-	 */
-	public function test_can_return_decoded_json_body_array_or_object(string $body, array $expect)
+	#[DataProvider('provider_json_body_array')]
+    public function test_can_return_decoded_json_body_array_or_object(string $body, array $expect)
 	{
 		$request = Request::with([
 			'body' => $body,
@@ -712,10 +704,8 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 	}
 
 
-	/**
-	 * @dataProvider provider_invalid_json_request
-	 */
-	public function test_throws_on_invalid_or_unexpected_json_request(array $request, string $expect_msg)
+	#[DataProvider('provider_invalid_json_request')]
+    public function test_throws_on_invalid_or_unexpected_json_request(array $request, string $expect_msg)
 	{
 		$request['header'] = new HTTP_Header($request['header'] ?? []);
 		$request = Request::with($request);
@@ -765,10 +755,8 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_invalid_json_too_large
-	 */
-	public function test_json_body_methods_protect_against_large_or_abusive_payloads(string $body, array $args, array $expect_behaviour)
+	#[DataProvider('provider_invalid_json_too_large')]
+    public function test_json_body_methods_protect_against_large_or_abusive_payloads(string $body, array $args, array $expect_behaviour)
 	{
 		$request = Request::with([
 			'body' => $body,

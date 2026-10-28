@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests HTTP
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.http
  *
  * @package        Kohana
  * @category       Tests
@@ -17,6 +17,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.http')]
 class Kohana_HTTPTest extends KohanaCoreTestCase
 {
 
@@ -65,7 +68,7 @@ class Kohana_HTTPTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_redirect()
+	public static function provider_redirect()
 	{
 		return [
 			[
@@ -90,17 +93,17 @@ class Kohana_HTTPTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTTP::redirect()
-	 *
-	 * @test
-	 * @dataProvider provider_redirect
-	 *
-	 * @param array  $location           Location to redirect to
-	 * @param array  $code               HTTP Code to use for the redirect
-	 * @param string $expected_exception Expected exception
-	 * @param string $expected_location  Expected exception
-	 */
-	public function test_redirect($location, $code, $expected_exception, $expected_location)
+     * Tests HTTP::redirect()
+     *
+     *
+     * @param array  $location           Location to redirect to
+     * @param array  $code               HTTP Code to use for the redirect
+     * @param string $expected_exception Expected exception
+     * @param string $expected_location  Expected exception
+     */
+    #[DataProvider('provider_redirect')]
+    #[Test]
+    public function test_redirect($location, $code, $expected_exception, $expected_location)
 	{
 		try {
 			HTTP::redirect($location, $code);
@@ -121,7 +124,7 @@ class Kohana_HTTPTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_request_headers()
+	public static function provider_request_headers()
 	{
 		return [
 			[
@@ -152,22 +155,22 @@ class Kohana_HTTPTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTTP::request_headers()
-	 *
-	 * HTTP::request_headers relies on the $_SERVER superglobal if the function
-	 * `apache_request_headers` or the PECL `http` extension are not available.
-	 *
-	 * The test feeds the $_SERVER superglobal with the test cases' datasets
-	 * and then restores the $_SERVER superglobal so that it does not affect
-	 * other tests.
-	 *
-	 * @test
-	 * @dataProvider provider_request_headers
-	 *
-	 * @param array $server_globals   globals to feed $_SERVER
-	 * @param array $expected_headers Expected, cleaned HTTP headers
-	 */
-	public function test_request_headers(array $server_globals, array $expected_headers)
+     * Tests HTTP::request_headers()
+     *
+     * HTTP::request_headers relies on the $_SERVER superglobal if the function
+     * `apache_request_headers` or the PECL `http` extension are not available.
+     *
+     * The test feeds the $_SERVER superglobal with the test cases' datasets
+     * and then restores the $_SERVER superglobal so that it does not affect
+     * other tests.
+     *
+     *
+     * @param array $server_globals   globals to feed $_SERVER
+     * @param array $expected_headers Expected, cleaned HTTP headers
+     */
+    #[DataProvider('provider_request_headers')]
+    #[Test]
+    public function test_request_headers(array $server_globals, array $expected_headers)
 	{
 		// save the $_SERVER super-global into temporary local var
 		$tmp_server = $_SERVER;

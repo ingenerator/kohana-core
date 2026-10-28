@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana File helper
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.file
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.file')]
 class Kohana_FileTest extends KohanaCoreTestCase
 {
 	/**
@@ -25,7 +28,7 @@ class Kohana_FileTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_mime()
+	public static function provider_mime()
 	{
 		return [
 			// $value, $result
@@ -34,15 +37,15 @@ class Kohana_FileTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests File::mime()
-	 *
-	 * @test
-	 * @dataProvider provider_mime
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_mime($input, $expected)
+     * Tests File::mime()
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_mime')]
+    #[Test]
+    public function test_mime($input, $expected)
 	{
 		//@todo: File::mime coverage needs significant improvement or to be dropped for a composer package - it's a "horribly unreliable" method with very little testing
 		$this->assertSame($expected, File::mime($input));
@@ -53,7 +56,7 @@ class Kohana_FileTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_split_join()
+	public static function provider_split_join()
 	{
 		return [
 			// $value, $result
@@ -62,16 +65,16 @@ class Kohana_FileTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests File::mime()
-	 *
-	 * @test
-	 * @dataProvider provider_split_join
-	 *
-	 * @param boolean $input    Input for File::split
-	 * @param boolean $peices   Input for File::split
-	 * @param boolean $expected Output for File::splut
-	 */
-	public function test_split_join($input, $peices, $expected)
+     * Tests File::mime()
+     *
+     *
+     * @param boolean $input    Input for File::split
+     * @param boolean $peices   Input for File::split
+     * @param boolean $expected Output for File::splut
+     */
+    #[DataProvider('provider_split_join')]
+    #[Test]
+    public function test_split_join($input, $peices, $expected)
 	{
 		$this->assertSame($expected, File::split($input, $peices));
 		$this->assertSame($expected, File::join($input));

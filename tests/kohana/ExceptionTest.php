@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana Exception Class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.exception
  *
  * @package        Kohana
  * @category       Tests
@@ -17,6 +17,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.exception')]
 class Kohana_ExceptionTest extends KohanaCoreTestCase
 {
 	/**
@@ -24,7 +27,7 @@ class Kohana_ExceptionTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_constructor()
+	public static function provider_constructor()
 	{
 		return [
 			[[''], '', 0],
@@ -48,17 +51,16 @@ class Kohana_ExceptionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana_Kohana_Exception::__construct()
-	 *
-	 * @test
-	 * @dataProvider provider_constructor
-	 * @covers       Kohana_Kohana_Exception::__construct
-	 *
-	 * @param array          $arguments        Arguments
-	 * @param string         $expected_message Value from getMessage()
-	 * @param integer|string $expected_code    Value from getCode()
-	 */
-	public function test_constructor($arguments, $expected_message, $expected_code)
+     * Tests Kohana_Kohana_Exception::__construct()
+     *
+     *
+     * @param array          $arguments        Arguments
+     * @param string         $expected_message Value from getMessage()
+     * @param integer|string $expected_code    Value from getCode()
+     */
+    #[DataProvider('provider_constructor')]
+    #[Test]
+    public function test_constructor($arguments, $expected_message, $expected_code)
 	{
 		switch (count($arguments)) {
 			case 1:
@@ -80,31 +82,30 @@ class Kohana_ExceptionTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_text()
+	public static function provider_text()
 	{
 		$exception = new Kohana_Exception('foobar');
 		$exception_line = __LINE__ - 1;
 		return [
 			[
 				$exception,
-				$this->dirSeparator(
-					"Kohana_Exception [ 0 ]: foobar ~ SYSPATH/tests/kohana/ExceptionTest.php [ $exception_line ]"
-				),
+                KohanaCoreTestCase::dirSeparator(
+                    "Kohana_Exception [ 0 ]: foobar ~ SYSPATH/tests/kohana/ExceptionTest.php [ $exception_line ]"
+                ),
 			],
 		];
 	}
 
 	/**
-	 * Tests Kohana_Exception::text()
-	 *
-	 * @test
-	 * @dataProvider provider_text
-	 * @covers       Kohana_Exception::text
-	 *
-	 * @param object $exception exception to test
-	 * @param string $expected  expected output
-	 */
-	public function test_text($exception, $expected)
+     * Tests Kohana_Exception::text()
+     *
+     *
+     * @param object $exception exception to test
+     * @param string $expected  expected output
+     */
+    #[DataProvider('provider_text')]
+    #[Test]
+    public function test_text($exception, $expected)
 	{
 		$this->assertEquals($expected, Kohana_Exception::text($exception));
 	}

@@ -1,5 +1,9 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Ticket;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +11,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Date class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.date
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +19,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.date')]
 class Kohana_DateTest extends KohanaCoreTestCase
 {
 	protected $_original_timezone = NULL;
@@ -57,7 +61,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_offset()
+	public static function provider_offset()
 	{
 		return [
 			[30600, 'Asia/Calcutta', 'America/Argentina/Buenos_Aires'],
@@ -65,18 +69,17 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::offset()
-	 *
-	 * @test
-	 * @dataProvider provider_offset
-	 * @covers       Date::offset
-	 *
-	 * @param integer $expected Expected offset
-	 * @param string  $remote   Remote TZ
-	 * @param string  $local    Local TZ
-	 * @param integer $now      Current timestamp
-	 */
-	public function test_offset($expected, $remote, $local, $now = NULL)
+     * Tests Date::offset()
+     *
+     *
+     * @param integer $expected Expected offset
+     * @param string  $remote   Remote TZ
+     * @param string  $local    Local TZ
+     * @param integer $now      Current timestamp
+     */
+    #[DataProvider('provider_offset')]
+    #[Test]
+    public function test_offset($expected, $remote, $local, $now = NULL)
 	{
 		$this->assertSame($expected, Date::offset($remote, $local, $now));
 	}
@@ -86,7 +89,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_am_pm()
+	public static function provider_am_pm()
 	{
 		return [
 			// All possible values
@@ -123,16 +126,15 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::ampm()
-	 *
-	 * @test
-	 * @covers       Date::ampm
-	 * @dataProvider provider_am_pm
-	 *
-	 * @param <type> $hour
-	 * @param <type> $expected
-	 */
-	public function test_am_pm($hour, $expected)
+     * Tests Date::ampm()
+     *
+     *
+     * @param <type> $hour
+     * @param <type> $expected
+     */
+    #[DataProvider('provider_am_pm')]
+    #[Test]
+    public function test_am_pm($hour, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -145,7 +147,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_adjust()
+	public static function provider_adjust()
 	{
 		return [
 			// Might as well test all possibilities
@@ -180,16 +182,16 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::ampm()
-	 *
-	 * @test
-	 * @dataProvider provider_adjust
-	 *
-	 * @param integer $hour     Hour in 12 hour format
-	 * @param string  $ampm     Either am or pm
-	 * @param string  $expected Expected result
-	 */
-	public function test_adjust($hour, $ampm, $expected)
+     * Tests Date::ampm()
+     *
+     *
+     * @param integer $hour     Hour in 12 hour format
+     * @param string  $ampm     Either am or pm
+     * @param string  $expected Expected result
+     */
+    #[DataProvider('provider_adjust')]
+    #[Test]
+    public function test_adjust($hour, $ampm, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -202,7 +204,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_days()
+	public static function provider_days()
 	{
 		return [
 			// According to "the rhyme" these should be the same every year
@@ -224,17 +226,16 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::days()
-	 *
-	 * @test
-	 * @covers       Date::days
-	 * @dataProvider provider_days
-	 *
-	 * @param integer $month
-	 * @param integer $year
-	 * @param integer $expected
-	 */
-	public function test_days($month, $year, $expected)
+     * Tests Date::days()
+     *
+     *
+     * @param integer $month
+     * @param integer $year
+     * @param integer $expected
+     */
+    #[DataProvider('provider_days')]
+    #[Test]
+    public function test_days($month, $year, $expected)
 	{
 		$days = Date::days($month, $year);
 
@@ -256,7 +257,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_formatted_time()
+	public static function provider_formatted_time()
 	{
 		return [
 			// Test the default format
@@ -282,19 +283,18 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::formatted_time()
-	 *
-	 * @test
-	 * @dataProvider provider_formatted_time
-	 * @covers       Date::formatted_time
-	 * @ticket       3035 3902
-	 *
-	 * @param string         $expected         Expected output
-	 * @param string|integer $datetime_str     The datetime timestamp / string
-	 * @param string|null    $timestamp_format The output format
-	 * @param string|null    $timezone         The timezone identifier
-	 */
-	public function test_formatted_time($expected, $datetime_str, $timestamp_format = NULL, $timezone = NULL)
+     * Tests Date::formatted_time()
+     *
+     *
+     * @param string         $expected         Expected output
+     * @param string|integer $datetime_str     The datetime timestamp / string
+     * @param string|null    $timestamp_format The output format
+     * @param string|null    $timezone         The timezone identifier
+     */
+    #[Ticket('3035 3902')]
+    #[DataProvider('provider_formatted_time')]
+    #[Test]
+    public function test_formatted_time($expected, $datetime_str, $timestamp_format = NULL, $timezone = NULL)
 	{
 		$timestamp = Date::formatted_time($datetime_str, $timestamp_format, $timezone);
 
@@ -306,7 +306,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test data
 	 */
-	public function provider_months()
+	public static function provider_months()
 	{
 		return [
 			[
@@ -382,14 +382,12 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Date::months() should allow the user to specify different format types, defaulting
-	 * to a mirrored month number => month number array if format is NULL or unrecognised
-	 *
-	 * @test
-	 * @dataProvider provider_months
-	 * @covers       Date::months
-	 */
-	public function test_months($expected, $format)
+     * Date::months() should allow the user to specify different format types, defaulting
+     * to a mirrored month number => month number array if format is NULL or unrecognised
+     */
+    #[DataProvider('provider_months')]
+    #[Test]
+    public function test_months($expected, $format)
 	{
 		$months = Date::months($format);
 
@@ -401,7 +399,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_span()
+	public static function provider_span()
 	{
 		$time = time();
 
@@ -459,18 +457,17 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::span()
-	 *
-	 * @test
-	 * @covers       Date::span
-	 * @dataProvider provider_span
-	 *
-	 * @param integer $time1    Time in the past
-	 * @param integer $time2    Time to compare against
-	 * @param string  $output   Units to output
-	 * @param array   $expected Array of $outputs => values
-	 */
-	public function test_span($time1, $time2, $output, $expected)
+     * Tests Date::span()
+     *
+     *
+     * @param integer $time1    Time in the past
+     * @param integer $time2    Time to compare against
+     * @param string  $output   Units to output
+     * @param array   $expected Array of $outputs => values
+     */
+    #[DataProvider('provider_span')]
+    #[Test]
+    public function test_span($time1, $time2, $output, $expected)
 	{
 		$this->assertSame(
 			$expected,
@@ -487,7 +484,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_fuzzy_span()
+	public static function provider_fuzzy_span()
 	{
 		$now = time();
 
@@ -555,16 +552,16 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test of Date::fuzy_span()
-	 *
-	 * @test
-	 * @dataProvider provider_fuzzy_span
-	 *
-	 * @param string  $expected        Expected output
-	 * @param integer $timestamp       Timestamp to use
-	 * @param integer $local_timestamp The local timestamp to use
-	 */
-	public function test_fuzzy_span($expected, $timestamp, $local_timestamp)
+     * Test of Date::fuzy_span()
+     *
+     *
+     * @param string  $expected        Expected output
+     * @param integer $timestamp       Timestamp to use
+     * @param integer $local_timestamp The local timestamp to use
+     */
+    #[DataProvider('provider_fuzzy_span')]
+    #[Test]
+    public function test_fuzzy_span($expected, $timestamp, $local_timestamp)
 	{
 		$this->assertSame(
 			$expected,
@@ -577,7 +574,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_years()
+	public static function provider_years()
 	{
 		return [
 			[
@@ -601,12 +598,11 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Data::years()
-	 *
-	 * @test
-	 * @dataProvider provider_years
-	 */
-	public function test_years($expected, $start = FALSE, $end = FALSE)
+     * Tests Data::years()
+     */
+    #[DataProvider('provider_years')]
+    #[Test]
+    public function test_years($expected, $start = FALSE, $end = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -614,7 +610,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 		);
 	}
 
-	public function provider_hours()
+	public static function provider_hours()
 	{
 		return [
 			[
@@ -637,12 +633,11 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test for Date::hours
-	 *
-	 * @test
-	 * @dataProvider provider_hours
-	 */
-	public function test_hours($expected, $step = 1, $long = FALSE, $start = NULL)
+     * Test for Date::hours
+     */
+    #[DataProvider('provider_hours')]
+    #[Test]
+    public function test_hours($expected, $step = 1, $long = FALSE, $start = NULL)
 	{
 		$this->assertSame(
 			$expected,
@@ -655,7 +650,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test data
 	 */
-	public function provider_seconds()
+	public static function provider_seconds()
 	{
 		return [
 			[
@@ -729,13 +724,9 @@ class Kohana_DateTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_seconds
-	 * @covers       Date::seconds
-	 */
-	public function test_seconds($expected, $step = 1, $start = 0, $end = 60)
+	#[DataProvider('provider_seconds')]
+    #[Test]
+    public function test_seconds($expected, $step = 1, $start = 0, $end = 60)
 	{
 		$this->assertSame(
 			$expected,
@@ -748,7 +739,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test data
 	 */
-	public function provider_minutes()
+	public static function provider_minutes()
 	{
 		return [
 			[
@@ -771,12 +762,9 @@ class Kohana_DateTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 *
-	 * @test
-	 * @dataProvider provider_minutes
-	 */
-	public function test_minutes($expected, $step)
+	#[DataProvider('provider_minutes')]
+    #[Test]
+    public function test_minutes($expected, $step)
 	{
 		$this->assertSame(
 			$expected,
@@ -785,13 +773,11 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This tests that the minutes helper defaults to using a $step of 5
-	 * and thus returns an array of 5 minute itervals
-	 *
-	 * @test
-	 * @covers Date::minutes
-	 */
-	public function test_minutes_defaults_to_using_step_of5()
+     * This tests that the minutes helper defaults to using a $step of 5
+     * and thus returns an array of 5 minute itervals
+     */
+    #[Test]
+    public function test_minutes_defaults_to_using_step_of5()
 	{
 		$minutes = [
 			0  => '00',
@@ -819,7 +805,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test Data
 	 */
-	public function provider_unix2dos()
+	public static function provider_unix2dos()
 	{
 		return [
 			[
@@ -834,22 +820,21 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test Date::unix2dos()
-	 *
-	 * You should always pass a timestamp as otherwise the current
-	 * date/time would be used and that's oviously variable
-	 *
-	 * Geert seems to be the only person who knows how unix2dos() works
-	 * so we just throw in some random values and see what happens
-	 *
-	 * @test
-	 * @dataProvider provider_unix2dos
-	 * @covers       Date::unix2dos
-	 *
-	 * @param integer $expected  Expected output
-	 * @param integer $timestamp Input timestamp
-	 */
-	public function test_unix2dos($expected, $timestamp)
+     * Test Date::unix2dos()
+     *
+     * You should always pass a timestamp as otherwise the current
+     * date/time would be used and that's oviously variable
+     *
+     * Geert seems to be the only person who knows how unix2dos() works
+     * so we just throw in some random values and see what happens
+     *
+     *
+     * @param integer $expected  Expected output
+     * @param integer $timestamp Input timestamp
+     */
+    #[DataProvider('provider_unix2dos')]
+    #[Test]
+    public function test_unix2dos($expected, $timestamp)
 	{
 		$this->assertSame($expected, Date::unix2dos($timestamp));
 	}
@@ -859,7 +844,7 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test data
 	 */
-	public function provider_dos2unix()
+	public static function provider_dos2unix()
 	{
 		return [
 			[
@@ -874,15 +859,15 @@ class Kohana_DateTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Date::dos2unix
-	 *
-	 * @test
-	 * @dataProvider provider_dos2unix
-	 *
-	 * @param integer $expected  Expected output
-	 * @param integer $timestamp Input timestamp
-	 */
-	public function test_dos2unix($expected, $timestamp)
+     * Tests Date::dos2unix
+     *
+     *
+     * @param integer $expected  Expected output
+     * @param integer $timestamp Input timestamp
+     */
+    #[DataProvider('provider_dos2unix')]
+    #[Test]
+    public function test_dos2unix($expected, $timestamp)
 	{
 		$this->assertEquals($expected, Date::dos2unix($timestamp));
 	}

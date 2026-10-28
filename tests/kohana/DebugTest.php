@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -9,9 +12,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  *
  * @TODO           Use a virtual filesystem (see phpunit doc on mocking fs) for find_file etc.
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.debug
  *
  * @package        Kohana
  * @category       Tests
@@ -20,6 +20,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2014 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.debug')]
 class Kohana_DebugTest extends KohanaCoreTestCase
 {
 
@@ -28,7 +31,7 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_vars()
+	public static function provider_vars()
 	{
 		return [
 			// $thing, $expected
@@ -40,16 +43,15 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Debug::vars()
-	 *
-	 * @test
-	 * @dataProvider provider_vars
-	 * @covers       Debug::vars
-	 *
-	 * @param boolean $thing    The thing to debug
-	 * @param boolean $expected Output for Debug::vars
-	 */
-	public function test_var($thing, $expected)
+     * Tests Debug::vars()
+     *
+     *
+     * @param boolean $thing    The thing to debug
+     * @param boolean $expected Output for Debug::vars
+     */
+    #[DataProvider('provider_vars')]
+    #[Test]
+    public function test_var($thing, $expected)
 	{
 		$this->assertEquals($expected, Debug::vars($thing));
 	}
@@ -59,7 +61,7 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_debug_path()
+	public static function provider_debug_path()
 	{
 		return [
 			[
@@ -67,23 +69,22 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 				'SYSPATH'.DIRECTORY_SEPARATOR.'classes'.DIRECTORY_SEPARATOR.'kohana.php',
 			],
 			[
-				MODPATH.$this->dirSeparator('unittest/classes/kohana/unittest/runner').EXT,
-				$this->dirSeparator('MODPATH/unittest/classes/kohana/unittest/runner').EXT,
+				MODPATH.KohanaCoreTestCase::dirSeparator('unittest/classes/kohana/unittest/runner').EXT,
+				KohanaCoreTestCase::dirSeparator('MODPATH/unittest/classes/kohana/unittest/runner').EXT,
 			],
 		];
 	}
 
 	/**
-	 * Tests Debug::path()
-	 *
-	 * @test
-	 * @dataProvider provider_debug_path
-	 * @covers       Debug::path
-	 *
-	 * @param boolean $path     Input for Debug::path
-	 * @param boolean $expected Output for Debug::path
-	 */
-	public function test_debug_path($path, $expected)
+     * Tests Debug::path()
+     *
+     *
+     * @param boolean $path     Input for Debug::path
+     * @param boolean $expected Output for Debug::path
+     */
+    #[DataProvider('provider_debug_path')]
+    #[Test]
+    public function test_debug_path($path, $expected)
 	{
 		$this->assertEquals($expected, Debug::path($path));
 	}
@@ -93,7 +94,7 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_dump()
+	public static function provider_dump()
 	{
 		return [
 			['foobar', 128, 10, '<small>string</small><span>(6)</span> "foobar"'],
@@ -128,17 +129,15 @@ class Kohana_DebugTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Debug::dump()
-	 *
-	 * @test
-	 * @dataProvider provider_dump
-	 * @covers       Debug::dump
-	 * @covers       Debug::_dump
-	 *
-	 * @param object $exception exception to test
-	 * @param string $expected  expected output
-	 */
-	public function test_dump($input, $length, $limit, $expected)
+     * Tests Debug::dump()
+     *
+     *
+     * @param object $exception exception to test
+     * @param string $expected  expected output
+     */
+    #[DataProvider('provider_dump')]
+    #[Test]
+    public function test_dump($input, $length, $limit, $expected)
 	{
 		$this->assertEquals($expected, Debug::dump($input, $length, $limit));
 	}

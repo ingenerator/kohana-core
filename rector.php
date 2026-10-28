@@ -7,6 +7,7 @@ use Rector\PHPUnit\Set\PHPUnitSetList;
 return RectorConfig::configure()
     ->withPaths([
         __DIR__.'/tests',
+        __DIR__.'/modules/minion/tests',
     ])
     ->withSets([
         PHPUnitSetList::COMPOSER_BASED,

@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Ticket;
 use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
@@ -53,26 +56,22 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If Route::get() is asked for a route that does not exist then
-	 * it should throw a Kohana_Exception
-	 *
-	 * @test
-	 * @covers Route::get
-	 */
-	public function test_get_throws_exception_if_route_dnx()
+     * If Route::get() is asked for a route that does not exist then
+     * it should throw a Kohana_Exception
+     */
+    #[Test]
+    public function test_get_throws_exception_if_route_dnx()
 	{
 		$this->expectException(Kohana_Exception::class);
 		Route::get('HAHAHAHAHAHAHAHAHA');
 	}
 
 	/**
-	 * Route::all() should return all routes defined via Route::set()
-	 * and not through new Route()
-	 *
-	 * @test
-	 * @covers Route::all
-	 */
-	public function test_all_returns_all_defined_routes()
+     * Route::all() should return all routes defined via Route::set()
+     * and not through new Route()
+     */
+    #[Test]
+    public function test_all_returns_all_defined_routes()
 	{
 		$defined_routes = self::readAttribute(new Route, '_routes');
 
@@ -80,14 +79,13 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Route::name() should fetch the name of a passed route
-	 * If route is not found then it should return FALSE
-	 *
-	 * @TODO   : This test needs to segregate the Route::$_routes singleton
-	 * @test
-	 * @covers Route::name
-	 */
-	public function test_name_returns_routes_name_or_false_if_dnx()
+     * Route::name() should fetch the name of a passed route
+     * If route is not found then it should return FALSE
+     *
+     * @TODO   : This test needs to segregate the Route::$_routes singleton
+     */
+    #[Test]
+    public function test_name_returns_routes_name_or_false_if_dnx()
 	{
 		$route = Route::set('flamingo_people', 'flamingo/dance');
 
@@ -99,13 +97,11 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If Route::cache() was able to restore routes from the cache then
-	 * it should return TRUE and load the cached routes
-	 *
-	 * @test
-	 * @covers Route::cache
-	 */
-	public function test_cache_stores_route_objects()
+     * If Route::cache() was able to restore routes from the cache then
+     * it should return TRUE and load the cached routes
+     */
+    #[Test]
+    public function test_cache_stores_route_objects()
 	{
 		$routes = Route::all();
 
@@ -126,12 +122,10 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Check appending cached routes. See http://dev.kohanaframework.org/issues/4347
-	 *
-	 * @test
-	 * @covers Route::cache
-	 */
-	public function test_cache_append_routes()
+     * Check appending cached routes. See http://dev.kohanaframework.org/issues/4347
+     */
+    #[Test]
+    public function test_cache_append_routes()
 	{
 		$cached = Route::all();
 
@@ -154,15 +148,13 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Route::cache() should return FALSE if cached routes could not be found
-	 *
-	 * The cache is cleared before and after each test in setUp tearDown
-	 * by cleanCacheDir()
-	 *
-	 * @test
-	 * @covers Route::cache
-	 */
-	public function test_cache_returns_false_if_cache_dnx()
+     * Route::cache() should return FALSE if cached routes could not be found
+     *
+     * The cache is cleared before and after each test in setUp tearDown
+     * by cleanCacheDir()
+     */
+    #[Test]
+    public function test_cache_returns_false_if_cache_dnx()
 	{
 		$this->assertSame(FALSE, Route::cache(), 'Route cache was not empty');
 
@@ -171,13 +163,11 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If the constructor is passed a NULL uri then it should assume it's
-	 * being loaded from the cache & therefore shouldn't override the cached attributes
-	 *
-	 * @test
-	 * @covers Route::__construct
-	 */
-	public function test_constructor_returns_if_uri_is_null()
+     * If the constructor is passed a NULL uri then it should assume it's
+     * being loaded from the cache & therefore shouldn't override the cached attributes
+     */
+    #[Test]
+    public function test_constructor_returns_if_uri_is_null()
 	{
 		// We use a mock object to make sure that the route wasn't recompiled
 		$route = new MockRoute(NULL, NULL);
@@ -193,7 +183,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_constructor_only_changes_custom_regex_if_passed()
+	public static function provider_constructor_only_changes_custom_regex_if_passed()
 	{
 		return [
 			['<controller>/<action>', '<controller>/<action>'],
@@ -201,17 +191,16 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * The constructor should only use custom regex if passed a non-empty array
-	 *
-	 * Technically we can't "test" this as the default regex is an empty array, this
-	 * is purely for improving test coverage
-	 *
-	 * @dataProvider provider_constructor_only_changes_custom_regex_if_passed
-	 *
-	 * @test
-	 * @covers       Route::__construct
-	 */
-	public function test_constructor_only_changes_custom_regex_if_passed($uri, $uri2)
+     * The constructor should only use custom regex if passed a non-empty array
+     *
+     * Technically we can't "test" this as the default regex is an empty array, this
+     * is purely for improving test coverage
+     *
+     *
+     */
+    #[DataProvider('provider_constructor_only_changes_custom_regex_if_passed')]
+    #[Test]
+    public function test_constructor_only_changes_custom_regex_if_passed($uri, $uri2)
 	{
 		$route = new Route($uri, []);
 
@@ -223,14 +212,11 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When we pass custom regex to the route's constructor it should it
-	 * in leu of the default. This does not apply to callback/lambda routes
-	 *
-	 * @test
-	 * @covers Route::__construct
-	 * @covers Route::compile
-	 */
-	public function test_route_uses_custom_regex_passed_to_constructor()
+     * When we pass custom regex to the route's constructor it should it
+     * in leu of the default. This does not apply to callback/lambda routes
+     */
+    #[Test]
+    public function test_route_uses_custom_regex_passed_to_constructor()
 	{
 		$regex = ['id' => '[0-9]{1,2}'];
 
@@ -245,7 +231,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_matches_returns_false_on_failure()
+	public static function provider_matches_returns_false_on_failure()
 	{
 		return [
 			['projects/(<project_id>/(<controller>(/<action>(/<id>))))', 'apple/pie'],
@@ -253,14 +239,13 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Route::matches() should return false if the route doesn't match against a uri
-	 *
-	 * @dataProvider provider_matches_returns_false_on_failure
-	 *
-	 * @test
-	 * @covers       Route::matches
-	 */
-	public function test_matches_returns_false_on_failure($uri, $match)
+     * Route::matches() should return false if the route doesn't match against a uri
+     *
+     *
+     */
+    #[DataProvider('provider_matches_returns_false_on_failure')]
+    #[Test]
+    public function test_matches_returns_false_on_failure($uri, $match)
 	{
 		$route = new Route($uri);
 
@@ -275,7 +260,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_matches_returns_array_of_parameters_on_successful_match()
+	public static function provider_matches_returns_array_of_parameters_on_successful_match()
 	{
 		return [
 			[
@@ -288,15 +273,14 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Route::matches() should return an array of parameters when a match is made
-	 * An parameters that are not matched should not be present in the array of matches
-	 *
-	 * @dataProvider provider_matches_returns_array_of_parameters_on_successful_match
-	 *
-	 * @test
-	 * @covers       Route::matches
-	 */
-	public function test_matches_returns_array_of_parameters_on_successful_match($uri, $m, $c, $a)
+     * Route::matches() should return an array of parameters when a match is made
+     * An parameters that are not matched should not be present in the array of matches
+     *
+     *
+     */
+    #[DataProvider('provider_matches_returns_array_of_parameters_on_successful_match')]
+    #[Test]
+    public function test_matches_returns_array_of_parameters_on_successful_match($uri, $m, $c, $a)
 	{
 		$route = new Route($uri);
 
@@ -319,7 +303,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_defaults_are_used_if_params_arent_specified()
+	public static function provider_defaults_are_used_if_params_arent_specified()
 	{
 		return [
 			[
@@ -354,15 +338,14 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Defaults specified with defaults() should be used if their values aren't
-	 * present in the uri
-	 *
-	 * @dataProvider provider_defaults_are_used_if_params_arent_specified
-	 *
-	 * @test
-	 * @covers       Route::matches
-	 */
-	public function test_defaults_are_used_if_params_arent_specified(
+     * Defaults specified with defaults() should be used if their values aren't
+     * present in the uri
+     *
+     *
+     */
+    #[DataProvider('provider_defaults_are_used_if_params_arent_specified')]
+    #[Test]
+    public function test_defaults_are_used_if_params_arent_specified(
 		$uri,
 		$regex,
 		$defaults,
@@ -398,7 +381,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_optional_groups_containing_specified_params()
+	public static function provider_optional_groups_containing_specified_params()
 	{
 		return [
 			/**
@@ -478,15 +461,15 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When an optional param is specified, the optional params leading up to it
-	 * must be in the URI.
-	 *
-	 * @dataProvider provider_optional_groups_containing_specified_params
-	 *
-	 * @ticket       4113
-	 * @ticket       4630
-	 */
-	public function test_optional_groups_containing_specified_params($uri, $defaults, $params, $expected)
+     * When an optional param is specified, the optional params leading up to it
+     * must be in the URI.
+     *
+     *
+     */
+    #[Ticket('4113')]
+    #[Ticket('4630')]
+    #[DataProvider('provider_optional_groups_containing_specified_params')]
+    public function test_optional_groups_containing_specified_params($uri, $defaults, $params, $expected)
 	{
 		$route = new Route($uri, NULL);
 		$route->defaults($defaults);
@@ -495,15 +478,13 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Optional params should not be used if what is passed in is identical
-	 * to the default.
-	 *
-	 * refs #4116
-	 *
-	 * @test
-	 * @covers Route::uri
-	 */
-	public function test_defaults_are_not_used_if_param_is_identical()
+     * Optional params should not be used if what is passed in is identical
+     * to the default.
+     *
+     * refs #4116
+     */
+    #[Test]
+    public function test_defaults_are_not_used_if_param_is_identical()
 	{
 		$route = new Route('(<controller>(/<action>(/<id>)))');
 		$route->defaults([
@@ -517,12 +498,10 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 
 
 	/**
-	 * When using a FQCN test if the directory is not set else throw an exception
-	 *
-	 * @test
-	 * @covers Route::defaults
-	 */
-	public function test_defaults_throws_exception_when_setting_fqcn_and_directory()
+     * When using a FQCN test if the directory is not set else throw an exception
+     */
+    #[Test]
+    public function test_defaults_throws_exception_when_setting_fqcn_and_directory()
 	{
 		$this->expectException('Kohana_Exception', 'Route directory should not be set when the controller is a FQCN.');
 
@@ -539,7 +518,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_required_parameters_are_needed()
+	public static function provider_required_parameters_are_needed()
 	{
 		return [
 			[
@@ -551,14 +530,13 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This tests that routes with required parameters will not match uris without them present
-	 *
-	 * @dataProvider provider_required_parameters_are_needed
-	 *
-	 * @test
-	 * @covers       Route::matches
-	 */
-	public function test_required_parameters_are_needed($uri, $matches_route1, $matches_route2)
+     * This tests that routes with required parameters will not match uris without them present
+     *
+     *
+     */
+    #[DataProvider('provider_required_parameters_are_needed')]
+    #[Test]
+    public function test_required_parameters_are_needed($uri, $matches_route1, $matches_route2)
 	{
 		$route = new Route($uri);
 
@@ -590,7 +568,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_reverse_routing_returns_routes_uri_if_route_is_static()
+	public static function provider_reverse_routing_returns_routes_uri_if_route_is_static()
 	{
 		return [
 			[
@@ -603,17 +581,16 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This tests the reverse routing returns the uri specified in the route
-	 * if it's a static route
-	 *
-	 * A static route is a route without any parameters
-	 *
-	 * @dataProvider provider_reverse_routing_returns_routes_uri_if_route_is_static
-	 *
-	 * @test
-	 * @covers       Route::uri
-	 */
-	public function test_reverse_routing_returns_routes_uri_if_route_is_static($uri, $regex, $target_uri, $uri_params)
+     * This tests the reverse routing returns the uri specified in the route
+     * if it's a static route
+     *
+     * A static route is a route without any parameters
+     *
+     *
+     */
+    #[DataProvider('provider_reverse_routing_returns_routes_uri_if_route_is_static')]
+    #[Test]
+    public function test_reverse_routing_returns_routes_uri_if_route_is_static($uri, $regex, $target_uri, $uri_params)
 	{
 		$route = new Route($uri, $regex);
 
@@ -625,7 +602,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_uri_throws_exception_if_required_params_are_missing()
+	public static function provider_uri_throws_exception_if_required_params_are_missing()
 	{
 		return [
 			[
@@ -646,16 +623,15 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When Route::uri is working on a uri that requires certain parameters to be present
-	 * (i.e. <controller> in '<controller(/<action)') then it should throw an exception
-	 * if the param was not provided
-	 *
-	 * @dataProvider provider_uri_throws_exception_if_required_params_are_missing
-	 *
-	 * @test
-	 * @covers       Route::uri
-	 */
-	public function test_uri_throws_exception_if_required_params_are_missing($uri, $regex, $uri_array)
+     * When Route::uri is working on a uri that requires certain parameters to be present
+     * (i.e. <controller> in '<controller(/<action)') then it should throw an exception
+     * if the param was not provided
+     *
+     *
+     */
+    #[DataProvider('provider_uri_throws_exception_if_required_params_are_missing')]
+    #[Test]
+    public function test_uri_throws_exception_if_required_params_are_missing($uri, $regex, $uri_array)
 	{
 		$route = new Route($uri, $regex);
 
@@ -668,7 +644,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_uri_fills_required_uri_segments_from_params()
+	public static function provider_uri_fills_required_uri_segments_from_params()
 	{
 		return [
 			[
@@ -690,18 +666,17 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * The logic for replacing required segments is separate (but similar) to that for
-	 * replacing optional segments.
-	 *
-	 * This test asserts that Route::uri will replace required segments with provided
-	 * params
-	 *
-	 * @dataProvider provider_uri_fills_required_uri_segments_from_params
-	 *
-	 * @test
-	 * @covers       Route::uri
-	 */
-	public function test_uri_fills_required_uri_segments_from_params(
+     * The logic for replacing required segments is separate (but similar) to that for
+     * replacing optional segments.
+     *
+     * This test asserts that Route::uri will replace required segments with provided
+     * params
+     *
+     *
+     */
+    #[DataProvider('provider_uri_fills_required_uri_segments_from_params')]
+    #[Test]
+    public function test_uri_fills_required_uri_segments_from_params(
 		$uri,
 		$regex,
 		$uri_string1,
@@ -727,7 +702,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_composing_url_from_route()
+	public static function provider_composing_url_from_route()
 	{
 		return [
 			['/'],
@@ -737,18 +712,18 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Route::url()
-	 *
-	 * Checks the url composing from specific route via Route::url() shortcut
-	 *
-	 * @test
-	 * @dataProvider provider_composing_url_from_route
-	 *
-	 * @param string  $expected
-	 * @param array   $params
-	 * @param boolean $protocol
-	 */
-	public function test_composing_url_from_route($expected, $params = NULL, $protocol = NULL)
+     * Tests Route::url()
+     *
+     * Checks the url composing from specific route via Route::url() shortcut
+     *
+     *
+     * @param string  $expected
+     * @param array   $params
+     * @param boolean $protocol
+     */
+    #[DataProvider('provider_composing_url_from_route')]
+    #[Test]
+    public function test_composing_url_from_route($expected, $params = NULL, $protocol = NULL)
 	{
 		Route::set('foobar', '(<controller>(/<action>(/<id>)))')
 			->defaults([
@@ -766,14 +741,12 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Route::compile()
-	 *
-	 * Makes sure that compile will use custom regex if specified
-	 *
-	 * @test
-	 * @covers Route::compile
-	 */
-	public function test_compile_uses_custom_regex_if_specificed()
+     * Tests Route::compile()
+     *
+     * Makes sure that compile will use custom regex if specified
+     */
+    #[Test]
+    public function test_compile_uses_custom_regex_if_specificed()
 	{
 		$compiled = Route::compile(
 			'<controller>(/<action>(/<id>))',
@@ -791,7 +764,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_route_filter_modify_params()
+	public static function provider_route_filter_modify_params()
 	{
 		return [
 			[
@@ -821,12 +794,10 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that route filters can modify parameters
-	 *
-	 * @covers       Route::filter
-	 * @dataProvider provider_route_filter_modify_params
-	 */
-	public function test_route_filter_modify_params($route, $defaults, $filter, $uri, $expected_params)
+     * Tests that route filters can modify parameters
+     */
+    #[DataProvider('provider_route_filter_modify_params')]
+    public function test_route_filter_modify_params($route, $defaults, $filter, $uri, $expected_params)
 	{
 		$route = new Route($route);
 
@@ -843,7 +814,7 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_route_uri_encode_parameters()
+	public static function provider_route_uri_encode_parameters()
 	{
 		return [
 			[
@@ -861,14 +832,12 @@ class Kohana_RouteTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * http://dev.kohanaframework.org/issues/4079
-	 *
-	 * @test
-	 * @covers       Route::get
-	 * @ticket       4079
-	 * @dataProvider provider_route_uri_encode_parameters
-	 */
-	public function test_route_uri_encode_parameters($name, $uri_callback, $defaults, $uri_key, $uri_value, $expected)
+     * http://dev.kohanaframework.org/issues/4079
+     */
+    #[Ticket('4079')]
+    #[DataProvider('provider_route_uri_encode_parameters')]
+    #[Test]
+    public function test_route_uri_encode_parameters($name, $uri_callback, $defaults, $uri_key, $uri_value, $expected)
 	{
 		Route::set($name, $uri_callback)->defaults($defaults);
 

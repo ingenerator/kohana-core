@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -9,9 +12,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  *
  * @TODO           Use a virtual filesystem (see phpunit doc on mocking fs) for find_file etc.
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.core
  *
  * @package        Kohana
  * @category       Tests
@@ -20,6 +20,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.core')]
 class Kohana_CoreTest extends KohanaCoreTestCase
 {
 	protected $old_modules = [];
@@ -54,7 +57,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_sanitize()
+	public static function provider_sanitize()
 	{
 		return [
 			// $value, $result
@@ -66,16 +69,15 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::santize()
-	 *
-	 * @test
-	 * @dataProvider provider_sanitize
-	 * @covers       Kohana::sanitize
-	 *
-	 * @param boolean $value  Input for Kohana::sanitize
-	 * @param boolean $result Output for Kohana::sanitize
-	 */
-	public function test_sanitize($value, $result)
+     * Tests Kohana::santize()
+     *
+     *
+     * @param boolean $value  Input for Kohana::sanitize
+     * @param boolean $result Output for Kohana::sanitize
+     */
+    #[DataProvider('provider_sanitize')]
+    #[Test]
+    public function test_sanitize($value, $result)
 	{
 		$this->setEnvironment(['Kohana::$magic_quotes' => TRUE]);
 
@@ -83,13 +85,11 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Passing FALSE for the file extension should prevent appending any extension.
-	 * See issue #3214
-	 *
-	 * @test
-	 * @covers  Kohana::find_file
-	 */
-	public function test_find_file_no_extension()
+     * Passing FALSE for the file extension should prevent appending any extension.
+     * See issue #3214
+     */
+    #[Test]
+    public function test_find_file_no_extension()
 	{
 		// EXT is manually appened to the _file name_, not passed as the extension
 		$path = Kohana::find_file('classes', $file = 'Kohana/Core'.EXT, FALSE);
@@ -100,14 +100,12 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If a file can't be found then find_file() should return FALSE if
-	 * only a single file was requested, or an empty array if multiple files
-	 * (i.e. configuration files) were requested
-	 *
-	 * @test
-	 * @covers Kohana::find_file
-	 */
-	public function test_find_file_returns_false_or_array_on_failure()
+     * If a file can't be found then find_file() should return FALSE if
+     * only a single file was requested, or an empty array if multiple files
+     * (i.e. configuration files) were requested
+     */
+    #[Test]
+    public function test_find_file_returns_false_or_array_on_failure()
 	{
 		$this->assertFalse(Kohana::find_file('configy', 'zebra'));
 
@@ -115,12 +113,10 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Kohana::list_files() should return an array on success and an empty array on failure
-	 *
-	 * @test
-	 * @covers Kohana::list_files
-	 */
-	public function test_list_files_returns_array_on_success_and_failure()
+     * Kohana::list_files() should return an array on success and an empty array on failure
+     */
+    #[Test]
+    public function test_list_files_returns_array_on_success_and_failure()
 	{
 		$files = Kohana::list_files('config');
 
@@ -131,12 +127,10 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::globals()
-	 *
-	 * @test
-	 * @covers Kohana::globals
-	 */
-	public function test_globals_removes_user_def_globals()
+     * Tests Kohana::globals()
+     */
+    #[Test]
+    public function test_globals_removes_user_def_globals()
 	{
 		$GLOBALS['hackers'] = 'foobar';
 		$GLOBALS['name']    = ['', '', ''];
@@ -154,7 +148,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_cache()
+	public static function provider_cache()
 	{
 		return [
 			// $value, $result
@@ -165,17 +159,16 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::cache()
-	 *
-	 * @test
-	 * @dataProvider provider_cache
-	 * @covers       Kohana::cache
-	 *
-	 * @param boolean $key      Key to cache/get for Kohana::cache
-	 * @param boolean $value    Output from Kohana::cache
-	 * @param boolean $lifetime Lifetime for Kohana::cache
-	 */
-	public function test_cache($key, $value, $lifetime)
+     * Tests Kohana::cache()
+     *
+     *
+     * @param boolean $key      Key to cache/get for Kohana::cache
+     * @param boolean $value    Output from Kohana::cache
+     * @param boolean $lifetime Lifetime for Kohana::cache
+     */
+    #[DataProvider('provider_cache')]
+    #[Test]
+    public function test_cache($key, $value, $lifetime)
 	{
 		Kohana::cache($key, $value, $lifetime);
 		$this->assertEquals($value, Kohana::cache($key));
@@ -186,7 +179,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_message()
+	public static function provider_message()
 	{
 		return [
 			['no_message_file', 'anything', 'default', 'default'],
@@ -209,18 +202,17 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::message()
-	 *
-	 * @test
-	 * @dataProvider provider_message
-	 * @covers       Kohana::message
-	 *
-	 * @param string $file     to pass to Kohana::message
-	 * @param string $key      to pass to Kohana::message
-	 * @param string $default  to pass to Kohana::message
-	 * @param string $expected Output for Kohana::message
-	 */
-	public function test_message($file, $key, $default, $expected)
+     * Tests Kohana::message()
+     *
+     *
+     * @param string $file     to pass to Kohana::message
+     * @param string $key      to pass to Kohana::message
+     * @param string $default  to pass to Kohana::message
+     * @param string $expected Output for Kohana::message
+     */
+    #[DataProvider('provider_message')]
+    #[Test]
+    public function test_message($file, $key, $default, $expected)
 	{
 		$test_path = realpath(dirname(__FILE__).'/../test_data/message_tests');
 		Kohana::modules(['top' => "$test_path/top_module", 'bottom' => "$test_path/bottom_module"]);
@@ -233,7 +225,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_error_handler()
+	public static function provider_error_handler()
 	{
 		return [
 			[1, 'Foobar', 'foobar.php', __LINE__],
@@ -241,18 +233,17 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::error_handler()
-	 *
-	 * @test
-	 * @dataProvider provider_error_handler
-	 * @covers       Kohana::error_handler
-	 *
-	 * @param boolean $code  Input for Kohana::sanitize
-	 * @param boolean $error Input for Kohana::sanitize
-	 * @param boolean $file  Input for Kohana::sanitize
-	 * @param boolean $line  Output for Kohana::sanitize
-	 */
-	public function test_error_handler($code, $error, $file, $line)
+     * Tests Kohana::error_handler()
+     *
+     *
+     * @param boolean $code  Input for Kohana::sanitize
+     * @param boolean $error Input for Kohana::sanitize
+     * @param boolean $file  Input for Kohana::sanitize
+     * @param boolean $line  Output for Kohana::sanitize
+     */
+    #[DataProvider('provider_error_handler')]
+    #[Test]
+    public function test_error_handler($code, $error, $file, $line)
 	{
 		$error_level = error_reporting();
 		error_reporting(E_ALL);
@@ -270,7 +261,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_modules_detects_invalid_modules()
+	public static function provider_modules_detects_invalid_modules()
 	{
 		return [
 			[['unittest' => MODPATH.'fo0bar']],
@@ -279,15 +270,15 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::modules()
-	 *
-	 * @test
-	 * @dataProvider provider_modules_detects_invalid_modules
-	 *
-	 * @param boolean $source Input for Kohana::modules
-	 *
-	 */
-	public function test_modules_detects_invalid_modules($source)
+     * Tests Kohana::modules()
+     *
+     *
+     * @param boolean $source Input for Kohana::modules
+     *
+     */
+    #[DataProvider('provider_modules_detects_invalid_modules')]
+    #[Test]
+    public function test_modules_detects_invalid_modules($source)
 	{
 		$modules = Kohana::modules();
 
@@ -310,24 +301,24 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_modules_sets_and_returns_valid_modules()
+	public static function provider_modules_sets_and_returns_valid_modules()
 	{
 		return [
 			[[], []],
-			[['module' => __DIR__], ['module' => $this->dirSeparator(__DIR__.'/')]],
+			[['module' => __DIR__], ['module' => KohanaCoreTestCase::dirSeparator(__DIR__.'/')]],
 		];
 	}
 
 	/**
-	 * Tests Kohana::modules()
-	 *
-	 * @test
-	 * @dataProvider provider_modules_sets_and_returns_valid_modules
-	 *
-	 * @param boolean $source   Input for Kohana::modules
-	 * @param boolean $expected Output for Kohana::modules
-	 */
-	public function test_modules_sets_and_returns_valid_modules($source, $expected)
+     * Tests Kohana::modules()
+     *
+     *
+     * @param boolean $source   Input for Kohana::modules
+     * @param boolean $expected Output for Kohana::modules
+     */
+    #[DataProvider('provider_modules_sets_and_returns_valid_modules')]
+    #[Test]
+    public function test_modules_sets_and_returns_valid_modules($source, $expected)
 	{
 		$modules = Kohana::modules();
 
@@ -342,12 +333,8 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 		Kohana::modules($modules);
 	}
 
-	/**
-	 *
-	 * @test
-	 * @covers Kohana::modules
-	 */
-	public function test_modules_returns_array_of_modules()
+	#[Test]
+    public function test_modules_returns_array_of_modules()
 	{
 		$original_modules = Kohana::modules();
 
@@ -364,14 +351,12 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Kohana::include_paths()
-	 *
-	 * The include paths must contain the apppath and syspath
-	 *
-	 * @test
-	 * @covers Kohana::include_paths
-	 */
-	public function test_include_paths()
+     * Tests Kohana::include_paths()
+     *
+     * The include paths must contain the apppath and syspath
+     */
+    #[Test]
+    public function test_include_paths()
 	{
 		$include_paths = Kohana::include_paths();
 		$modules       = Kohana::modules();

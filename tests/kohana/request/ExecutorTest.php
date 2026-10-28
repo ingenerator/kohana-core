@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -84,7 +85,7 @@ class Kohana_Request_ExecutorTest extends TestCase
 		$this->assertSame('HTTP/12.5', $response->protocol());
 	}
 
-	public function provider_route_param_test()
+	public static function provider_route_param_test()
 	{
 		return [
 			[
@@ -118,10 +119,8 @@ class Kohana_Request_ExecutorTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_route_param_test
-	 */
-	public function test_it_executes_with_first_matching_route_and_assigns_params_to_request(
+	#[DataProvider('provider_route_param_test')]
+    public function test_it_executes_with_first_matching_route_and_assigns_params_to_request(
 		$url,
 		$expect
 	) {
@@ -139,7 +138,7 @@ class Kohana_Request_ExecutorTest extends TestCase
 		$this->assertEquals($expect, json_decode($response, TRUE));
 	}
 
-	public function provider_controller_class()
+	public static function provider_controller_class()
 	{
 		return [
 			[
@@ -170,10 +169,8 @@ class Kohana_Request_ExecutorTest extends TestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_controller_class
-	 */
-	public function test_it_executes_with_expected_controller_class(
+	#[DataProvider('provider_controller_class')]
+    public function test_it_executes_with_expected_controller_class(
 		$route_defaults,
 		$controller_class,
 		$expect

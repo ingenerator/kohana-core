@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana Form helper
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.form
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.form')]
 class Kohana_FormTest extends KohanaCoreTestCase
 {
 	/**
@@ -38,7 +41,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_open()
+	public static function provider_open()
 	{
 		return [
 			[
@@ -61,15 +64,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::open()
-	 *
-	 * @test
-	 * @dataProvider provider_open
-	 *
-	 * @param boolean $input    Input for Form::open
-	 * @param boolean $expected Output for Form::open
-	 */
-	public function test_open($input, $expected)
+     * Tests Form::open()
+     *
+     *
+     * @param boolean $input    Input for Form::open
+     * @param boolean $expected Output for Form::open
+     */
+    #[DataProvider('provider_open')]
+    #[Test]
+    public function test_open($input, $expected)
 	{
 		$this->markTestSkipped('Relies on asserting tags');
 		[$action, $attributes] = $input;
@@ -91,11 +94,10 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::close()
-	 *
-	 * @test
-	 */
-	public function test_close()
+     * Tests Form::close()
+     */
+    #[Test]
+    public function test_close()
 	{
 		$this->assertSame('</form>', Form::close());
 	}
@@ -105,7 +107,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_input()
+	public static function provider_input()
 	{
 		return [
 			// $value, $result
@@ -117,15 +119,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::input()
-	 *
-	 * @test
-	 * @dataProvider provider_input
-	 *
-	 * @param boolean $input    Input for Form::input
-	 * @param boolean $expected Output for Form::input
-	 */
-	public function test_input($type, $name, $value, $attributes)
+     * Tests Form::input()
+     *
+     *
+     * @param boolean $input    Input for Form::input
+     * @param boolean $expected Output for Form::input
+     */
+    #[DataProvider('provider_input')]
+    #[Test]
+    public function test_input($type, $name, $value, $attributes)
 	{
 		$this->markTestSkipped('Relies on asserting tags');
 		$matcher = [
@@ -158,7 +160,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_file()
+	public static function provider_file()
 	{
 		return [
 			// $value, $result
@@ -167,15 +169,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::file()
-	 *
-	 * @test
-	 * @dataProvider provider_file
-	 *
-	 * @param boolean $input    Input for Form::file
-	 * @param boolean $expected Output for Form::file
-	 */
-	public function test_file($name, $attributes, $expected)
+     * Tests Form::file()
+     *
+     *
+     * @param boolean $input    Input for Form::file
+     * @param boolean $expected Output for Form::file
+     */
+    #[DataProvider('provider_file')]
+    #[Test]
+    public function test_file($name, $attributes, $expected)
 	{
 		$this->assertSame($expected, Form::file($name, $attributes));
 	}
@@ -185,7 +187,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_check()
+	public static function provider_check()
 	{
 		return [
 			// $value, $result
@@ -200,15 +202,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::check()
-	 *
-	 * @test
-	 * @dataProvider provider_check
-	 *
-	 * @param boolean $input    Input for Form::check
-	 * @param boolean $expected Output for Form::check
-	 */
-	public function test_check($type, $name, $value, $checked, $attributes)
+     * Tests Form::check()
+     *
+     *
+     * @param boolean $input    Input for Form::check
+     * @param boolean $expected Output for Form::check
+     */
+    #[DataProvider('provider_check')]
+    #[Test]
+    public function test_check($type, $name, $value, $checked, $attributes)
 	{
 		$this->markTestSkipped('Relies on asserting tags');
 		$matcher = ['tag' => 'input', 'attributes' => ['name' => $name, 'type' => $type]];
@@ -234,7 +236,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_text()
+	public static function provider_text()
 	{
 		return [
 			// $value, $result
@@ -247,15 +249,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::textarea()
-	 *
-	 * @test
-	 * @dataProvider provider_text
-	 *
-	 * @param boolean $input    Input for Form::textarea
-	 * @param boolean $expected Output for Form::textarea
-	 */
-	public function test_text($type, $name, $body, $attributes)
+     * Tests Form::textarea()
+     *
+     *
+     * @param boolean $input    Input for Form::textarea
+     * @param boolean $expected Output for Form::textarea
+     */
+    #[DataProvider('provider_text')]
+    #[Test]
+    public function test_text($type, $name, $body, $attributes)
 	{
 		$this->markTestSkipped('Relies on asserting tags');
 		$matcher = [
@@ -286,7 +288,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_select()
+	public static function provider_select()
 	{
 		return [
 			// $value, $result
@@ -321,15 +323,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::select()
-	 *
-	 * @test
-	 * @dataProvider provider_select
-	 *
-	 * @param boolean $input    Input for Form::select
-	 * @param boolean $expected Output for Form::select
-	 */
-	public function test_select($name, $options, $selected, $expected)
+     * Tests Form::select()
+     *
+     *
+     * @param boolean $input    Input for Form::select
+     * @param boolean $expected Output for Form::select
+     */
+    #[DataProvider('provider_select')]
+    #[Test]
+    public function test_select($name, $options, $selected, $expected)
 	{
 		// Much more efficient just to assertSame() rather than assertTag() on each element
 		$this->assertSame($expected, Form::select($name, $options, $selected));
@@ -340,7 +342,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_submit()
+	public static function provider_submit()
 	{
 		return [
 			// $value, $result
@@ -349,15 +351,15 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::submit()
-	 *
-	 * @test
-	 * @dataProvider provider_submit
-	 *
-	 * @param boolean $input    Input for Form::submit
-	 * @param boolean $expected Output for Form::submit
-	 */
-	public function test_submit($name, $value, $expected)
+     * Tests Form::submit()
+     *
+     *
+     * @param boolean $input    Input for Form::submit
+     * @param boolean $expected Output for Form::submit
+     */
+    #[DataProvider('provider_submit')]
+    #[Test]
+    public function test_submit($name, $value, $expected)
 	{
 		$this->markTestSkipped('Relies on asserting tags');
 		$matcher = [
@@ -374,7 +376,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_image()
+	public static function provider_image()
 	{
 		return [
 			// $value, $result
@@ -388,17 +390,17 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::image()
-	 *
-	 * @test
-	 * @dataProvider provider_image
-	 *
-	 * @param boolean $name       Input for Form::image
-	 * @param boolean $value      Input for Form::image
-	 * @param boolean $attributes Input for Form::image
-	 * @param boolean $expected   Output for Form::image
-	 */
-	public function test_image($name, $value, $attributes, $expected)
+     * Tests Form::image()
+     *
+     *
+     * @param boolean $name       Input for Form::image
+     * @param boolean $value      Input for Form::image
+     * @param boolean $attributes Input for Form::image
+     * @param boolean $expected   Output for Form::image
+     */
+    #[DataProvider('provider_image')]
+    #[Test]
+    public function test_image($name, $value, $attributes, $expected)
 	{
 		$this->assertSame($expected, Form::image($name, $value, $attributes));
 	}
@@ -408,7 +410,7 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	function provider_label()
+	static function provider_label()
 	{
 		return [
 			// $value, $result
@@ -430,17 +432,17 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Form::label()
-	 *
-	 * @test
-	 * @dataProvider provider_label
-	 *
-	 * @param boolean $for        Input for Form::label
-	 * @param boolean $text       Input for Form::label
-	 * @param boolean $attributes Input for Form::label
-	 * @param boolean $expected   Output for Form::label
-	 */
-	function test_label($for, $text, $attributes, $expected)
+     * Tests Form::label()
+     *
+     *
+     * @param boolean $for        Input for Form::label
+     * @param boolean $text       Input for Form::label
+     * @param boolean $attributes Input for Form::label
+     * @param boolean $expected   Output for Form::label
+     */
+    #[DataProvider('provider_label')]
+    #[Test]
+    function test_label($for, $text, $attributes, $expected)
 	{
 		$this->assertSame($expected, Form::label($for, $text, $attributes));
 	}

@@ -1,5 +1,9 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\Ticket;
 use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
@@ -8,9 +12,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the session class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.session
  *
  * @package        Kohana
  * @category       Tests
@@ -19,6 +20,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.session')]
 class Kohana_SessionTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
@@ -42,7 +46,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_constructor_uses_settings_from_config_and_casts()
+	public static function provider_constructor_uses_settings_from_config_and_casts()
 	{
 		return [
 			// array(expected, input)
@@ -70,14 +74,12 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * The constructor should change its attributes based on config
-	 * passed as the first parameter
-	 *
-	 * @test
-	 * @dataProvider provider_constructor_uses_settings_from_config_and_casts
-	 * @covers       Session::__construct
-	 */
-	public function test_constructor_uses_settings_from_config_and_casts($expected, $config)
+     * The constructor should change its attributes based on config
+     * passed as the first parameter
+     */
+    #[DataProvider('provider_constructor_uses_settings_from_config_and_casts')]
+    #[Test]
+    public function test_constructor_uses_settings_from_config_and_casts($expected, $config)
 	{
 		$session = $this->getMockForAbstractClass('Session', [$config]);
 
@@ -87,14 +89,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Check that the constructor will load a session if it's provided
-	 * witha session id
-	 *
-	 * @test
-	 * @covers Session::__construct
-	 * @covers Session::read
-	 */
-	public function test_constructor_loads_session_with_session_id()
+     * Check that the constructor will load a session if it's provided
+     * witha session id
+     */
+    #[Test]
+    public function test_constructor_loads_session_with_session_id()
 	{
 		$config     = [];
 		$session_id = 'lolums';
@@ -114,14 +113,12 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Calling $session->bind() should allow you to bind a variable
-	 * to a session variable
-	 *
-	 * @test
-	 * @covers Session::bind
-	 * @ticket 3164
-	 */
-	public function test_bind_actually_binds_variable()
+     * Calling $session->bind() should allow you to bind a variable
+     * to a session variable
+     */
+    #[Ticket('3164')]
+    #[Test]
+    public function test_bind_actually_binds_variable()
 	{
 		$session = $this->getMockForAbstractClass('Session');
 
@@ -136,14 +133,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 
 
 	/**
-	 * When a session is initially created it should have no data
-	 *
-	 *
-	 * @test
-	 * @covers Session::__construct
-	 * @covers Session::set
-	 */
-	public function test_initially_session_has_no_data()
+     * When a session is initially created it should have no data
+     *
+     */
+    #[Test]
+    public function test_initially_session_has_no_data()
 	{
 		$session = $this->getMockSession();
 
@@ -151,13 +145,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Make sure that the default session name (the one used if the
-	 * driver does not set one) is 'session'
-	 *
-	 * @test
-	 * @covers Session::__construct
-	 */
-	public function test_default_session_name_is_set()
+     * Make sure that the default session name (the one used if the
+     * driver does not set one) is 'session'
+     */
+    #[Test]
+    public function test_default_session_name_is_set()
 	{
 		$session = $this->getMockSession();
 
@@ -165,12 +157,10 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * A new session should not be classed as destroyed
-	 *
-	 * @test
-	 * @covers Session::__construct
-	 */
-	public function test_default_session_is_not_classed_as_destroyed()
+     * A new session should not be classed as destroyed
+     */
+    #[Test]
+    public function test_default_session_is_not_classed_as_destroyed()
 	{
 		$session = $this->getMockSession();
 
@@ -182,7 +172,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_get_returns_default_if_var_dnx()
+	public static function provider_get_returns_default_if_var_dnx()
 	{
 		return [
 			['something_crazy', FALSE],
@@ -192,14 +182,12 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Make sure that get() is using the default value we provide and
-	 * isn't tampering with it
-	 *
-	 * @test
-	 * @dataProvider provider_get_returns_default_if_var_dnx
-	 * @covers       Session::get
-	 */
-	public function test_get_returns_default_if_var_dnx($var, $default)
+     * Make sure that get() is using the default value we provide and
+     * isn't tampering with it
+     */
+    #[DataProvider('provider_get_returns_default_if_var_dnx')]
+    #[Test]
+    public function test_get_returns_default_if_var_dnx($var, $default)
 	{
 		$session = $this->getMockSession();
 
@@ -207,12 +195,10 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * By default get() should be using null as the var DNX return value
-	 *
-	 * @test
-	 * @covers Session::get
-	 */
-	public function test_get_uses_null_as_default_return_value()
+     * By default get() should be using null as the var DNX return value
+     */
+    #[Test]
+    public function test_get_uses_null_as_default_return_value()
 	{
 		$session = $this->getMockSession();
 
@@ -220,13 +206,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This test makes sure that session is using array_key_exists
-	 * as isset will return FALSE if the value is NULL
-	 *
-	 * @test
-	 * @covers Session::get
-	 */
-	public function test_get_returns_value_if_it_equals_null()
+     * This test makes sure that session is using array_key_exists
+     * as isset will return FALSE if the value is NULL
+     */
+    #[Test]
+    public function test_get_returns_value_if_it_equals_null()
 	{
 		$session = $this->getMockSession();
 
@@ -236,14 +220,12 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * as_array() should return the session data by reference.
-	 *
-	 * i.e. if we modify the returned data, the session data also changes
-	 *
-	 * @test
-	 * @covers Session::as_array
-	 */
-	public function test_as_array_returns_data_by_ref_or_copy()
+     * as_array() should return the session data by reference.
+     *
+     * i.e. if we modify the returned data, the session data also changes
+     */
+    #[Test]
+    public function test_as_array_returns_data_by_ref_or_copy()
 	{
 		$session = $this->getMockSession();
 
@@ -261,14 +243,12 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * set() should add new session data and modify existing ones
-	 *
-	 * Also makes sure that set() returns $this
-	 *
-	 * @test
-	 * @covers Session::set
-	 */
-	public function test_set_adds_and_modifies_to_session_data()
+     * set() should add new session data and modify existing ones
+     *
+     * Also makes sure that set() returns $this
+     */
+    #[Test]
+    public function test_set_adds_and_modifies_to_session_data()
 	{
 		$session = $this->getMockSession();
 
@@ -290,12 +270,10 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This tests that delete() removes specified session data
-	 *
-	 * @test
-	 * @covers Session::delete
-	 */
-	public function test_delete_removes_select_session_data()
+     * This tests that delete() removes specified session data
+     */
+    #[Test]
+    public function test_delete_removes_select_session_data()
 	{
 		$session = $this->getMockSession();
 
@@ -335,7 +313,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_read_loads_session_data()
+	public static function provider_read_loads_session_data()
 	{
 		return [
 			// If driver returns array then just load it up
@@ -359,18 +337,16 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * This is one of the "big" tests for the session lib
-	 *
-	 * The test makes sure that
-	 *
-	 * 1. Session asks the driver for the data relating to $session_id
-	 * 2. That it will load the returned data into the session
-	 *
-	 * @test
-	 * @dataProvider provider_read_loads_session_data
-	 * @covers       Session::read
-	 */
-	public function test_read_loads_session_data($expected_data, $session_id, $driver_data, array $config = [])
+     * This is one of the "big" tests for the session lib
+     *
+     * The test makes sure that
+     *
+     * 1. Session asks the driver for the data relating to $session_id
+     * 2. That it will load the returned data into the session
+     */
+    #[DataProvider('provider_read_loads_session_data')]
+    #[Test]
+    public function test_read_loads_session_data($expected_data, $session_id, $driver_data, array $config = [])
 	{
 		$session = $this->getMockSession($config);
 
@@ -384,12 +360,10 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * regenerate() should tell the driver to regenerate its id
-	 *
-	 * @test
-	 * @covers Session::regenerate
-	 */
-	public function test_regenerate_tells_driver_to_regenerate()
+     * regenerate() should tell the driver to regenerate its id
+     */
+    #[Test]
+    public function test_regenerate_tells_driver_to_regenerate()
 	{
 		$session = $this->getMockSession();
 
@@ -404,13 +378,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If the driver destroys the session then all session data should be
-	 * removed
-	 *
-	 * @test
-	 * @covers Session::destroy
-	 */
-	public function test_destroy_deletes_data_if_driver_destroys_session()
+     * If the driver destroys the session then all session data should be
+     * removed
+     */
+    #[Test]
+    public function test_destroy_deletes_data_if_driver_destroys_session()
 	{
 		$session = $this->getMockSession();
 
@@ -430,13 +402,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * The session data should only be deleted if the driver reports
-	 * that the session was destroyed ok
-	 *
-	 * @test
-	 * @covers Session::destroy
-	 */
-	public function test_destroy_only_deletes_data_if_driver_destroys_session()
+     * The session data should only be deleted if the driver reports
+     * that the session was destroyed ok
+     */
+    #[Test]
+    public function test_destroy_only_deletes_data_if_driver_destroys_session()
 	{
 		$session = $this->getMockSession();
 
@@ -459,13 +429,11 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If a session variable exists then get_once should get it then remove it.
-	 * If the variable does not exist then it should return the default
-	 *
-	 * @test
-	 * @covers Session::get_once
-	 */
-	public function test_get_once_gets_once_or_returns_default()
+     * If a session variable exists then get_once should get it then remove it.
+     * If the variable does not exist then it should return the default
+     */
+    #[Test]
+    public function test_get_once_gets_once_or_returns_default()
 	{
 		$session = $this->getMockSession();
 

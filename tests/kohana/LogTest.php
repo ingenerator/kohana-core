@@ -1,5 +1,7 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
@@ -8,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana Logging API
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.logging
  *
  * @package        Kohana
  * @category       Tests
@@ -19,18 +18,19 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.logging')]
 class Kohana_LogTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
 
 	/**
-	 * Tests that when a new logger is created the list of messages is initially
-	 * empty
-	 *
-	 * @test
-	 * @covers Log
-	 */
-	public function test_messages_is_initially_empty()
+     * Tests that when a new logger is created the list of messages is initially
+     * empty
+     */
+    #[Test]
+    public function test_messages_is_initially_empty()
 	{
 		$logger = new Log;
 
@@ -38,13 +38,11 @@ class Kohana_LogTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that when a new logger is created the list of writers is initially
-	 * empty
-	 *
-	 * @test
-	 * @covers Log
-	 */
-	public function test_writers_is_initially_empty()
+     * Tests that when a new logger is created the list of writers is initially
+     * empty
+     */
+    #[Test]
+    public function test_writers_is_initially_empty()
 	{
 		$logger = new Log;
 
@@ -52,14 +50,12 @@ class Kohana_LogTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test that attaching a log writer using an array of levels adds it to the array of log writers
-	 *
-	 * @TODO   Is this test too specific?
-	 *
-	 * @test
-	 * @covers Log::attach
-	 */
-	public function test_attach_attaches_log_writer_and_returns_this()
+     * Test that attaching a log writer using an array of levels adds it to the array of log writers
+     *
+     * @TODO   Is this test too specific?
+     */
+    #[Test]
+    public function test_attach_attaches_log_writer_and_returns_this()
 	{
 		$logger = new Log;
 		$writer = $this->getMockForAbstractClass('Log_Writer');
@@ -74,14 +70,12 @@ class Kohana_LogTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test that attaching a log writer using a min/max level adds it to the array of log writers
-	 *
-	 * @TODO   Is this test too specific?
-	 *
-	 * @test
-	 * @covers Log::attach
-	 */
-	public function test_attach_attaches_log_writer_min_max_and_returns_this()
+     * Test that attaching a log writer using a min/max level adds it to the array of log writers
+     *
+     * @TODO   Is this test too specific?
+     */
+    #[Test]
+    public function test_attach_attaches_log_writer_min_max_and_returns_this()
 	{
 		$logger = new Log;
 		$writer = $this->getMockForAbstractClass('Log_Writer');
@@ -101,12 +95,10 @@ class Kohana_LogTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When we call detach() we expect the specified log writer to be removed
-	 *
-	 * @test
-	 * @covers Log::detach
-	 */
-	public function test_detach_removes_log_writer_and_returns_this()
+     * When we call detach() we expect the specified log writer to be removed
+     */
+    #[Test]
+    public function test_detach_removes_log_writer_and_returns_this()
 	{
 		$logger = new Log;
 		$writer = $this->getMockForAbstractClass('Log_Writer');

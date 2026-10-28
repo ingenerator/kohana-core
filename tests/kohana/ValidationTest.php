@@ -1,5 +1,9 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Ticket;
 use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
@@ -8,9 +12,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the Validation lib that's shipped with Kohana
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.validation
  *
  * @package        Kohana
  * @category       Tests
@@ -19,19 +20,21 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.validation')]
 class Kohana_ValidationTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
 
 	/**
-	 * Tests Validation::factory()
-	 *
-	 * Makes sure that the factory method returns an instance of Validation lib
-	 * and that it uses the variables passed
-	 *
-	 * @test
-	 */
-	public function test_factory_method_returns_instance_with_values()
+     * Tests Validation::factory()
+     *
+     * Makes sure that the factory method returns an instance of Validation lib
+     * and that it uses the variables passed
+     */
+    #[Test]
+    public function test_factory_method_returns_instance_with_values()
 	{
 		$values = [
 			'this'          => 'something else',
@@ -50,14 +53,12 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When we copy() a validation object, we should have a new validation object
-	 * with the exact same attributes, apart from the data, which should be the
-	 * same as the array we pass to copy()
-	 *
-	 * @test
-	 * @covers Validation::copy
-	 */
-	public function test_copy_copies_all_attributes_except_data()
+     * When we copy() a validation object, we should have a new validation object
+     * with the exact same attributes, apart from the data, which should be the
+     * same as the array we pass to copy()
+     */
+    #[Test]
+    public function test_copy_copies_all_attributes_except_data()
 	{
 		$validation = new Validation(['foo' => 'bar', 'fud' => 'fear, uncertainty, doubt', 'num' => 9]);
 
@@ -83,12 +84,11 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * When the validation object is initially created there should be no labels
-	 * specified
-	 *
-	 * @test
-	 */
-	public function test_initially_there_are_no_labels()
+     * When the validation object is initially created there should be no labels
+     * specified
+     */
+    #[Test]
+    public function test_initially_there_are_no_labels()
 	{
 		$validation = new Validation([]);
 
@@ -96,15 +96,13 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Adding a label to a field should set it in the labels array
-	 * If the label already exists it should overwrite it
-	 *
-	 * In both cases thefunction should return a reference to $this
-	 *
-	 * @test
-	 * @covers Validation::label
-	 */
-	public function test_label_adds_and_overwrites_label_and_returns_this()
+     * Adding a label to a field should set it in the labels array
+     * If the label already exists it should overwrite it
+     *
+     * In both cases thefunction should return a reference to $this
+     */
+    #[Test]
+    public function test_label_adds_and_overwrites_label_and_returns_this()
 	{
 		$validation = new Validation([]);
 
@@ -124,14 +122,12 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Using labels() we should be able to add / overwrite multiple labels
-	 *
-	 * The function should also return $this for chaining purposes
-	 *
-	 * @test
-	 * @covers Validation::labels
-	 */
-	public function test_labels_adds_and_overwrites_multiple_labels_and_returns_this()
+     * Using labels() we should be able to add / overwrite multiple labels
+     *
+     * The function should also return $this for chaining purposes
+     */
+    #[Test]
+    public function test_labels_adds_and_overwrites_multiple_labels_and_returns_this()
 	{
 		$validation   = new Validation([]);
 		$initial_data = ['kung fu' => 'fighting', 'fast' => 'cheetah'];
@@ -150,14 +146,12 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Using bind() we should be able to add / overwrite multiple bound variables
-	 *
-	 * The function should also return $this for chaining purposes
-	 *
-	 * @test
-	 * @covers Validation::bind
-	 */
-	public function test_bind_adds_and_overwrites_multiple_variables_and_returns_this()
+     * Using bind() we should be able to add / overwrite multiple bound variables
+     *
+     * The function should also return $this for chaining purposes
+     */
+    #[Test]
+    public function test_bind_adds_and_overwrites_multiple_variables_and_returns_this()
 	{
 		$validation = new Validation([]);
 		$data       = ['kung fu' => 'fighting', 'fast' => 'cheetah'];
@@ -173,12 +167,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * We should be able to used bound variables in callbacks
-	 *
-	 * @test
-	 * @covers Validation::check
-	 */
-	public function test_bound_callback()
+     * We should be able to used bound variables in callbacks
+     */
+    #[Test]
+    public function test_bound_callback()
 	{
 		$data       = [
 			'kung fu' => 'fighting',
@@ -198,7 +190,7 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_check()
+	public static function provider_check()
 	{
 		// $data_array, $rules, $labels, $first_expected, $expected_error
 		return [
@@ -276,23 +268,18 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::check()
-	 *
-	 * @test
-	 * @covers       Validation::check
-	 * @covers       Validation::rule
-	 * @covers       Validation::rules
-	 * @covers       Validation::errors
-	 * @covers       Validation::error
-	 * @dataProvider provider_check
-	 *
-	 * @param array   $array           The array of data
-	 * @param array   $rules           The array of rules
-	 * @param array   $labels          The array of labels
-	 * @param boolean $expected        Is it valid?
-	 * @param boolean $expected_errors Array of expected errors
-	 */
-	public function test_check($array, $rules, $labels, $expected, $expected_errors)
+     * Tests Validation::check()
+     *
+     *
+     * @param array   $array           The array of data
+     * @param array   $rules           The array of rules
+     * @param array   $labels          The array of labels
+     * @param boolean $expected        Is it valid?
+     * @param boolean $expected_errors Array of expected errors
+     */
+    #[DataProvider('provider_check')]
+    #[Test]
+    public function test_check($array, $rules, $labels, $expected, $expected_errors)
 	{
 		$validation = new Validation($array);
 
@@ -321,12 +308,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::check()
-	 *
-	 * @test
-	 * @covers Validation::check
-	 */
-	public function test_check_stops_when_error_added_by_callback()
+     * Tests Validation::check()
+     */
+    #[Test]
+    public function test_check_stops_when_error_added_by_callback()
 	{
 		$validation = new Validation([
 			'foo' => 'foo',
@@ -361,7 +346,7 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_errors()
+	public static function provider_errors()
 	{
 		// [data, rules, expected], ...
 		return [
@@ -387,17 +372,16 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::errors()
-	 *
-	 * @test
-	 * @covers       Validation::errors
-	 * @dataProvider provider_errors
-	 *
-	 * @param array $array    The array of data
-	 * @param array $rules    The array of rules
-	 * @param array $expected Array of expected errors
-	 */
-	public function test_errors($array, $rules, $expected)
+     * Tests Validation::errors()
+     *
+     *
+     * @param array $array    The array of data
+     * @param array $rules    The array of rules
+     * @param array $expected Array of expected errors
+     */
+    #[DataProvider('provider_errors')]
+    #[Test]
+    public function test_errors($array, $rules, $expected)
 	{
 		$validation = Validation::factory($array);
 
@@ -417,7 +401,7 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_translated_errors()
+	public static function provider_translated_errors()
 	{
 		// [data, rules, expected], ...
 		return [
@@ -432,18 +416,17 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::errors()
-	 *
-	 * @test
-	 * @covers       Validation::errors
-	 * @dataProvider provider_translated_errors
-	 *
-	 * @param array $data                  The array of data to test
-	 * @param array $rules                 The array of rules to add
-	 * @param array $translated_expected   The array of expected errors when translated
-	 * @param array $untranslated_expected The array of expected errors when not translated
-	 */
-	public function test_translated_errors($data, $rules, $translated_expected, $untranslated_expected)
+     * Tests Validation::errors()
+     *
+     *
+     * @param array $data                  The array of data to test
+     * @param array $rules                 The array of rules to add
+     * @param array $translated_expected   The array of expected errors when translated
+     * @param array $untranslated_expected The array of expected errors when not translated
+     */
+    #[DataProvider('provider_translated_errors')]
+    #[Test]
+    public function test_translated_errors($data, $rules, $translated_expected, $untranslated_expected)
 	{
 		$validation = Validation::factory($data);
 
@@ -469,12 +452,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::errors()
-	 *
-	 * @test
-	 * @covers Validation::errors
-	 */
-	public function test_parameter_labels()
+     * Tests Validation::errors()
+     */
+    #[Test]
+    public function test_parameter_labels()
 	{
 		$validation = Validation::factory(['foo' => 'bar'])
 			->rule('foo', 'equals', [':value', 'something'])
@@ -501,12 +482,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::errors()
-	 *
-	 * @test
-	 * @covers Validation::errors
-	 */
-	public function test_arrays_in_parameters()
+     * Tests Validation::errors()
+     */
+    #[Test]
+    public function test_arrays_in_parameters()
 	{
 		$validation = Validation::factory(['foo' => 'bar'])
 			->rule('foo', 'equals', [':value', ['one', 'two']]);
@@ -519,12 +498,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::check()
-	 *
-	 * @test
-	 * @covers Validation::check
-	 */
-	public function test_data_stays_unaltered()
+     * Tests Validation::check()
+     */
+    #[Test]
+    public function test_data_stays_unaltered()
 	{
 		$validation = Validation::factory(['foo' => 'bar'])
 			->rule('something', 'not_empty');
@@ -540,12 +517,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::errors()
-	 *
-	 * @test
-	 * @covers Validation::errors
-	 */
-	public function test_object_parameters_not_in_messages()
+     * Tests Validation::errors()
+     */
+    #[Test]
+    public function test_object_parameters_not_in_messages()
 	{
 		$validation = Validation::factory(['foo' => 'foo'])
 			->rule('bar', 'matches', [':validation', ':field', 'foo']);
@@ -558,12 +533,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::as_array()
-	 *
-	 * @test
-	 * @covers Validation::as_array
-	 */
-	public function test_as_array_returns_original_array()
+     * Tests Validation::as_array()
+     */
+    #[Test]
+    public function test_as_array_returns_original_array()
 	{
 		$data = [
 			'one' => 'hello',
@@ -577,12 +550,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Validation::data()
-	 *
-	 * @test
-	 * @covers Validation::data
-	 */
-	public function test_data_returns_original_array()
+     * Tests Validation::data()
+     */
+    #[Test]
+    public function test_data_returns_original_array()
 	{
 		$data = [
 			'one' => 'hello',
@@ -656,12 +627,10 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * http://dev.kohanaframework.org/issues/4365
-	 *
-	 * @test
-	 * @covers Validation::errors
-	 */
-	public function test_error_type_check()
+     * http://dev.kohanaframework.org/issues/4365
+     */
+    #[Test]
+    public function test_error_type_check()
 	{
 		$array = [
 			'email' => 'not an email address',
@@ -683,7 +652,7 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_rule_label_regex()
+	public static function provider_rule_label_regex()
 	{
 		// $data, $field, $rules, $expected
 		return [
@@ -705,14 +674,12 @@ class Kohana_ValidationTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * http://dev.kohanaframework.org/issues/4201
-	 *
-	 * @test
-	 * @ticket       4201
-	 * @covers       Validation::rule
-	 * @dataProvider provider_rule_label_regex
-	 */
-	public function test_rule_label_regex($data, $field, $rules, $expected)
+     * http://dev.kohanaframework.org/issues/4201
+     */
+    #[Ticket('4201')]
+    #[DataProvider('provider_rule_label_regex')]
+    #[Test]
+    public function test_rule_label_regex($data, $field, $rules, $expected)
 	{
 		$validation = Validation::factory($data)->rules($field, $rules);
 

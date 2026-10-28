@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests HTML
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.html
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.html')]
 class Kohana_HTMLTest extends KohanaCoreTestCase
 {
 
@@ -51,7 +54,7 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_attributes()
+	public static function provider_attributes()
 	{
 		return [
 			[
@@ -83,16 +86,16 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTML::attributes()
-	 *
-	 * @test
-	 * @dataProvider provider_attributes
-	 *
-	 * @param array  $attributes Attributes to use
-	 * @param array  $options    Environment options to use
-	 * @param string $expected   Expected output
-	 */
-	public function test_attributes(array $attributes, array $options, $expected)
+     * Tests HTML::attributes()
+     *
+     *
+     * @param array  $attributes Attributes to use
+     * @param array  $options    Environment options to use
+     * @param string $expected   Expected output
+     */
+    #[DataProvider('provider_attributes')]
+    #[Test]
+    public function test_attributes(array $attributes, array $options, $expected)
 	{
 		$this->setEnvironment($options);
 
@@ -107,7 +110,7 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	 *
 	 * @return array Array of test data
 	 */
-	public function provider_script()
+	public static function provider_script()
 	{
 		return [
 			[
@@ -144,18 +147,18 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTML::script()
-	 *
-	 * @test
-	 * @dataProvider  provider_script
-	 *
-	 * @param string $expected   Expected output
-	 * @param string $file       URL to script
-	 * @param array  $attributes HTML attributes for the anchor
-	 * @param string $protocol   Protocol to use
-	 * @param bool   $index      Should the index file be included in url?
-	 */
-	public function test_script($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
+     * Tests HTML::script()
+     *
+     *
+     * @param string $expected   Expected output
+     * @param string $file       URL to script
+     * @param array  $attributes HTML attributes for the anchor
+     * @param string $protocol   Protocol to use
+     * @param bool   $index      Should the index file be included in url?
+     */
+    #[DataProvider('provider_script')]
+    #[Test]
+    public function test_script($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -168,7 +171,7 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	 *
 	 * @return array Array of test data
 	 */
-	public function provider_style()
+	public static function provider_style()
 	{
 		return [
 			[
@@ -227,18 +230,18 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTML::style()
-	 *
-	 * @test
-	 * @dataProvider  provider_style
-	 *
-	 * @param string $expected   The expected output
-	 * @param string $file       The file to link to
-	 * @param array  $attributes Any extra attributes for the link
-	 * @param string $protocol   Protocol to use
-	 * @param bool   $index      Whether the index file should be added to the link
-	 */
-	public function test_style($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
+     * Tests HTML::style()
+     *
+     *
+     * @param string $expected   The expected output
+     * @param string $file       The file to link to
+     * @param array  $attributes Any extra attributes for the link
+     * @param string $protocol   Protocol to use
+     * @param bool   $index      Whether the index file should be added to the link
+     */
+    #[DataProvider('provider_style')]
+    #[Test]
+    public function test_style($expected, $file, ?array $attributes = NULL, $protocol = NULL, $index = FALSE)
 	{
 		$this->assertSame(
 			$expected,
@@ -251,7 +254,7 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	 *
 	 * @return array Test data
 	 */
-	public function provider_anchor()
+	public static function provider_anchor()
 	{
 		return [
 			// a fragment-only anchor
@@ -339,12 +342,11 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests HTML::anchor
-	 *
-	 * @test
-	 * @dataProvider provider_anchor
-	 */
-	public function test_anchor(
+     * Tests HTML::anchor
+     */
+    #[DataProvider('provider_anchor')]
+    #[Test]
+    public function test_anchor(
 		$expected,
 		array $options,
 		$uri,
@@ -366,7 +368,7 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_file_anchor()
+	public static function provider_file_anchor()
 	{
 		return [
 			[
@@ -403,13 +405,11 @@ class Kohana_HTMLTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Test for HTML::file_anchor()
-	 *
-	 * @test
-	 * @covers       HTML::file_anchor
-	 * @dataProvider provider_file_anchor
-	 */
-	public function test_file_anchor(
+     * Test for HTML::file_anchor()
+     */
+    #[DataProvider('provider_file_anchor')]
+    #[Test]
+    public function test_file_anchor(
 		$expected,
 		array $attributes,
 		$file,

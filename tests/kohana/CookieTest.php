@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\TestWith;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests the cookie class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.cookie
  *
  * @package        Kohana
  * @category       Tests
@@ -19,6 +19,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2014 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.cookie')]
 class Kohana_CookieTest extends KohanaCoreTestCase
 {
 	const UNIX_TIMESTAMP    = 1411040141;
@@ -41,7 +44,7 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 
-	public function provider_configure()
+	public static function provider_configure()
 	{
 		return [
 			[
@@ -88,10 +91,8 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 		];
 	}
 
-	/**
-	 * @dataProvider provider_configure
-	 */
-	public function test_configure_updates_options_merging_defaults(
+	#[DataProvider('provider_configure')]
+    public function test_configure_updates_options_merging_defaults(
 		$env,
 		$config,
 		$expect
@@ -112,11 +113,9 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests that cookies are set with the global path, domain, etc options.
-	 *
-	 * @covers Cookie::set
-	 */
-	public function test_set_creates_cookie_with_configured_cookie_options()
+     * Tests that cookies are set with the global path, domain, etc options.
+     */
+    public function test_set_creates_cookie_with_configured_cookie_options()
 	{
 		$this->setEnvironment([
 			'Cookie::$path'     => '/path',
@@ -140,7 +139,7 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	 *
 	 * @return array of $lifetime, $expect_expiry
 	 */
-	public function provider_set_calculates_expiry_from_lifetime()
+	public static function provider_set_calculates_expiry_from_lifetime()
 	{
 		return [
 			[NULL, self::COOKIE_EXPIRATION + self::UNIX_TIMESTAMP],
@@ -150,13 +149,11 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * @param int $expiration
-	 * @param int $expect_expiry
-	 *
-	 * @dataProvider provider_set_calculates_expiry_from_lifetime
-	 * @covers       Cookie::set
-	 */
-	public function test_set_calculates_expiry_from_lifetime($expiration, $expect_expiry)
+     * @param int $expiration
+     * @param int $expect_expiry
+     */
+    #[DataProvider('provider_set_calculates_expiry_from_lifetime')]
+    public function test_set_calculates_expiry_from_lifetime($expiration, $expect_expiry)
 	{
 		$this->setEnvironment(['Cookie::$expiration' => self::COOKIE_EXPIRATION]);
 		Kohana_CookieTest_TestableCookie::set('foo', 'bar', $expiration);
@@ -197,11 +194,9 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 		);
 	}
 
-	/**
-	 * @testWith ["salt"]
-	 *           ["expiration"]
-	 */
-	public function test_set_throws_on_unsupported_cookie_options($opt)
+	#[TestWith(['salt'])]
+    #[TestWith(['expiration'])]
+    public function test_set_throws_on_unsupported_cookie_options($opt)
 	{
 		$this->expectException(InvalidArgumentException::class);
 		Kohana_CookieTest_TestableCookie::set(
@@ -212,18 +207,12 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 		);
 	}
 
-	/**
-	 * @covers Cookie::get
-	 */
 	public function test_get_returns_default_if_cookie_missing()
 	{
 		unset($_COOKIE['missing_cookie']);
 		$this->assertEquals('default', Cookie::get('missing_cookie', 'default'));
 	}
 
-	/**
-	 * @covers Cookie::get
-	 */
 	public function test_get_returns_value_if_cookie_present_and_signed()
 	{
 		Kohana_CookieTest_TestableCookie::set('cookie', 'value');
@@ -237,7 +226,7 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_get_returns_default_without_deleting_if_cookie_unsigned()
+	public static function provider_get_returns_default_without_deleting_if_cookie_unsigned()
 	{
 		return [
 			['unsalted'],
@@ -246,15 +235,13 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Verifies that unsigned cookies are not available to the kohana application, but are not affected for other
-	 * consumers.
-	 *
-	 * @param string $unsigned_value
-	 *
-	 * @dataProvider provider_get_returns_default_without_deleting_if_cookie_unsigned
-	 * @covers       Cookie::get
-	 */
-	public function test_get_returns_default_without_deleting_if_cookie_unsigned($unsigned_value)
+     * Verifies that unsigned cookies are not available to the kohana application, but are not affected for other
+     * consumers.
+     *
+     * @param string $unsigned_value
+     */
+    #[DataProvider('provider_get_returns_default_without_deleting_if_cookie_unsigned')]
+    public function test_get_returns_default_without_deleting_if_cookie_unsigned($unsigned_value)
 	{
 		$_COOKIE['cookie'] = $unsigned_value;
 		$this->assertEquals('default', Kohana_CookieTest_TestableCookie::get('cookie', 'default'));
@@ -263,20 +250,15 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * If a cookie looks like a signed cookie but the signature no longer matches, it should be deleted.
-	 *
-	 * @covers Cookie::get
-	 */
-	public function test_get_returns_default_and_deletes_tampered_signed_cookie()
+     * If a cookie looks like a signed cookie but the signature no longer matches, it should be deleted.
+     */
+    public function test_get_returns_default_and_deletes_tampered_signed_cookie()
 	{
 		$_COOKIE['cookie'] = Cookie::salt('cookie', 'value').'~tampered';
 		$this->assertEquals('default', Kohana_CookieTest_TestableCookie::get('cookie', 'default'));
 		$this->assertDeletedCookie('cookie');
 	}
 
-	/**
-	 * @covers Cookie::delete
-	 */
 	public function test_delete_removes_cookie_from_globals_and_expires_cookie()
 	{
 		$_COOKIE['cookie'] = Cookie::salt('cookie', 'value').'~tampered';
@@ -285,20 +267,16 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * @covers  Cookie::delete
-	 * @link    http://dev.kohanaframework.org/issues/3501
-	 * @link    http://dev.kohanaframework.org/issues/3020
-	 */
-	public function test_delete_does_not_require_configured_salt()
+     * @link    http://dev.kohanaframework.org/issues/3501
+     * @link    http://dev.kohanaframework.org/issues/3020
+     */
+    public function test_delete_does_not_require_configured_salt()
 	{
 		Cookie::$salt = NULL;
 		$this->assertTrue(Kohana_CookieTest_TestableCookie::delete('cookie'));
 		$this->assertDeletedCookie('cookie');
 	}
 
-	/**
-	 * @covers Cookie::salt
-	 */
 	public function test_salt_throws_with_no_configured_salt()
 	{
 		Cookie::$salt = NULL;
@@ -306,9 +284,6 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 		Cookie::salt('key', 'value');
 	}
 
-	/**
-	 * @covers Cookie::salt
-	 */
 	public function test_salt_creates_same_hash_for_same_values_and_state()
 	{
 		$name  = 'cookie';
@@ -321,7 +296,7 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_salt_creates_different_hash_for_different_data()
+	public static function provider_salt_creates_different_hash_for_different_data()
 	{
 		return [
 			[
@@ -348,13 +323,11 @@ class Kohana_CookieTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * @param array $first_args
-	 * @param array $changed_args
-	 *
-	 * @dataProvider provider_salt_creates_different_hash_for_different_data
-	 * @covers       Cookie::salt
-	 */
-	public function test_salt_creates_different_hash_for_different_data($first_args, $changed_args)
+     * @param array $first_args
+     * @param array $changed_args
+     */
+    #[DataProvider('provider_salt_creates_different_hash_for_different_data')]
+    public function test_salt_creates_different_hash_for_different_data($first_args, $changed_args)
 	{
 		$second_args = array_merge($first_args, $changed_args);
 		$hashes      = [];

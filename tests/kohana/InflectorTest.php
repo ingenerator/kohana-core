@@ -1,5 +1,8 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
@@ -7,9 +10,6 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
 /**
  * Tests Kohana inflector class
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.inflector
  *
  * @package        Kohana
  * @category       Tests
@@ -18,6 +18,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.inflector')]
 class Kohana_InflectorTest extends KohanaCoreTestCase
 {
 	/**
@@ -25,7 +28,7 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_uncountable()
+	public static function provider_uncountable()
 	{
 		return [
 			// $value, $result
@@ -38,15 +41,15 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Inflector::uncountable
-	 *
-	 * @test
-	 * @dataProvider provider_uncountable
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_uncountable($input, $expected)
+     * Tests Inflector::uncountable
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_uncountable')]
+    #[Test]
+    public function test_uncountable($input, $expected)
 	{
 		$this->assertSame($expected, Inflector::uncountable($input));
 	}
@@ -56,7 +59,7 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_singular()
+	public static function provider_singular()
 	{
 		return [
 			// $value, $result
@@ -75,15 +78,15 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Inflector::singular
-	 *
-	 * @test
-	 * @dataProvider provider_singular
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_singular($input, $count, $expected)
+     * Tests Inflector::singular
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_singular')]
+    #[Test]
+    public function test_singular($input, $count, $expected)
 	{
 		$this->assertSame($expected, Inflector::singular($input, $count));
 	}
@@ -93,7 +96,7 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_plural()
+	public static function provider_plural()
 	{
 		return [
 			// $value, $result
@@ -112,15 +115,15 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Inflector::plural
-	 *
-	 * @test
-	 * @dataProvider provider_plural
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_plural($input, $count, $expected)
+     * Tests Inflector::plural
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_plural')]
+    #[Test]
+    public function test_plural($input, $count, $expected)
 	{
 		$this->assertSame($expected, Inflector::plural($input, $count));
 	}
@@ -130,7 +133,7 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_camelize()
+	public static function provider_camelize()
 	{
 		return [
 			// $value, $result
@@ -144,15 +147,15 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Inflector::camelize
-	 *
-	 * @test
-	 * @dataProvider provider_camelize
-	 *
-	 * @param boolean $input    Input for File::mime
-	 * @param boolean $expected Output for File::mime
-	 */
-	public function test_camelize($input, $method, $expected)
+     * Tests Inflector::camelize
+     *
+     *
+     * @param boolean $input    Input for File::mime
+     * @param boolean $expected Output for File::mime
+     */
+    #[DataProvider('provider_camelize')]
+    #[Test]
+    public function test_camelize($input, $method, $expected)
 	{
 		$this->assertSame($expected, Inflector::$method($input));
 	}
@@ -162,7 +165,7 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	 *
 	 * @return array
 	 */
-	public function provider_decamelize()
+	public static function provider_decamelize()
 	{
 		return [
 			['getText', '_', 'get_text'],
@@ -179,16 +182,16 @@ class Kohana_InflectorTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * Tests Inflector::decamelize()
-	 *
-	 * @test
-	 * @dataProvider provider_decamelize
-	 *
-	 * @param string $input    Camelized string
-	 * @param string $glue     Glue
-	 * @param string $expected Expected string
-	 */
-	public function test_decamelize($input, $glue, $expected)
+     * Tests Inflector::decamelize()
+     *
+     *
+     * @param string $input    Camelized string
+     * @param string $glue     Glue
+     * @param string $expected Expected string
+     */
+    #[DataProvider('provider_decamelize')]
+    #[Test]
+    public function test_decamelize($input, $glue, $expected)
 	{
 		$this->assertSame($expected, Inflector::decamelize($input, $glue));
 	}
