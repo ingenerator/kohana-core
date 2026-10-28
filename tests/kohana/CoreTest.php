@@ -343,20 +343,24 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 	}
 
 	/**
-	 * To make the tests as portable as possible this just tests that
-	 * you get an array of modules when you can Kohana::modules() and that
-	 * said array contains unittest
 	 *
 	 * @test
 	 * @covers Kohana::modules
 	 */
 	public function test_modules_returns_array_of_modules()
 	{
-		$modules = Kohana::modules();
+		$original_modules = Kohana::modules();
 
-		$this->assertIsArray($modules);
+        try {
+            Kohana::modules(['some-module' => __DIR__]);
 
-		$this->assertArrayHasKey('unittest', $modules);
+            $this->assertSame(
+                ['some-module' => __DIR__.'/'],
+                Kohana::modules()
+            );
+        } finally {
+            Kohana::modules($original_modules);
+        }
 	}
 
 	/**
