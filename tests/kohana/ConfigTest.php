@@ -1,10 +1,11 @@
 <?php
 
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DataProvider;
-use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
+use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
@@ -103,6 +104,7 @@ class Kohana_ConfigTest extends KohanaCoreTestCase
      * Calling detach() on a config object should remove it from the queue of readers
      */
     #[Test]
+    #[AllowMockObjectsWithoutExpectations]
     public function test_detach_removes_reader_and_returns_this()
 	{
 		$config = new Config;
