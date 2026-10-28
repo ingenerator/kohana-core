@@ -379,7 +379,7 @@ class Kohana_CoreTest extends KohanaCoreTestCase
 		$this->assertIsArray($include_paths);
 
 		// We must have at least 2 items in include paths (APP / SYS)
-		$this->assertGreaterThan(2, count($include_paths));
+		$this->assertGreaterThanOrEqual(2, count($include_paths));
 		// Make sure said paths are in the include paths
 		// And make sure they're in the correct positions
 		$this->assertSame(APPPATH, reset($include_paths));
