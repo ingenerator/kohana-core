@@ -1,7 +1,7 @@
 <?php
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
@@ -111,10 +111,10 @@ class Kohana_FormTest extends KohanaCoreTestCase
 	{
 		return [
 			// $value, $result
-			['input', 'foo', 'bar', NULL, 'input'],
-			['input', 'foo', NULL, NULL, 'input'],
-			['hidden', 'foo', 'bar', NULL, 'hidden'],
-			['password', 'foo', 'bar', NULL, 'password'],
+			['input', 'foo', 'bar', NULL],
+			['input', 'foo', NULL, NULL],
+			['hidden', 'foo', 'bar', NULL],
+			['password', 'foo', 'bar', NULL],
 		];
 	}
 
