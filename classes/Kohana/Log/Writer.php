@@ -63,7 +63,7 @@ abstract class Kohana_Log_Writer {
 	 */
 	final public function __toString()
 	{
-		return \spl_object_hash($this);
+		return \spl_object_id($this);
 	}
 
 	/**
