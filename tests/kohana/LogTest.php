@@ -58,7 +58,11 @@ class Kohana_LogTest extends KohanaCoreTestCase
     public function test_attach_attaches_log_writer_and_returns_this()
 	{
 		$logger = new Log;
-		$writer = $this->getMockForAbstractClass('Log_Writer');
+		$writer = new class extends Log_Writer {
+            public function write(array $messages)
+            {
+            }
+        };
 
 		$this->assertSame($logger, $logger->attach($writer));
 
@@ -78,7 +82,11 @@ class Kohana_LogTest extends KohanaCoreTestCase
     public function test_attach_attaches_log_writer_min_max_and_returns_this()
 	{
 		$logger = new Log;
-		$writer = $this->getMockForAbstractClass('Log_Writer');
+        $writer = new class extends Log_Writer {
+            public function write(array $messages)
+            {
+            }
+        };
 
 		$this->assertSame($logger, $logger->attach($writer, Log::NOTICE, Log::CRITICAL));
 
@@ -101,7 +109,11 @@ class Kohana_LogTest extends KohanaCoreTestCase
     public function test_detach_removes_log_writer_and_returns_this()
 	{
 		$logger = new Log;
-		$writer = $this->getMockForAbstractClass('Log_Writer');
+        $writer = new class extends Log_Writer {
+            public function write(array $messages)
+            {
+            }
+        };
 
 		$logger->attach($writer);
 
