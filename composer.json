@@ -22,13 +22,17 @@
 		"ext-ctype": "*"
 	},
 	"require-dev": {
-		"kohana/koharness": "dev-master",
 		"phpunit/phpunit": "^9.5.22"
 	},
 	"replace": {
 		"kohana/core": "3.3.*",
 		"kohana/minion": "3.3.*",
 		"kohana/unittest": "3.3.*"
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"tests\\Kohana\\Support\\": "tests/support/"
+		}
 	},
 	"suggest": {
 		"ext-http":   "*",
