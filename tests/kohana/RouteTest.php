@@ -1,5 +1,6 @@
 <?php
 
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Ticket;
@@ -8,12 +9,11 @@ use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
+include Kohana::find_file('tests', 'test_data/callback_routes');
+
 /**
  * Description of RouteTest
  *
- * @group          kohana
- * @group          kohana.core
- * @group          kohana.core.route
  *
  * @package        Kohana
  * @category       Tests
@@ -22,9 +22,9 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-
-include Kohana::find_file('tests', 'test_data/callback_routes');
-
+#[Group('kohana')]
+#[Group('kohana.core')]
+#[Group('kohana.core.route')]
 class Kohana_RouteTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
