@@ -35,7 +35,6 @@ trait ObjectInternalAccessTestWorkarounds
 	public static function readAttribute($classOrObject, string $attributeName)
 	{
 		$reflectionProperty = new ReflectionProperty($classOrObject, $attributeName);
-		$reflectionProperty->setAccessible(TRUE);
 
 		return $reflectionProperty->getValue($classOrObject);
 	}

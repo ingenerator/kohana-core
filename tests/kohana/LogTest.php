@@ -2,8 +2,8 @@
 
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
-use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 use tests\Kohana\Support\KohanaCoreTestCase;
+use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
@@ -67,7 +67,7 @@ class Kohana_LogTest extends KohanaCoreTestCase
 		$this->assertSame($logger, $logger->attach($writer));
 
 		$this->assertAttributeSame(
-			[spl_object_hash($writer) => ['object' => $writer, 'levels' => []]],
+			[spl_object_id($writer) => ['object' => $writer, 'levels' => []]],
 			'_writers',
 			$logger
 		);
@@ -92,7 +92,7 @@ class Kohana_LogTest extends KohanaCoreTestCase
 
 		$this->assertAttributeSame(
 			[
-				spl_object_hash($writer) => [
+				spl_object_id($writer) => [
 					'object' => $writer,
 					'levels' => [Log::CRITICAL, Log::ERROR, Log::WARNING, Log::NOTICE],
 				],

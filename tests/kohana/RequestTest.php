@@ -1,7 +1,7 @@
 <?php
 
-use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\TestWith;
 use tests\Kohana\Support\KohanaCoreTestCase;
@@ -714,49 +714,34 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 		$request->jsonBodyArray();
 	}
 
-	public static function provider_invalid_json_too_large()
+	public static function provider_valid_json(): array
 	{
 		return [
 			'within expected size' => [
 				'{"foo": "bar"}',
 				['max_json_bytes' => 14],
-				['result' => ['foo' => 'bar']],
-			],
-			'bigger than expected size' => [
-				'{"foo": "bar"}',
-				['max_json_bytes' => 13],
-				['exception' => 'Content larger than max_json_bytes (got 14.0B)'],
+				['foo' => 'bar'],
 			],
 			'up to 1kB default is OK' => [
 				'{"fo": "'.str_repeat('a', 990).'"}',
 				[],
-				['result' => ['fo' => str_repeat('a', 990)]],
-			],
-			'bigger than 1kB default fails' => [
-				'{"fo": "'.str_repeat('a', 991).'"}',
-				[],
-				['exception' => 'Content larger than max_json_bytes (got 1.0kB)'],
+				['fo' => str_repeat('a', 990)],
 			],
 			'within default max depth' => [
 				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":"ok"}}}}}}}}}}}}}}}}}}}',
 				[],
-				['result' => [1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>'ok']]]]]]]]]]]]]]]]]]]],
-			],
-			'beyond default max depth' => [
-				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":{"20":"bad"}}}}}}}}}}}}}}}}}}}}',
-                                [],
-                                ['exception' => 'Invalid JSON: Maximum stack depth exceeded'],
+				[1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>'ok']]]]]]]]]]]]]]]]]]],
 			],
 			'custom max depth' => [
 				'{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":{"20":"bad"}}}}}}}}}}}}}}}}}}}}',
 				['max_json_depth' => 21],
-				['result' => [1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>[20=>'bad']]]]]]]]]]]]]]]]]]]]],
+				[1=>[2=>[3=>[4=>[5=>[6=>[7=>[8=>[9=>[10=>[11=>[12=>[13=>[14=>[15=>[16=>[17=>[18=>[19=>[20=>'bad']]]]]]]]]]]]]]]]]]]],
 			]
 		];
 	}
 
-	#[DataProvider('provider_invalid_json_too_large')]
-    public function test_json_body_methods_protect_against_large_or_abusive_payloads(string $body, array $args, array $expect_behaviour)
+	#[DataProvider('provider_valid_json')]
+    public function test_json_body_methods_decodes_json(string $body, array $args, array $expect)
 	{
 		$request = Request::with([
 			'body' => $body,
@@ -766,16 +751,48 @@ class Kohana_RequestTest extends KohanaCoreTestCase
 			])
 		]);
 
-		$actual_behaviour = [];
-
-		try {
-			$actual_behaviour['result'] = $request->jsonBodyArray(...$args);
-		} catch (Request_InvalidJSONRequestException $e) {
-			$actual_behaviour['exception'] = $e->getMessage();
-		}
-
-		$this->assertSame($expect_behaviour, $actual_behaviour);
+        $this->assertSame($expect, $request->jsonBodyArray(...$args));
 	}
+
+    public static function provider_invalid_json_too_large(): array
+    {
+        return [
+            'bigger than expected size' => [
+                '{"foo": "bar"}',
+                ['max_json_bytes' => 13],
+                'Content larger than max_json_bytes (got 14.0B)',
+            ],
+            'bigger than 1kB default fails' => [
+                '{"fo": "'.str_repeat('a', 991).'"}',
+                [],
+                'Content larger than max_json_bytes (got 1.0kB)',
+            ],
+            'beyond default max depth' => [
+                '{"1":{"2":{"3":{"4":{"5":{"6":{"7":{"8":{"9":{"10":{"11":{"12":{"13":{"14":{"15":{"16":{"17":{"18":{"19":{"20":"bad"}}}}}}}}}}}}}}}}}}}}',
+                [],
+                'Invalid JSON: Maximum stack depth exceeded',
+            ],
+        ];
+    }
+    #[DataProvider('provider_invalid_json_too_large')]
+    public function test_json_body_method_throws_against_large_or_abusive_payloads(string $body, array $args, string $expect_msg): void
+    {
+        $request = Request::with(
+            [
+                'body'   => $body,
+                'header' => new HTTP_Header(
+                    [
+                        'content-type'   => 'application/json',
+                        'content-length' => strlen($body),
+                    ]
+                ),
+            ]
+        );
+
+        $this->expectException(Request_InvalidJSONRequestException::class);
+        $this->expectExceptionMessage($expect_msg);
+        $request->jsonBodyArray(...$args);
+    }
 
 	public function test_json_body_methods_protect_against_content_length_tampering()
 	{

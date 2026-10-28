@@ -182,7 +182,7 @@ class Kohana_Debug {
 			// Indentation for this variable
 			$space = \str_repeat($s = '    ', $level);
 
-			$hash = \spl_object_hash($var);
+			$hash = \spl_object_id($var);
 
 			// Objects that are being dumped
 			static $objects = array();
