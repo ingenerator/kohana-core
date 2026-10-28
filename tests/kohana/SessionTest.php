@@ -353,7 +353,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 		$session->expects($this->once())
 			->method('_read')
 			->with($session_id)
-			->will($this->returnValue($driver_data));
+			->willReturn($driver_data);
 
 		$session->read($session_id);
 		$this->assertAttributeSame($expected_data, '_data', $session);
@@ -372,7 +372,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 		$session->expects($this->once())
 			->method('_regenerate')
 			->with()
-			->will($this->returnValue($new_session_id));
+			->willReturn($new_session_id);
 
 		$this->assertSame($new_session_id, $session->regenerate());
 	}
@@ -394,7 +394,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 			->expects($this->once())
 			->method('_destroy')
 			->with()
-			->will($this->returnValue(TRUE));
+			->willReturn(TRUE);
 
 		$this->assertTrue($session->destroy());
 
@@ -418,7 +418,7 @@ class Kohana_SessionTest extends KohanaCoreTestCase
 			->expects($this->once())
 			->method('_destroy')
 			->with()
-			->will($this->returnValue(FALSE));
+			->willReturn(FALSE);
 
 		$this->assertFalse($session->destroy());
 		$this->assertAttributeSame(

@@ -3,7 +3,6 @@
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
-use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
 use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');

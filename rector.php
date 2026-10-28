@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use Rector\PHPUnit\CodeQuality\Rector\MethodCall\UseSpecificWillMethodRector;
 use Rector\Config\RectorConfig;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 
@@ -11,6 +12,9 @@ return RectorConfig::configure()
     ])
     ->withSets([
         PHPUnitSetList::COMPOSER_BASED,
+    ])
+    ->withRules([
+        UseSpecificWillMethodRector::class,
     ])
     ->withRootFiles()
     ->withImportNames(
