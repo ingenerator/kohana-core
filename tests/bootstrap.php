@@ -46,6 +46,7 @@ Kohana::$config->attach(new Config_File);
 
 Kohana::modules(
     (function () {
+        $modules = [];
         $env = getenv('KOHANA_MODULES');
         if (empty($env)) {
             throw new RuntimeException('KOHANA_MODULES environment variable must be set');
