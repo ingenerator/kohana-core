@@ -1,4 +1,8 @@
-<?php defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
+<?php
+
+use tests\Kohana\Support\KohanaCoreTestCase;
+
+defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
 /**
  * Tests the Config group lib
@@ -13,7 +17,7 @@
  * @copyright  (c) 2008-2014 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-class Kohana_Config_GroupTest extends Kohana_Unittest_TestCase
+class Kohana_Config_GroupTest extends KohanaCoreTestCase
 {
 	/**
 	 * Create a mock Kohana_Config instance
@@ -189,4 +193,3 @@ class Kohana_Config_GroupTest extends Kohana_Unittest_TestCase
 		$this->assertSame(serialize($vars), (string) $config);
 	}
 }
-

@@ -1,6 +1,7 @@
 <?php
 
 use tests\Kohana\Support\ObjectInternalAccessTestWorkarounds;
+use tests\Kohana\Support\KohanaCoreTestCase;
 
 defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests run');
 
@@ -18,7 +19,7 @@ defined('SYSPATH') or die('Kohana bootstrap needs to be included before tests ru
  * @copyright  (c) 2008-2012 Kohana Team
  * @license        http://kohanaframework.org/license
  */
-class Kohana_ValidationTest extends Unittest_TestCase
+class Kohana_ValidationTest extends KohanaCoreTestCase
 {
 	use ObjectInternalAccessTestWorkarounds;
 
