@@ -2,6 +2,9 @@ You're really going to want to read this.
 
 ## Unreleased
 
+
+## 4.14.0 (2026-10-29)
+
 * Support PHP 8.5 and PHP 8.6
 * Drop support for PHP 8.2 and PHP 8.3
 * Remove `unittest` module, `koharness` and custom helpers - run tests as standard PHPUnit suites.
